@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trading DNA — The Shiller Method</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0F1B2D; --paper:#FBF8F1; --gold:#C9A227; --gold-bright:#E4BE3E;
+  --teal:#2E7D6B; --rose:#B3532B; --line: rgba(251,248,241,0.14); --ink-line: rgba(15,27,45,0.12);
+  --serif: 'Lora', Georgia, serif; --sans: 'Source Sans 3', system-ui, sans-serif; --mono: 'JetBrains Mono', monospace;
+  color-scheme: dark;
+}
+:root{ --bg:#0F1B2D; --fg:#FBF8F1; }
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth; scroll-padding-top: calc(150px + env(safe-area-inset-top,0px));}
+body{background: var(--bg); color: var(--fg); font-family: var(--sans); padding-top: env(safe-area-inset-top,0px); padding-bottom: env(safe-area-inset-bottom,0px); line-height:1.55; overflow-x:hidden;}
+img,svg{max-width:100%;}
+.wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+button{font-family:inherit; cursor:pointer;}
+:focus-visible{outline:2px solid var(--gold-bright); outline-offset:2px;}
+
+/* NAV */
+.topbar{position:sticky; top:0; z-index:60; background: rgba(15,27,45,0.94); backdrop-filter: blur(10px); border-bottom:1px solid var(--line); padding-top: env(safe-area-inset-top,0px);}
+.topbar-inner{max-width:1080px; margin:0 auto; padding:12px 24px 10px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+.brand{display:flex; align-items:center; gap:9px; font-family:var(--serif); font-weight:700; font-size:1.02rem;}
+.brand .mark{width:28px;height:28px; border-radius:50%; background:conic-gradient(from 210deg, var(--gold), var(--rose), var(--teal), var(--gold)); flex-shrink:0;}
+.score-badge{font-family:var(--mono); font-size:0.72rem; background:rgba(201,162,39,0.14); color:var(--gold-bright); padding:6px 10px; border-radius:999px; white-space:nowrap;}
+.mode-switch{display:flex; gap:6px; background:rgba(251,248,241,0.06); padding:4px; border-radius:999px; flex-wrap:wrap;}
+.mode-btn{border:none; background:transparent; color:rgba(251,248,241,0.65); font-size:0.78rem; font-weight:600; padding:8px 13px; border-radius:999px; transition:.2s ease; white-space:nowrap;}
+.mode-btn:hover{color:var(--fg);}
+.mode-btn.active{background:var(--gold); color:var(--ink);}
+.chapter-bar{background:rgba(251,248,241,0.03); border-bottom:1px solid var(--line);}
+.chapter-scroll{max-width:1080px; margin:0 auto; padding:10px 24px; display:flex; gap:8px; overflow-x:auto;}
+.chapter-btn{flex-shrink:0; border:1px solid var(--line); background:transparent; color:rgba(251,248,241,0.72); font-size:0.78rem; font-weight:600; padding:7px 14px; border-radius:999px; white-space:nowrap; transition:.2s;}
+.chapter-btn:hover{border-color:var(--gold);}
+.chapter-btn.active{background:var(--gold-bright); border-color:var(--gold-bright); color:var(--ink);}
+
+/* HERO */
+.hero{padding:56px 0 40px; position:relative;}
+.hero::before{content:""; position:absolute; inset:0; z-index:-1; background: radial-gradient(600px 300px at 85% -10%, rgba(201,162,39,0.16), transparent 60%), radial-gradient(500px 260px at 5% 0%, rgba(46,125,107,0.14), transparent 60%);}
+.eyebrow-lecture{font-family:var(--mono); font-size:0.72rem; color:var(--gold-bright); letter-spacing:0.06em;}
+.hero h1{font-family:var(--serif); font-weight:700; font-size:clamp(2rem, 5vw, 3.4rem); line-height:1.08; margin:14px 0 18px; max-width:15ch;}
+.hero h1 em{font-style:italic; color:var(--gold-bright);}
+.hero p.lede{max-width:60ch; font-size:1.06rem; color:rgba(251,248,241,0.82);}
+.prof-card{margin-top:30px; display:flex; gap:16px; align-items:flex-start; background:rgba(251,248,241,0.05); border:1px solid var(--line); border-radius:14px; padding:18px 20px; max-width:660px;}
+.prof-avatar{width:52px; height:52px; border-radius:50%; flex-shrink:0; background:linear-gradient(160deg,var(--gold),var(--rose)); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:700; color:var(--ink); font-size:1.3rem;}
+.prof-card h3{font-family:var(--serif); font-size:1rem; margin-bottom:4px;}
+.prof-card p{font-size:0.92rem; color:rgba(251,248,241,0.72);}
+.hero-actions{display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;}
+.pill-btn{border:1px solid var(--gold); color:var(--gold-bright); background:transparent; font-size:0.85rem; font-weight:600; padding:10px 16px; border-radius:999px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;}
+.pill-btn:hover{background:rgba(201,162,39,0.12);}
+.pill-btn.solid{background:var(--gold-bright); color:var(--ink); border-color:var(--gold-bright);}
+.hero-stats{display:flex; gap:22px; margin-top:24px; flex-wrap:wrap;}
+.hero-stat b{display:block; font-family:var(--serif); font-size:1.5rem; color:var(--gold-bright);}
+.hero-stat span{font-size:0.76rem; color:rgba(251,248,241,0.6); font-family:var(--mono);}
+
+/* CHAPTER BANNER */
+.chapter-banner{padding:36px 0 6px; border-top:1px solid var(--line);}
+.chapter-banner .cb-inner{display:flex; align-items:center; gap:16px;}
+.cb-icon{font-size:2rem; flex-shrink:0;}
+.chapter-banner h2{font-family:var(--serif); font-size:clamp(1.3rem,3vw,1.7rem); font-weight:700;}
+.chapter-banner p{font-size:0.92rem; color:rgba(251,248,241,0.65); margin-top:3px;}
+
+/* LECTURES */
+.lecture{padding:40px 0; border-top:1px solid var(--line);}
+.lecture-head{display:flex; gap:18px; align-items:baseline; margin-bottom:22px; flex-wrap:wrap;}
+.lecture-num{font-family:var(--serif); font-weight:700; font-size:2.4rem; color:rgba(201,162,39,0.35); line-height:1; flex-shrink:0;}
+.lecture-head h2{font-family:var(--serif); font-size:clamp(1.3rem,3vw,1.8rem); font-weight:700;}
+.lecture-head .tag{font-family:var(--mono); font-size:0.68rem; color:var(--teal); letter-spacing:.04em; display:inline-flex; gap:8px; align-items:center; margin-top:4px;}
+.tier-chip{font-family:var(--mono); font-size:0.64rem; padding:2px 8px; border-radius:999px; text-transform:uppercase;}
+.tier-beginner{background:rgba(46,125,107,0.18); color:#6fcbb4;}
+.tier-normal{background:rgba(201,162,39,0.18); color:var(--gold-bright);}
+.tier-pro{background:rgba(179,83,43,0.2); color:#e79470;}
+.lecture-grid{display:grid; grid-template-columns: 1.1fr 1fr; gap:34px; align-items:start;}
+@media (max-width:820px){ .lecture-grid{grid-template-columns:1fr;} }
+.diagram-box{background: var(--paper); border-radius:16px; padding:20px; border:1px solid rgba(15,27,45,0.08);}
+.diagram-box svg{display:block; width:100%; height:auto;}
+.diagram-cap{font-family:var(--mono); font-size:0.7rem; color:rgba(15,27,45,0.55); margin-top:10px; text-align:center;}
+
+.drag-candle-box{margin-top:18px; padding-top:16px; border-top:1px dashed rgba(15,27,45,0.15); text-align:center;}
+.drag-candle-title{font-family:var(--serif); font-weight:700; font-size:0.92rem; color:var(--ink); margin-bottom:10px;}
+.drag-candle-readout{margin-top:10px; font-size:0.82rem; color:rgba(15,27,45,0.75); min-height:20px;}
+
+.explain-panel{background:rgba(251,248,241,0.045); border:1px solid var(--line); border-radius:16px; padding:22px 24px;}
+.panel-top{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px;}
+.explain-panel .mode-label{display:inline-block; font-family:var(--mono); font-size:0.68rem; background:rgba(201,162,39,0.16); color:var(--gold-bright); padding:4px 9px; border-radius:999px;}
+.listen-btn{border:1px solid var(--line); background:transparent; color:rgba(251,248,241,0.8); font-size:0.74rem; font-weight:600; padding:6px 11px; border-radius:999px; display:inline-flex; gap:5px; align-items:center;}
+.listen-btn:hover{border-color:var(--gold);}
+.listen-btn.speaking{background:var(--gold-bright); color:var(--ink); border-color:var(--gold-bright);}
+.explain-panel p{font-size:1rem; color:rgba(251,248,241,0.9);}
+.explain-panel p + p{margin-top:10px;}
+.explain-panel strong{color:var(--gold-bright);}
+.takeaway{margin-top:16px; padding:12px 14px; border-left:3px solid var(--teal); background:rgba(46,125,107,0.08); border-radius:0 8px 8px 0; font-size:0.88rem; color:rgba(251,248,241,0.8);}
+.takeaway b{color:var(--teal); font-family:var(--mono); font-size:0.72rem; text-transform:uppercase; display:block; margin-bottom:4px; letter-spacing:.05em;}
+.tip-box{margin-top:12px; padding:12px 14px; border-left:3px solid var(--gold); background:rgba(201,162,39,0.08); border-radius:0 8px 8px 0; font-size:0.86rem; color:rgba(251,248,241,0.85);}
+.tip-box b{color:var(--gold-bright); font-family:var(--mono); font-size:0.68rem; text-transform:uppercase; display:block; margin-bottom:4px; letter-spacing:.05em;}
+.example-box{margin-top:12px; padding:12px 14px; border-left:3px solid var(--rose); background:rgba(179,83,43,0.08); border-radius:0 8px 8px 0; font-size:0.86rem; color:rgba(251,248,241,0.85);}
+.example-box b{color:#e79470; font-family:var(--mono); font-size:0.68rem; text-transform:uppercase; display:block; margin-bottom:4px; letter-spacing:.05em;}
+
+/* QUIZ */
+.quiz-box{margin-top:18px; padding-top:16px; border-top:1px dashed var(--line);}
+.quiz-q{font-family:var(--serif); font-size:0.98rem; font-weight:600; margin-bottom:10px;}
+.quiz-opts{display:flex; flex-direction:column; gap:8px;}
+.quiz-opt{text-align:left; border:1px solid var(--line); background:rgba(251,248,241,0.03); color:var(--fg); font-size:0.88rem; padding:9px 12px; border-radius:9px; transition:.15s;}
+.quiz-opt:hover:not(:disabled){border-color:var(--gold);}
+.quiz-opt.correct{border-color:var(--teal); background:rgba(46,125,107,0.18); color:#8fdcc4;}
+.quiz-opt.wrong{border-color:var(--rose); background:rgba(179,83,43,0.18); color:#f0a37e;}
+.quiz-opt:disabled{cursor:default;}
+.quiz-feedback{margin-top:10px; font-size:0.86rem; padding:10px 12px; border-radius:9px; background:rgba(251,248,241,0.05);}
+.quiz-feedback.ok{border-left:3px solid var(--teal);}
+.quiz-feedback.bad{border-left:3px solid var(--rose);}
+
+/* RULES / PROVIDERS / ROADMAP */
+.rules{background:var(--paper); color:var(--ink); padding:56px 0; border-top:1px solid var(--ink-line);}
+.rules h2{font-family:var(--serif); font-size:clamp(1.5rem,3vw,2rem); margin-bottom:8px;}
+.rules p.sub{color:rgba(15,27,45,0.65); margin-bottom:28px; max-width:60ch;}
+.rule-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+@media (max-width:820px){.rule-grid{grid-template-columns:1fr;}}
+.rule-card{background:#fff; border:1px solid var(--ink-line); border-radius:14px; padding:20px;}
+.rule-card .icon{width:38px;height:38px; border-radius:9px; background:var(--ink); color:var(--gold-bright); display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:700; margin-bottom:12px;}
+.rule-card h3{font-family:var(--serif); font-size:1.02rem; margin-bottom:6px;}
+.rule-card p{font-size:0.88rem; color:rgba(15,27,45,0.68);}
+.providers{padding:52px 0; border-top:1px solid var(--line);}
+.providers h2{font-family:var(--serif); font-size:clamp(1.4rem,3vw,1.8rem); margin-bottom:6px;}
+.providers p.sub{color:rgba(251,248,241,0.68); margin-bottom:24px; max-width:60ch;}
+.table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:14px;}
+table{width:100%; border-collapse:collapse; min-width:640px;}
+th{font-family:var(--mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:.05em; text-align:left; padding:13px 16px; background:rgba(251,248,241,0.05); color:var(--gold-bright); border-bottom:1px solid var(--line);}
+td{padding:13px 16px; font-size:0.88rem; border-bottom:1px solid var(--line); color:rgba(251,248,241,0.85); vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+.level-chip{display:inline-block; padding:3px 9px; border-radius:999px; font-size:0.72rem; font-weight:600; font-family:var(--mono);}
+.lv-green{background:rgba(46,125,107,0.18); color:#6fcbb4;}
+.lv-yellow{background:rgba(201,162,39,0.18); color:var(--gold-bright);}
+.lv-red{background:rgba(179,83,43,0.2); color:#e79470;}
+.roadmap{padding:52px 0; border-top:1px solid var(--line);}
+.roadmap h2{font-family:var(--serif); font-size:clamp(1.4rem,3vw,1.8rem); margin-bottom:24px;}
+.road-steps{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+@media (max-width:820px){.road-steps{grid-template-columns:1fr 1fr;}}
+@media (max-width:520px){.road-steps{grid-template-columns:1fr;}}
+.road-step{background:rgba(251,248,241,0.05); border:1px solid var(--line); border-radius:14px; padding:18px;}
+.road-step .n{font-family:var(--serif); color:var(--gold-bright); font-weight:700; font-size:1.3rem;}
+.road-step h4{font-family:var(--serif); font-size:0.98rem; margin:6px 0 6px;}
+.road-step p{font-size:0.82rem; color:rgba(251,248,241,0.68);}
+
+/* GAMES */
+.game-section{padding:48px 0; border-top:1px solid var(--line); background:rgba(46,125,107,0.035);}
+.game-section h2{font-family:var(--serif); font-size:clamp(1.4rem,3vw,1.9rem); margin-bottom:8px;}
+.game-section > .wrap > p{color:rgba(251,248,241,0.7); max-width:64ch; margin-bottom:24px;}
+.candle-game-box{background:var(--paper); border-radius:16px; padding:24px; max-width:460px; color:var(--ink);}
+#candleSvgWrap{display:flex; justify-content:center; margin-bottom:14px;}
+.candle-buttons{display:flex; gap:10px; justify-content:center;}
+.candle-buttons button{flex:1; padding:12px; border-radius:10px; border:none; font-weight:700; font-size:0.95rem;}
+#btnBull{background:var(--teal); color:#fff;}
+#btnBear{background:var(--rose); color:#fff;}
+.game-feedback{margin-top:14px; padding:12px 14px; border-radius:10px; font-size:0.9rem;}
+.game-feedback.ok{background:rgba(46,125,107,0.14); border-left:3px solid var(--teal);}
+.game-feedback.bad{background:rgba(179,83,43,0.14); border-left:3px solid var(--rose);}
+.game-score{margin-top:14px; font-family:var(--mono); font-size:0.78rem; text-align:center; color:rgba(15,27,45,0.6);}
+.btn-secondary{margin-top:14px; width:100%; padding:10px; border-radius:9px; border:1px solid rgba(15,27,45,0.2); background:transparent; color:var(--ink); font-weight:600;}
+
+.sim-layout{display:grid; grid-template-columns:1.3fr 1fr; gap:20px; align-items:start;}
+@media (max-width:820px){.sim-layout{grid-template-columns:1fr;}}
+.sim-chart-box{background:var(--paper); border-radius:16px; padding:16px; position:relative;}
+#simCanvas{width:100%; height:auto; display:block; border-radius:8px;}
+.sim-price-tag{position:absolute; top:26px; right:26px; font-family:var(--mono); font-weight:700; background:var(--ink); color:var(--gold-bright); padding:4px 10px; border-radius:8px; font-size:0.85rem;}
+.sim-legend{display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; font-family:var(--mono); font-size:0.68rem; color:rgba(15,27,45,0.6);}
+.sim-legend span{display:inline-flex; align-items:center; gap:5px;}
+.sim-legend i{width:10px; height:10px; border-radius:2px; display:inline-block;}
+.sim-controls{background:rgba(251,248,241,0.05); border:1px solid var(--line); border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:12px;}
+.sim-stat{font-size:0.88rem; color:rgba(251,248,241,0.75);}
+.sim-stat b{color:var(--fg); font-family:var(--mono);}
+.risk-picker span{font-size:0.8rem; color:rgba(251,248,241,0.7); display:block; margin-bottom:6px;}
+.risk-btns{display:flex; gap:6px; flex-wrap:wrap;}
+.risk-btn{border:1px solid var(--line); background:transparent; color:rgba(251,248,241,0.75); font-size:0.78rem; font-weight:600; padding:7px 11px; border-radius:8px;}
+.risk-btn.active{background:var(--gold-bright); color:var(--ink); border-color:var(--gold-bright);}
+.ctrl-row{display:grid; grid-template-columns:1fr auto; gap:4px 10px; align-items:center;}
+.ctrl-row[hidden]{display:none;}
+.ctrl-label{font-size:0.8rem; color:rgba(251,248,241,0.72); display:flex; align-items:center; gap:6px;}
+.ctrl-value{font-family:var(--mono); font-size:0.78rem; color:var(--gold-bright); text-align:right;}
+.ctrl-row input[type=range]{grid-column:1 / -1; width:100%; accent-color:var(--gold-bright);}
+.info-btn{border:1px solid var(--line); background:transparent; color:rgba(251,248,241,0.6); width:18px; height:18px; border-radius:50%; font-size:0.65rem; line-height:1; padding:0; display:inline-flex; align-items:center; justify-content:center;}
+.info-btn:hover{border-color:var(--gold);}
+.ctrl-info{grid-column:1/-1; font-size:0.76rem; color:rgba(251,248,241,0.65); background:rgba(251,248,241,0.05); border-radius:8px; padding:8px 10px; margin-top:2px;}
+.sim-actions{display:flex; gap:8px; flex-wrap:wrap;}
+.sim-actions button{flex:1; min-width:100px; padding:11px; border-radius:9px; border:none; font-weight:700; font-size:0.85rem;}
+.btn-buy{background:var(--teal); color:#fff;}
+.btn-sell{background:var(--rose); color:#fff;}
+.btn-close{background:rgba(251,248,241,0.12); color:var(--fg);}
+.btn-buy:disabled, .btn-sell:disabled, .btn-close:disabled{opacity:.35; cursor:not-allowed;}
+.sim-feedback{font-size:0.86rem; padding:12px 14px; border-radius:10px; background:rgba(251,248,241,0.06); min-height:20px;}
+.sim-feedback.ok{border-left:3px solid var(--teal);}
+.sim-feedback.warn{border-left:3px solid var(--rose);}
+.risk-tag{display:inline-block; font-family:var(--mono); font-size:0.68rem; padding:2px 8px; border-radius:999px; margin-bottom:6px; font-weight:700;}
+.risk-tag.good{background:rgba(46,125,107,0.25); color:#8fdcc4;}
+.risk-tag.bad{background:rgba(179,83,43,0.25); color:#f0a37e;}
+
+/* PRO TERMINAL */
+.terminal-price{font-family:var(--mono); font-weight:700; font-size:1.1rem; color:var(--gold-bright);}
+.terminal-change{font-family:var(--mono); font-size:0.72rem;}
+.terminal-change.up{color:#6fcbb4;} .terminal-change.down{color:#f0a37e;}
+.guide-panel{padding:16px; background:rgba(201,162,39,0.08); border-bottom:2px solid rgba(201,162,39,0.3);}
+.guide-panel-head{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+.guide-title-big{font-family:var(--serif); font-weight:700; font-size:1.05rem; color:var(--gold-bright);}
+.guide-sub{font-size:0.78rem; color:rgba(251,248,241,0.65); margin:6px 0 14px; line-height:1.45;}
+.guide-collapse-btn{border:1px solid rgba(251,248,241,0.2); background:rgba(251,248,241,0.06); color:rgba(251,248,241,0.75); font-size:0.72rem; font-weight:700; padding:6px 11px; border-radius:999px; flex-shrink:0;}
+.guide-collapse-btn:hover{border-color:var(--gold);}
+.guide-fab-float{margin:12px 16px; align-self:flex-start; border:2px solid var(--gold); background:rgba(201,162,39,0.18); color:var(--gold-bright); font-size:0.88rem; font-weight:700; padding:12px 18px; border-radius:14px; white-space:nowrap; flex-shrink:0; box-shadow:0 6px 18px rgba(201,162,39,0.2);}
+.guide-fab-float:hover{background:rgba(201,162,39,0.28);}
+.guide-title{font-family:var(--serif); font-weight:700; font-size:0.88rem; color:var(--gold-bright); margin-bottom:10px;}
+.guide-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px;}
+@media (max-width:900px){.guide-grid{grid-template-columns:1fr 1fr;}}
+.guide-card{background:rgba(251,248,241,0.06); border:1px solid rgba(251,248,241,0.12); border-radius:12px; padding:12px;}
+.guide-card .gc-icon{background:rgba(0,0,0,0.18); border-radius:8px; padding:4px 0; display:flex; align-items:center; justify-content:center; margin-bottom:8px;}
+.gc-label{font-family:var(--mono); font-size:0.66rem; color:rgba(251,248,241,0.55); text-transform:uppercase; letter-spacing:.04em;}
+.gc-value{font-family:var(--serif); font-weight:700; font-size:1.02rem; color:var(--fg); margin:4px 0 4px;}
+.gc-note{font-size:0.78rem; color:rgba(251,248,241,0.68); line-height:1.4;}
+.pattern-examples{margin-top:16px; border-top:1px dashed rgba(251,248,241,0.15); padding-top:14px;}
+.pattern-examples-title{font-family:var(--serif); font-weight:700; font-size:0.9rem; color:var(--fg); margin-bottom:10px;}
+.pattern-examples-strip{display:grid; grid-template-columns:repeat(5,1fr); gap:10px;}
+@media (max-width:900px){.pattern-examples-strip{grid-template-columns:1fr 1fr;}}
+.pattern-example-card{background:rgba(251,248,241,0.05); border:1px solid rgba(251,248,241,0.1); border-radius:10px; padding:10px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:5px;}
+.pattern-example-card b{font-size:0.78rem; color:var(--gold-bright); font-family:var(--serif);}
+.pattern-example-card span{font-size:0.68rem; color:rgba(251,248,241,0.6); line-height:1.35;}
+#termCanvas{width:100%; height:auto; display:block; border-radius:8px;}
+.term-legend{display:flex; gap:12px; margin-top:8px; flex-wrap:wrap; font-family:var(--mono); font-size:0.64rem; color:rgba(251,248,241,0.5);}
+.term-legend span{display:inline-flex; align-items:center; gap:5px;}
+.term-legend i{width:9px; height:9px; border-radius:2px; display:inline-block;}
+.ticket-panel{display:none; flex-direction:column; gap:10px; padding:0 16px;}
+.ticket-panel:not([hidden]){display:flex;}
+.order-type-row{display:flex; gap:6px;}
+.ot-btn{flex:1; border:1px solid rgba(251,248,241,0.15); background:transparent; color:rgba(251,248,241,0.7); font-size:0.76rem; font-weight:700; padding:7px; border-radius:7px;}
+.ot-btn.active{background:var(--gold-bright); color:var(--ink); border-color:var(--gold-bright);}
+.entry-audit-toast{background:rgba(251,248,241,0.06); border:1px solid rgba(251,248,241,0.14); border-radius:10px; padding:10px 12px; font-size:0.78rem; color:rgba(251,248,241,0.85);}
+.grade-badge{display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:9px; font-family:var(--serif); font-weight:700; font-size:1.05rem; flex-shrink:0;}
+.grade-A{background:rgba(46,125,107,0.3); color:#8fdcc4;}
+.grade-B{background:rgba(46,125,107,0.2); color:#8fdcc4;}
+.grade-C{background:rgba(201,162,39,0.25); color:var(--gold-bright);}
+.grade-D{background:rgba(179,83,43,0.22); color:#f0a37e;}
+.grade-F{background:rgba(179,83,43,0.32); color:#f0a37e;}
+.audit-row{display:flex; gap:10px; align-items:flex-start;}
+.position-card-empty{font-size:0.82rem; color:rgba(251,248,241,0.55); padding:10px 2px;}
+.pos-detail{font-size:0.82rem; color:rgba(251,248,241,0.85); display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(251,248,241,0.06);}
+.pos-detail b{font-family:var(--mono); color:var(--fg);}
+.hist-empty{font-size:0.8rem; color:rgba(251,248,241,0.5); padding:8px 2px;}
+.hist-row{display:flex; align-items:center; gap:10px; padding:9px 4px; border-bottom:1px solid rgba(251,248,241,0.06); cursor:pointer;}
+.hist-row:hover{background:rgba(251,248,241,0.04);}
+.hist-meta{flex:1; font-size:0.78rem;}
+.hist-meta b{font-family:var(--mono); display:block;}
+.hist-pnl{font-family:var(--mono); font-weight:700; font-size:0.82rem;}
+.hist-pnl.pos{color:#6fcbb4;} .hist-pnl.neg{color:#f0a37e;}
+.trade-report{margin:18px 16px 0; background:var(--paper); color:var(--ink); border-radius:16px; padding:22px;}
+.tr-head{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+.tr-head h3{font-family:var(--serif); font-size:1.15rem;}
+.tr-head p{font-size:0.82rem; color:rgba(15,27,45,0.6);}
+.tr-section{margin-top:12px;}
+.tr-section h4{font-family:var(--mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;}
+.tr-section.good h4{color:var(--teal);}
+.tr-section.bad h4{color:var(--rose);}
+.tr-section.improve h4{color:#8a6d1f;}
+.tr-section ul{padding-left:18px; font-size:0.86rem; color:rgba(15,27,45,0.82);}
+.tr-section li{margin-bottom:4px;}
+.tr-ask-btn{margin-top:14px; border:1px solid var(--ink); background:transparent; color:var(--ink); font-weight:700; font-size:0.82rem; padding:9px 14px; border-radius:9px;}
+
+/* Launch card (in normal page flow) */
+.launch-card{display:flex; align-items:center; gap:18px; background:#0d1b2a; border:1px solid rgba(251,248,241,0.12); border-radius:18px; padding:22px; flex-wrap:wrap; box-shadow:0 16px 40px rgba(0,0,0,0.3);}
+.launch-card-icon{font-size:2.6rem; flex-shrink:0;}
+.launch-card-body{flex:1; min-width:220px;}
+.launch-card-body h3{font-family:var(--serif); font-size:1.1rem; margin-bottom:8px; color:var(--fg);}
+.launch-card-body ul{padding-left:18px; font-size:0.84rem; color:rgba(251,248,241,0.7); margin-bottom:10px;}
+.launch-card-body li{margin-bottom:3px;}
+.launch-card-stats{font-family:var(--mono); font-size:0.78rem; color:var(--gold-bright);}
+.launch-btn{flex-shrink:0; background:var(--gold-bright); color:var(--ink); border:none; font-weight:700; font-size:0.95rem; padding:14px 22px; border-radius:12px; box-shadow:0 8px 20px rgba(228,190,62,0.25);}
+.launch-btn:hover{filter:brightness(1.05);}
+
+/* Full-screen app view */
+body.terminal-open{overflow:hidden;}
+body.terminal-open .podcast-bar, body.terminal-open .ask-fab, body.terminal-open .ask-panel{display:none !important;}
+.app-screen{
+  position:fixed; inset:0; z-index:200; background:#0d1b2a; color:var(--fg);
+  display:flex; flex-direction:column;
+  transform:translateY(100%); opacity:0; pointer-events:none;
+  transition:transform .38s cubic-bezier(.22,1,.36,1), opacity .3s ease;
+  border-radius:0;
+}
+.app-screen.open{transform:translateY(0); opacity:1; pointer-events:auto;}
+@media (min-width:640px){
+  .app-screen{ top:16px; bottom:16px; left:50%; right:auto; width:min(680px, calc(100vw - 32px)); transform:translate(-50%,24px); border-radius:20px; box-shadow:0 30px 70px rgba(0,0,0,0.5); }
+  .app-screen.open{transform:translate(-50%,0);}
+}
+.app-bar{
+  display:flex; align-items:center; gap:12px; padding:14px 16px; padding-top:calc(14px + env(safe-area-inset-top,0px));
+  border-bottom:1px solid rgba(251,248,241,0.1); flex-shrink:0;
+}
+.app-back{width:36px; height:36px; border-radius:50%; border:1px solid rgba(251,248,241,0.15); background:rgba(251,248,241,0.06); color:var(--fg); font-size:1.05rem; flex-shrink:0;}
+.app-bar-title{flex:1; min-width:0; display:flex; flex-direction:column;}
+.app-bar-name{font-family:var(--serif); font-weight:700; font-size:0.98rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.app-bar-sub{font-family:var(--mono); font-size:0.66rem; color:rgba(251,248,241,0.5);}
+.app-bar-price{display:flex; flex-direction:column; align-items:flex-end; flex-shrink:0;}
+.tf-panel{padding:12px 16px; background:rgba(46,125,107,0.07); border-bottom:1px solid rgba(251,248,241,0.1);}
+.tf-panel-head{font-family:var(--mono); font-size:0.68rem; color:rgba(251,248,241,0.65); text-transform:uppercase; letter-spacing:.03em; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.tf-tool-wrap{position:relative; padding:10px 16px 0; display:flex; gap:8px; flex-wrap:wrap;}
+.sentiment-row{padding:12px 16px 0; display:flex; align-items:center; gap:10px;}
+.live-mode-row{padding:10px 16px 0;}
+.live-mode-btn{border:1px solid rgba(240,163,126,0.5); background:rgba(179,83,43,0.12); color:#f0a37e; font-size:0.76rem; font-weight:700; padding:8px 13px; border-radius:999px;}
+.live-mode-btn:hover{background:rgba(179,83,43,0.2);}
+.live-mode-btn.connected{border-color:#6fcbb4; background:rgba(46,125,107,0.18); color:#6fcbb4;}
+.live-mode-status{margin-top:8px; font-size:0.74rem; line-height:1.5; color:rgba(251,248,241,0.65); background:rgba(251,248,241,0.05); border-left:3px solid #f0a37e; border-radius:0 8px 8px 0; padding:9px 11px;}
+.sentiment-label{font-family:var(--mono); font-size:0.66rem; color:rgba(251,248,241,0.55); text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; flex-shrink:0;}
+.sentiment-bar{flex:1; height:20px; border-radius:10px; overflow:hidden; display:flex; background:rgba(255,255,255,0.06);}
+.sentiment-buy{background:#6fcbb4; display:flex; align-items:center; justify-content:flex-start; padding-left:8px; font-size:0.64rem; font-weight:700; color:#0d1b2a; white-space:nowrap; transition:width .4s ease;}
+.sentiment-sell{background:#f0a37e; display:flex; align-items:center; justify-content:flex-end; padding-right:8px; font-size:0.64rem; font-weight:700; color:#0d1b2a; white-space:nowrap; transition:width .4s ease;}
+.sentiment-caption{padding:6px 16px 0; font-size:0.65rem; color:rgba(251,248,241,0.4); line-height:1.4;}
+.news-tool-btn{border-color:rgba(228,190,62,0.5); background:rgba(201,162,39,0.14); color:var(--gold-bright);}
+.news-tool-btn:hover{background:rgba(201,162,39,0.22);}
+.tf-real-tag{background:rgba(111,203,180,0.2); color:#6fcbb4;}
+.news-price-row{display:flex; align-items:baseline; gap:9px; margin-bottom:8px; flex-wrap:wrap;}
+.news-price-row b{font-family:var(--mono); font-size:1.1rem; color:var(--gold-bright);}
+.news-price-row span{font-size:0.68rem; color:rgba(251,248,241,0.5);}
+.news-stat-row{display:flex; justify-content:space-between; font-size:0.78rem; padding:4px 0; color:rgba(251,248,241,0.75); border-bottom:1px solid rgba(251,248,241,0.06);}
+.news-stat-row b{font-family:var(--mono);}
+.news-stat-row b.down{color:#f0a37e;} .news-stat-row b.up{color:#6fcbb4;}
+.news-bullets{margin:10px 0; padding-left:16px; font-size:0.78rem; color:rgba(251,248,241,0.78); line-height:1.5;}
+.news-bullets li{margin-bottom:7px;}
+.news-footer{font-size:0.68rem; color:rgba(251,248,241,0.45); border-top:1px dashed rgba(251,248,241,0.15); padding-top:9px; line-height:1.45;}
+.tf-tool-btn{border:1px solid rgba(111,203,180,0.4); background:rgba(46,125,107,0.14); color:#8fdcc4; font-size:0.78rem; font-weight:700; padding:8px 13px; border-radius:999px; white-space:nowrap;}
+.tf-tool-btn:hover{background:rgba(46,125,107,0.22);}
+.tf-popover{position:absolute; top:calc(100% + 6px); left:16px; right:16px; z-index:20; background:#132234; border:1px solid rgba(251,248,241,0.15); border-radius:14px; padding:14px; box-shadow:0 16px 40px rgba(0,0,0,0.4);}
+@media (min-width:480px){.tf-popover{left:16px; right:auto; width:340px;}}
+.tf-popover-head{display:flex; align-items:center; justify-content:space-between; gap:8px; font-family:var(--mono); font-size:0.68rem; color:rgba(251,248,241,0.65); text-transform:uppercase; letter-spacing:.03em; margin-bottom:10px;}
+.tf-popover-close{border:none; background:rgba(251,248,241,0.08); color:rgba(251,248,241,0.7); width:22px; height:22px; border-radius:50%; font-size:0.7rem; flex-shrink:0;}
+.tf-popover-close:hover{color:var(--fg);}
+.lang-toggle{display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;}
+.lang-btn{border:1px solid rgba(251,248,241,0.18); background:rgba(251,248,241,0.05); color:rgba(251,248,241,0.7); font-size:0.74rem; font-weight:700; padding:7px 12px; border-radius:999px;}
+.lang-btn:hover{border-color:var(--gold);}
+.lang-btn.active{background:var(--gold-bright); color:var(--ink); border-color:var(--gold-bright);}
+.tf-sim-tag{background:rgba(240,163,126,0.18); color:#f0a37e; font-size:0.62rem; padding:2px 8px; border-radius:999px; text-transform:none; letter-spacing:0;}
+.tf-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+@media (max-width:480px){.tf-grid{grid-template-columns:1fr;}}
+.tf-card{background:rgba(251,248,241,0.05); border:1px solid rgba(251,248,241,0.1); border-radius:10px; padding:10px;}
+.tf-card-label{font-family:var(--mono); font-size:0.66rem; color:rgba(251,248,241,0.55); text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;}
+.tf-card-icon{margin-bottom:6px;}
+.tf-card-row{display:flex; justify-content:space-between; font-size:0.76rem; padding:2px 0;}
+.tf-card-row b{font-family:var(--mono);}
+.tf-high b{color:#f0a37e;} .tf-low b{color:#6fcbb4;}
+.tf-verdict{margin-top:7px; font-size:0.7rem; font-weight:700; padding:4px 8px; border-radius:7px; text-align:center;}
+.tf-verdict.high{background:rgba(240,163,126,0.2); color:#f0a37e;}
+.tf-verdict.low{background:rgba(111,203,180,0.2); color:#6fcbb4;}
+.tf-verdict.mid{background:rgba(251,248,241,0.08); color:rgba(251,248,241,0.6);}
+.app-scroll{flex:1; overflow-y:auto; padding-bottom:14px; -webkit-overflow-scrolling:touch;}
+.terminal-watchlist-row{display:flex; gap:8px; align-items:center; padding:14px 16px 4px; overflow-x:auto; flex-wrap:nowrap;}
+.wl-chip{flex-shrink:0; display:flex; flex-direction:column; gap:2px; padding:8px 12px; border-radius:10px; font-size:0.72rem; border:1px solid rgba(251,248,241,0.1);}
+.wl-chip.active{background:rgba(201,162,39,0.16); border-color:var(--gold); color:var(--gold-bright); font-weight:700;}
+.wl-chip.disabled{color:rgba(251,248,241,0.3);}
+.wl-note{flex-shrink:0; font-size:0.65rem; color:rgba(251,248,241,0.35); max-width:180px; line-height:1.4;}
+.terminal-chart{padding:10px 16px 14px;}
+.terminal-ticket-label{font-family:var(--mono); font-size:0.68rem; text-transform:uppercase; letter-spacing:.05em; color:rgba(251,248,241,0.4); padding:4px 16px 10px;}
+.app-tabbar{
+  display:flex; border-top:1px solid rgba(251,248,241,0.12); background:rgba(13,27,42,0.98);
+  padding-bottom:env(safe-area-inset-bottom,0px); flex-shrink:0;
+}
+.app-tabbar .tt-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; border:none; background:transparent; color:rgba(251,248,241,0.45); font-size:0.66rem; font-weight:700; padding:10px 4px 8px;}
+.app-tabbar .tt-btn span{font-size:1.1rem;}
+.app-tabbar .tt-btn.active{color:var(--gold-bright);}
+
+
+/* PODCAST */
+.podcast-bar{position:fixed; left:0; right:0; bottom:0; z-index:70; background:rgba(15,27,45,0.97); backdrop-filter:blur(10px); border-top:1px solid var(--line); padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));}
+.podcast-inner{max-width:1080px; margin:0 auto; display:flex; align-items:center; gap:12px;}
+.podcast-inner .pc-icon{font-size:1.3rem; flex-shrink:0;}
+.pc-info{flex:1; min-width:0;}
+.pc-title{font-family:var(--serif); font-weight:700; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.pc-sub{font-family:var(--mono); font-size:0.68rem; color:rgba(251,248,241,0.5);}
+.pc-controls{display:flex; gap:6px; flex-shrink:0;}
+.pc-btn{width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:rgba(251,248,241,0.06); color:var(--fg); font-size:0.95rem; display:flex; align-items:center; justify-content:center;}
+.pc-btn.main{background:var(--gold-bright); color:var(--ink); border-color:var(--gold-bright);}
+
+/* ASK PROFESSOR */
+.ask-fab{position:fixed; right:18px; bottom:78px; z-index:75; width:56px; height:56px; border-radius:50%; background:linear-gradient(160deg,var(--gold),var(--rose)); border:none; font-size:1.5rem; box-shadow:0 8px 24px rgba(0,0,0,0.35); color:var(--ink);}
+.ask-panel{position:fixed; right:18px; bottom:144px; z-index:76; width:min(340px, calc(100vw - 36px)); max-height:min(480px, 70vh); background:#16273F; border:1px solid var(--line); border-radius:16px; flex-direction:column; overflow:hidden; box-shadow:0 16px 40px rgba(0,0,0,0.45); display:none;}
+.ask-panel.open{display:flex;}
+.ask-head{display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid var(--line); font-family:var(--serif); font-weight:700; font-size:0.92rem;}
+.ask-head button{background:none; border:none; color:rgba(251,248,241,0.6); font-size:1.1rem; cursor:pointer; line-height:1; padding:4px;}
+.ask-head button:hover{color:var(--fg);}
+.provider-row{display:flex; align-items:center; gap:6px; padding:9px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap;}
+.provider-label{font-family:var(--mono); font-size:0.64rem; color:rgba(251,248,241,0.5); margin-right:2px; width:100%;}
+.provider-btn{border:1px solid var(--line); background:transparent; color:rgba(251,248,241,0.7); font-size:0.72rem; padding:4px 10px; border-radius:999px; font-weight:600;}
+.provider-btn:hover{border-color:var(--gold);}
+.provider-btn.active{background:var(--gold-bright); color:var(--ink); border-color:var(--gold-bright);}
+.provider-note{font-size:0.72rem; opacity:.7; display:block; margin-bottom:6px;}
+.ask-body{flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:10px;}
+.ask-msg{font-size:0.86rem; padding:9px 12px; border-radius:11px; max-width:88%; line-height:1.4;}
+.ask-msg.prof{background:rgba(201,162,39,0.14); align-self:flex-start; border:1px solid rgba(201,162,39,0.25);}
+.ask-msg.user{background:rgba(46,125,107,0.18); align-self:flex-end; border:1px solid rgba(46,125,107,0.3);}
+.ask-form{display:flex; gap:8px; padding:12px; border-top:1px solid var(--line);}
+.ask-form input{flex:1; background:rgba(251,248,241,0.06); border:1px solid var(--line); border-radius:9px; padding:9px 11px; color:var(--fg); font-size:0.85rem;}
+.ask-form button{background:var(--gold-bright); color:var(--ink); border:none; border-radius:9px; padding:9px 14px; font-weight:700; font-size:0.82rem;}
+
+footer{padding:40px 0 180px; border-top:1px solid var(--line); color:rgba(251,248,241,0.5); font-size:0.82rem;}
+footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="mark"></span> Trading DNA</div>
+    <span class="score-badge" id="scoreBadge">🏅 Quiz 0/18 · 📈 Sim $10,000</span>
+    <div class="mode-switch" role="tablist" aria-label="Explanation style">
+      <button class="mode-btn active" data-mode="layman" role="tab" aria-selected="true">🧠 Layman</button>
+      <button class="mode-btn" data-mode="kitchen" role="tab" aria-selected="false">🍳 Kitchen</button>
+      <button class="mode-btn" data-mode="plain" role="tab" aria-selected="false">📘 Plain English</button>
+      <button class="mode-btn" data-mode="hinglish" role="tab" aria-selected="false">🗣️ Hinglish</button>
+    </div>
+  </div>
+  <div class="chapter-bar">
+    <div class="chapter-scroll" id="chapterScroll">
+      <button class="chapter-btn active" data-chapter="all">📖 All chapters</button>
+      <button class="chapter-btn" data-chapter="beginner">🌱 Beginner guide</button>
+      <button class="chapter-btn" data-chapter="normal">📈 Normal guide</button>
+      <button class="chapter-btn" data-chapter="pro">🏆 Pro guide</button>
+      <button class="chapter-btn" data-chapter="practice">🎮 Practice &amp; games</button>
+    </div>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow-lecture">THREE FULL GUIDES · 18 LECTURES · AUDIO · QUIZZES · LIVE TUTOR</span>
+    <h1>Learn trading down to its <em>core DNA</em>.</h1>
+    <p class="lede">A complete Beginner guide, a complete Normal guide, and a complete Pro guide — six full lectures each, every one explained four ways, with pro tips, real examples, a draggable candlestick you can actually pull up and down, and a broker-style simulator with real sliders.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><b>18</b><span>full lectures</span></div>
+      <div class="hero-stat"><b>3</b><span>complete guides</span></div>
+      <div class="hero-stat"><b>4</b><span>explanation modes</span></div>
+      <div class="hero-stat"><b>2</b><span>interactive games</span></div>
+    </div>
+    <div class="prof-card">
+      <div class="prof-avatar">RS</div>
+      <div>
+        <h3>Welcome, from the lectern.</h3>
+        <p>I'm going to teach you what a market actually <em>is</em> before I let you near a chart. Confused anywhere? Tap the 🎓 in the corner and ask me directly — that's what it's there for.</p>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a href="#markets" class="pill-btn solid">🌱 Start the Beginner guide</a>
+      <button id="heroLaunchTerminal" class="pill-btn" type="button">🎮 Jump to the simulator</button>
+    </div>
+  </div>
+</section>
+
+<div id="chapters"></div>
+
+<section class="rules">
+  <div class="wrap">
+    <h2>⚠️ The Golden Rules — how to train safely</h2>
+    <p class="sub">Before you touch a live account, tattoo these three rules onto your process. Every mentor worth paying for will tell you the same thing.</p>
+    <div class="rule-grid">
+      <div class="rule-card"><div class="icon">1</div><h3>Demo first, always</h3><p>Trade a demo account on real-time price feeds for 3–6 months before risking a single rupee or dollar. Prove your edge is repeatable before it's expensive to be wrong.</p></div>
+      <div class="rule-card"><div class="icon">2</div><h3>Watch the macro, not just the chart</h3><p>Gold moves inverse to the US Dollar (DXY) and reacts hard to CPI, NFP, and interest rate decisions. Half a professional's week is spent reading macroeconomics, not candlesticks.</p></div>
+      <div class="rule-card"><div class="icon">3</div><h3>Risk 1–2%, never more</h3><p>Gold and most instruments are notoriously volatile. Never risk more than 1–2% of your total account balance on a single trade structure — no exceptions, no "just this once."</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="providers">
+  <div class="wrap">
+    <h2>Where to keep learning, by level</h2>
+    <p class="sub">A map of the wider learning ecosystem — use this course to build the foundation, then graduate along this path.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Provider / Route</th><th>Skill level</th><th>Delivery style</th><th>Core focus</th><th>Price point</th></tr></thead>
+        <tbody>
+          <tr><td>BabyPips School</td><td><span class="level-chip lv-green">Beginner</span></td><td>Self-paced text &amp; quizzes</td><td>General market mechanics</td><td>100% free</td></tr>
+          <tr><td>The Trading Channel</td><td><span class="level-chip lv-yellow">Intermediate</span></td><td>Video courses &amp; YouTube</td><td>Price action &amp; chart patterns</td><td>Free / paid upgrades</td></tr>
+          <tr><td>Asia Forex Mentor</td><td><span class="level-chip lv-red">Advanced / Pro</span></td><td>Structured institutional portal</td><td>Mathematical probability &amp; risk</td><td>Premium subscription</td></tr>
+          <tr><td>WR Trading Mentorship</td><td><span class="level-chip lv-red">Advanced / Pro</span></td><td>1-on-1 coaching &amp; live feedback</td><td>Rule-based discipline &amp; execution</td><td>Premium, custom</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="roadmap">
+  <div class="wrap">
+    <h2>Your six-month roadmap</h2>
+    <div class="road-steps">
+      <div class="road-step"><div class="n">01</div><h4>Learn the DNA</h4><p>Finish all three guides. Understand every lecture in at least two of the four modes.</p></div>
+      <div class="road-step"><div class="n">02</div><h4>Open a demo</h4><p>Real-time prices, fake money. Journal every trade — entry, reason, exit, outcome.</p></div>
+      <div class="road-step"><div class="n">03</div><h4>Find your edge</h4><p>Trade one setup, on one instrument, for 100+ demo trades. Look for a repeatable win-rate.</p></div>
+      <div class="road-step"><div class="n">04</div><h4>Go live, tiny</h4><p>Smallest position size your broker allows. Risk 1% max. The goal is proving discipline, not making money yet.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>Trading DNA — a foundations course. Educational content only, not financial advice.</div>
+    <div>Taught in four modes, for every kind of mind.</div>
+  </div>
+</footer>
+
+<div class="podcast-bar" id="podcastBar">
+  <div class="podcast-inner">
+    <span class="pc-icon">🎙️</span>
+    <div class="pc-info">
+      <div class="pc-title" id="pcTitle">Podcast mode — press play to listen to the current chapter</div>
+      <div class="pc-sub" id="pcSub">Reads the lecture text aloud in your selected mode</div>
+    </div>
+    <div class="pc-controls">
+      <button class="pc-btn" id="pcPrev" aria-label="Previous">⏮</button>
+      <button class="pc-btn main" id="pcPlay" aria-label="Play">▶</button>
+      <button class="pc-btn" id="pcNext" aria-label="Next">⏭</button>
+      <button class="pc-btn" id="pcStop" aria-label="Stop">⏹</button>
+    </div>
+  </div>
+</div>
+
+<button class="ask-fab" id="askFab" aria-label="Ask Professor">🎓</button>
+<div class="ask-panel" id="askPanel">
+  <div class="ask-head"><span>🎓 Ask Professor Shiller</span><button id="askClose" aria-label="Close" type="button">✕</button></div>
+  <div class="provider-row">
+    <span class="provider-label">Answer using:</span>
+    <button class="provider-btn active" data-provider="claude" type="button">🟣 Claude</button>
+    <button class="provider-btn" data-provider="gemini" type="button">🔷 Gemini</button>
+    <button class="provider-btn" data-provider="site" type="button">📖 Site knowledge</button>
+  </div>
+  <div class="ask-body" id="askBody">
+    <div class="ask-msg prof">Confused about leverage, candles, risk — anything? Ask away, and I'll answer in whatever mode you've got selected up top.</div>
+  </div>
+  <form class="ask-form" id="askForm">
+    <input id="askInput" type="text" placeholder="Ask a question..." autocomplete="off" />
+    <button type="submit">Send</button>
+  </form>
+</div>
+
+<div class="app-screen" id="terminalScreen">
+  <div class="app-bar">
+    <button class="app-back" id="terminalBack" type="button" aria-label="Back">←</button>
+    <div class="app-bar-title">
+      <span class="app-bar-name">Pro Trading Terminal</span>
+      <span class="app-bar-sub">XAU/USD · Gold Spot (simulated)</span>
+    </div>
+    <div class="app-bar-price">
+      <div class="terminal-price" id="termPrice">$4335.70</div>
+      <div class="terminal-change" id="termChange">+0.00%</div>
+    </div>
+  </div>
+
+  <div class="live-mode-row">
+    <button class="live-mode-btn" id="liveModeBtn" type="button">🌐 Try live data</button>
+    <div class="live-mode-status" id="liveModeStatus" hidden></div>
+  </div>
+
+  <div class="sentiment-row">
+    <span class="sentiment-label">🧪 Sim sentiment</span>
+    <div class="sentiment-bar"><div class="sentiment-buy" id="sentBuy">50% Buyers</div><div class="sentiment-sell" id="sentSell">50% Sellers</div></div>
+  </div>
+  <div class="sentiment-caption">Derived live from this session's trend + RSI + momentum — not real trader positioning data (no broker connects here).</div>
+
+  <div class="tf-tool-wrap">
+    <button class="tf-tool-btn" id="tfToolBtn" type="button">⏱️ 1m/3m/5m trend</button>
+    <button class="tf-tool-btn news-tool-btn" id="newsToolBtn" type="button">📰 Real gold news</button>
+    <div class="tf-popover" id="tfPopover" hidden>
+      <div class="tf-popover-head">
+        <span>⏱️ Multi-timeframe read <span class="tf-sim-tag">simulated data</span></span>
+        <button class="tf-popover-close" id="tfPopoverClose" type="button" aria-label="Close">✕</button>
+      </div>
+      <div class="tf-grid" id="tfGrid"></div>
+    </div>
+    <div class="tf-popover" id="newsPopover" hidden>
+      <div class="tf-popover-head">
+        <span>📰 Real Gold Market <span class="tf-sim-tag tf-real-tag">real data</span></span>
+        <button class="tf-popover-close" id="newsPopoverClose" type="button" aria-label="Close">✕</button>
+      </div>
+      <div class="news-snapshot">
+        <div class="news-price-row"><b>$4,330.97</b><span>XAU/USD · as of Sep 22, 2026</span></div>
+        <div class="news-stat-row"><span>Day change</span><b class="down">−0.78%</b></div>
+        <div class="news-stat-row"><span>52-week range</span><b>$3,763 – $5,602</b></div>
+        <ul class="news-bullets">
+          <li>The Fed's hawkish rate-path signals and elevated Treasury yields have kept pressure on gold this week.</li>
+          <li>A firmer US Dollar Index (DXY) makes gold pricier for non-dollar buyers, capping the upside.</li>
+          <li>Lingering Middle East tensions are offering some residual safe-haven support underneath the dip.</li>
+        </ul>
+        <div class="news-footer">One-time real snapshot, not a live feed — a published page can't call outside market or news APIs. Ask me in this chat anytime and I'll search fresh data and rebuild this card.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-panel" id="guidePanel">
+    <div class="guide-panel-head">
+      <div class="guide-title-big">🧭 Before You Trade — Check These 5 Things</div>
+      <button class="guide-collapse-btn" id="guideCollapse" type="button">Hide ▲</button>
+    </div>
+    <div class="lang-toggle" id="langToggle">
+      <button class="lang-btn active" data-lang="standard" type="button">📋 Standard</button>
+      <button class="lang-btn" data-lang="hinglish" type="button">😏 Bro Mode (Hinglish)</button>
+    </div>
+    <div class="guide-sub">No AI here — this is 100% live math (moving average, RSI, swing highs/lows) reading the actual chart, updating every couple of seconds. Each card below shows a little picture of what's happening right now.</div>
+    <div class="guide-grid" id="guideGrid"></div>
+    <div class="pattern-examples">
+      <div class="pattern-examples-title">📚 New to charts? Here's what each shape looks like</div>
+      <div class="pattern-examples-strip" id="patternExamplesStrip"></div>
+    </div>
+  </div>
+  <button class="guide-fab-float" id="guideReopen" type="button" hidden>🧭 Show trading guide</button>
+
+  <div class="app-scroll">
+    <div class="terminal-watchlist-row">
+      <div class="wl-chip active"><span>XAU/USD</span><b id="wlPrice">4335.70</b></div>
+      <div class="wl-chip disabled"><span>EUR/USD</span><b>1.0842</b></div>
+      <div class="wl-chip disabled"><span>BTC/USD</span><b>—</b></div>
+      <div class="wl-chip disabled"><span>US30</span><b>—</b></div>
+      <span class="wl-note">This terminal simulates Gold live — others are for visual reference only.</span>
+    </div>
+
+    <div class="terminal-chart">
+      <canvas id="termCanvas" width="640" height="320"></canvas>
+      <div class="term-legend">
+        <span><i style="background:#E4BE3E"></i>10-SMA (trend)</span>
+        <span><i style="background:#6fcbb4"></i>Support</span>
+        <span><i style="background:#f0a37e"></i>Resistance</span>
+        <span><i style="background:#7fb3ff"></i>Take-profit</span>
+      </div>
+    </div>
+
+    <div class="ticket-panel" id="panel-order">
+      <div class="sim-stat">Demo balance: <b id="simBalance">$10,000.00</b></div>
+      <div class="order-type-row">
+        <button class="ot-btn active" data-ot="market" type="button">Market</button>
+        <button class="ot-btn" data-ot="limit" type="button">Limit</button>
+      </div>
+      <div class="ctrl-row" id="limitRow" hidden>
+        <div class="ctrl-label">Limit price <button class="info-btn" data-info="limit" type="button">ⓘ</button></div>
+        <div class="ctrl-value" id="limitValue">$4335.70</div>
+        <input type="range" id="limitSlider" min="-2" max="2" step="0.1" value="-0.5" />
+      </div>
+      <div class="ctrl-info" id="info-limit" hidden>A limit order waits and only fills once price actually reaches this level — you're not chasing the current price, you're naming your price and waiting for the market to come to you.</div>
+
+      <div class="risk-picker"><span>Risk per trade:</span>
+        <div class="risk-btns" id="riskBtns">
+          <button data-risk="1" class="risk-btn active">1%</button>
+          <button data-risk="2" class="risk-btn">2%</button>
+          <button data-risk="5" class="risk-btn">5%</button>
+          <button data-risk="10" class="risk-btn">10%</button>
+          <button data-risk="25" class="risk-btn">25%</button>
+        </div>
+      </div>
+      <div class="ctrl-row"><div class="ctrl-label">Leverage <button class="info-btn" data-info="lev" type="button">ⓘ</button></div><div class="ctrl-value" id="levValue">10x</div><input type="range" id="levSlider" min="1" max="100" value="10" /></div>
+      <div class="ctrl-info" id="info-lev" hidden>Leverage multiplies your buying power. This shows the real relationship between margin and position value at a broker; it does not change this simulator's risk-based P&amp;L math.</div>
+      <div class="ctrl-row"><div class="ctrl-label">Stop-loss <button class="info-btn" data-info="sl" type="button">ⓘ</button></div><div class="ctrl-value" id="slValue">2.0%</div><input type="range" id="slSlider" min="0.5" max="5" step="0.5" value="2" /></div>
+      <div class="ctrl-info" id="info-sl" hidden>How far price can move against you before auto-closing for a loss. The auditor checks this against recent volatility — too tight and normal noise stops you out.</div>
+      <div class="ctrl-row"><div class="ctrl-label">Take-profit <button class="info-btn" data-info="tp" type="button">ⓘ</button></div><div class="ctrl-value" id="tpValue">4.0%</div><input type="range" id="tpSlider" min="0.5" max="10" step="0.5" value="4" /></div>
+      <div class="ctrl-info" id="info-tp" hidden>How far price needs to move in your favor before auto-closing for a win — a pre-planned exit, locked in without you watching the screen.</div>
+
+      <div class="sim-actions">
+        <button id="simBuy" class="btn-buy">Buy / Long</button>
+        <button id="simSell" class="btn-sell">Sell / Short</button>
+      </div>
+      <div id="entryAuditToast" class="entry-audit-toast" hidden></div>
+    </div>
+
+    <div class="ticket-panel" id="panel-positions" hidden>
+      <div id="positionCard" class="position-card-empty">No open position and no pending order. Check the ⓘ Guide, then place a trade from the Order tab.</div>
+    </div>
+
+    <div class="ticket-panel" id="panel-history" hidden>
+      <div id="historyList"><div class="hist-empty">No trades yet this session — your audited trade history will build up here.</div></div>
+    </div>
+
+    <div class="trade-report" id="tradeReport" hidden></div>
+    <button id="simReset" class="btn-secondary" style="margin:16px auto 90px;">Reset demo account</button>
+  </div>
+
+  <div class="app-tabbar">
+    <button class="tt-btn active" data-tab="order" type="button"><span>📝</span>Order</button>
+    <button class="tt-btn" data-tab="positions" type="button"><span>📊</span>Position</button>
+    <button class="tt-btn" data-tab="history" type="button"><span>🕒</span>History</button>
+  </div>
+</div>
+
+<script>
+const colors = {ink:'#0F1B2D', gold:'#C9A227', teal:'#2E7D6B', rose:'#B3532B', serif:"'Lora',serif", mono:"'JetBrains Mono',monospace"};
+const modeLabels = {layman:'🧠 Layman', kitchen:'🍳 Kitchen', plain:'📘 Plain English', hinglish:'🗣️ Hinglish'};
+const chapterMeta = {
+  beginner:{label:'Chapter 1 · Full Beginner Guide', desc:'Six lectures — everything you need before you ever place a trade.', icon:'🌱'},
+  normal:{label:'Chapter 2 · Full Normal Guide', desc:'Six lectures — leverage, risk, structure, indicators, patterns, and sizing math.', icon:'📈'},
+  pro:{label:'Chapter 3 · Full Pro Guide', desc:'Six lectures — macro, psychology, analysis styles, journaling, and quant thinking.', icon:'🏆'}
+};
+
+const lectures = [
+{ id:'markets', tag:'THE FOUNDATION', tier:'beginner', title:'What is a market, really?',
+  svg:(c)=>`<svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg"><line x1="50" y1="210" x2="430" y2="210" stroke="${c.ink}" stroke-opacity=".3" stroke-width="2"/><line x1="50" y1="210" x2="50" y2="30" stroke="${c.ink}" stroke-opacity=".3" stroke-width="2"/><text x="10" y="120" font-family="${c.mono}" font-size="10" fill="${c.ink}" fill-opacity=".6" transform="rotate(-90 10 120)">PRICE</text><text x="220" y="240" font-family="${c.mono}" font-size="10" fill="${c.ink}" fill-opacity=".6">QUANTITY WANTED</text><path d="M60 50 L420 190" stroke="${c.rose}" stroke-width="3" fill="none"/><text x="335" y="180" font-family="${c.serif}" font-size="13" fill="${c.rose}" font-weight="700">Demand</text><path d="M60 190 L420 50" stroke="${c.teal}" stroke-width="3" fill="none"/><text x="335" y="65" font-family="${c.serif}" font-size="13" fill="${c.teal}" font-weight="700">Supply</text><circle cx="240" cy="120" r="6" fill="${c.gold}"/><line x1="240" y1="120" x2="240" y2="210" stroke="${c.gold}" stroke-dasharray="3,3"/><line x1="50" y1="120" x2="240" y2="120" stroke="${c.gold}" stroke-dasharray="3,3"/><text x="245" y="115" font-family="${c.serif}" font-size="12" fill="${c.gold}" font-weight="700">Market Price</text></svg>`,
+  cap:'Where the buyers\u2019 line and the sellers\u2019 line cross — that crossing point is the price you see on every chart.',
+  take:'A market is just an argument between buyers and sellers, settled every second by price.',
+  text:{
+    layman:`<p>A market is nothing mystical. It's just a big room (digital, these days) full of people who want to buy something and people who want to sell it. When more people want to buy than sell, the price goes up. When more people want to sell than buy, it goes down. That's it — that's the whole engine.</p><p><strong>The chart you'll stare at for years is simply a record of that tug-of-war, tick by tick.</strong></p>`,
+    kitchen:`<p>Think of a fish market at 6am. There are ten fishmongers and fifty shoppers. If everyone wants pomfret today, the fishmongers raise the price — that's <strong>demand pulling price up</strong>. If it's a slow Tuesday and the fish is still fresh at noon, sellers drop the price to clear stock — <strong>supply pushing price down</strong>. Currency and gold markets are the exact same fish market, just with millions of buyers and sellers instead of fifty, and open 24 hours.</p>`,
+    plain:`<p>Formally, a market is a mechanism through which buyers and sellers discover a price for an asset via the interaction of supply and demand. Every transaction represents a moment where a willing buyer and willing seller agreed on a price — nothing more mysterious than that. Price charts are simply a time-series record of these agreed transaction prices.</p>`,
+    hinglish:`<p>Market matlab kuch bhi nahi, bas ek bada sa group chat hai jahan kuch log <strong>"bech do"</strong> bol rahe hain aur kuch log <strong>"le lo"</strong> bol rahe hain. Jab lene wale zyada ho jaate hain, price upar jaata hai — <strong>bullish scene</strong>. Jab bechne wale zyada active ho jaate hain, price niche aata hai — <strong>bearish scene</strong>. Bas itni si baat hai bro, baaki sab jo tu chart pe dekhta hai wo isi fight ka scoreboard hai.</p>`
+  },
+  quiz:{q:'Price on a chart is mainly determined by...', options:['A government decree','The balance of buyers (demand) and sellers (supply)',"The trading app's design",'Pure random chance'], correct:1, right:'Exactly — every price you see is buyers and sellers agreeing on a number, second by second.', wrong:'Not quite — no app or authority sets the price directly. It\u2019s always the live balance of demand and supply.'},
+  tip:'When price struggles to move despite an obvious news trigger, that mismatch is often more informative than the news itself — it tells you which side actually has control right now.',
+  example:'Gold rallies briefly on weak jobs data but sellers immediately absorb the move and price falls back — a sign demand at that level was weaker than the headline suggested.'
+},
+{ id:'candles', tag:'READING PRICE', tier:'beginner', title:'Candlesticks: the alphabet of price',
+  svg:(c)=>`<svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg"><line x1="30" y1="230" x2="430" y2="230" stroke="${c.ink}" stroke-opacity=".25"/>${[ [70,'up',60,150,80,130],[140,'down',40,170,100,145],[210,'up',90,180,60,110],[280,'down',30,140,110,90],[350,'up',70,200,50,80] ].map(([x,dir,wl,wh,bh,by])=>{ const isUp = dir==='up'; const color = isUp? c.teal : c.rose; const bodyTop = 230-by-bh; const bodyBot=230-by; const wickTop=230-wh; const wickBot=230-wl; return `<line x1="${x}" y1="${wickTop}" x2="${x}" y2="${wickBot}" stroke="${color}" stroke-width="2"/><rect x="${x-13}" y="${bodyTop}" width="26" height="${bodyBot-bodyTop}" fill="${color}" rx="2"/>`; }).join('')}<text x="70" y="252" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".55" text-anchor="middle">Open</text><text x="380" y="70" font-family="${c.serif}" font-size="12" fill="${c.teal}" font-weight="700">Close &gt; Open</text><text x="380" y="86" font-family="${c.serif}" font-size="12" fill="${c.rose}" font-weight="700">Close &lt; Open</text></svg>`,
+  cap:'Each candle stores four numbers — open, high, low, close — for one time window.',
+  take:'Green body = buyers won that candle. Red body = sellers won. The wick shows who tried and failed.',
+  text:{
+    layman:`<p>A candlestick is a tiny scoreboard for one chunk of time (a minute, an hour, a day — you choose). It shows four things: where price opened, where it closed, and the highest and lowest it touched in between. If it closed higher than it opened, it's usually green. Lower, it's red.</p>`,
+    kitchen:`<p>Imagine you're tasting a pot of dal over one hour. You note: how salty it was when you started (<strong>open</strong>), the saltiest it got (<strong>high</strong>), the blandest it got (<strong>low</strong>), and how salty it was when you finally served it (<strong>close</strong>). A green candle means it ended saltier than it started — buyers "seasoned" it up.</p>`,
+    plain:`<p>A candlestick is a data visualization representing four price points within a defined time interval: the opening price, closing price, and the session's high and low. The "body" spans open to close, colored to indicate direction; the "wicks" mark extremes reached but not sustained.</p>`,
+    hinglish:`<p>Candle ek chhota sa report card hai ek time-slot ka. Chaar cheezein batata hai: <strong>open</strong>, <strong>high</strong>, <strong>low</strong>, <strong>close</strong>. Green candle matlab buyers ne round jeet liya, red matlab sellers ka scene chal gaya.</p>`
+  },
+  quiz:{q:'A green (bullish) candle means...', options:['Close was higher than open','Close was lower than open','No trades happened that period','Only wicks occurred'], correct:0, right:'Right — green/bullish always means the candle closed above where it opened.', wrong:'Green means the close finished above the open — buyers were in control.'},
+  tip:'A long wick with a tiny body (a "hammer" or "shooting star") often says more than the body alone — it shows a strong attempt that got rejected, hinting at exhaustion.',
+  example:'A candle opens at $1900, spikes to $1920, then closes back at $1902 — the long upper wick shows buyers pushed hard but sellers took control before the close.'
+},
+{ id:'orders', tag:'EXECUTION', tier:'beginner', title:'Order types: how you actually get in and out',
+  svg:(c)=>`<svg viewBox="0 0 460 240" xmlns="http://www.w3.org/2000/svg"><path d="M40 190 Q140 40 240 120 T430 60" stroke="${c.ink}" stroke-opacity=".35" stroke-width="2" fill="none"/><circle cx="40" cy="190" r="6" fill="${c.gold}"/><text x="30" y="212" font-family="${c.serif}" font-size="11" fill="${c.gold}" font-weight="700">Market Order</text><text x="20" y="225" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".55">"buy now, whatever the price"</text><circle cx="150" cy="98" r="6" fill="${c.teal}"/><line x1="100" y1="98" x2="200" y2="98" stroke="${c.teal}" stroke-dasharray="4,3"/><text x="105" y="88" font-family="${c.serif}" font-size="11" fill="${c.teal}" font-weight="700">Limit Order</text><text x="105" y="115" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".55">"only fill at MY price"</text><circle cx="330" cy="95" r="6" fill="${c.rose}"/><line x1="290" y1="95" x2="370" y2="95" stroke="${c.rose}" stroke-dasharray="4,3"/><text x="292" y="85" font-family="${c.serif}" font-size="11" fill="${c.rose}" font-weight="700">Stop-Loss</text><text x="285" y="112" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".55">"exit if it goes wrong"</text></svg>`,
+  cap:'Three orders, three jobs: get in fast, get in cheap, or get out safe.',
+  take:'Market = speed. Limit = price control. Stop = your seatbelt.',
+  text:{
+    layman:`<p>A <strong>market order</strong> says "I'll take whatever price is available right now." A <strong>limit order</strong> says "only buy if it drops to this exact price." A <strong>stop-loss order</strong> is your safety net — it automatically sells if the trade moves against you past a point you chose in advance.</p>`,
+    kitchen:`<p>Market order is walking into the sabzi mandi and buying tomatoes at whatever rate is being shouted — fast, no negotiation. Limit order is telling your vendor, "call me only when tomatoes drop to ₹30/kg." A stop-loss is a kitchen timer: if the curry starts burning past a point, it pulls itself off the flame automatically.</p>`,
+    plain:`<p>A <strong>market order</strong> executes immediately at the best available price, prioritizing speed. A <strong>limit order</strong> executes only at a specified price or better, prioritizing price control. A <strong>stop order</strong> converts into a market order once a trigger price is breached, defining maximum acceptable loss in advance.</p>`,
+    hinglish:`<p><strong>Market order</strong> matlab "abhi jo price hai usi pe de do." <strong>Limit order</strong> matlab "mujhe mera wala price chahiye, tab hi lena." <strong>Stop-loss</strong> matlab tera safety net — trade ulta chala jaaye toh automatically nikaal deta hai.</p>`
+  },
+  quiz:{q:'You want to buy gold only if it drops to $1900, not before. Which order do you use?', options:['Market order','Limit order','Stop-loss order','Any order works the same'], correct:1, right:'Correct — a limit order only fills at your chosen price or better.', wrong:'A limit order is the one here — it waits and only fills at the exact price you set.'},
+  tip:'Always place your stop-loss the moment you open a trade, not "in a minute" — the single most common way discipline breaks is delaying that one click.',
+  example:'A trader buys gold at $1900 with a stop-loss order at $1880 — if price falls to $1880, the position closes automatically, capping the loss without the trader watching the screen.'
+},
+{ id:'chartTypes', tag:'READING PRICE', tier:'beginner', title:'Chart types & timeframes',
+  svg:(c)=>`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg"><text x="60" y="30" font-family="${c.serif}" font-size="12" fill="${c.ink}" font-weight="700" text-anchor="middle">Line</text><path d="M20 90 L60 70 L100 95 L140 60" stroke="${c.gold}" stroke-width="2" fill="none" transform="translate(0,0)"/><text x="230" y="30" font-family="${c.serif}" font-size="12" fill="${c.ink}" font-weight="700" text-anchor="middle">Bar</text>${[190,215,240,265].map((x,i)=>`<line x1="${x}" y1="${60+i*4}" x2="${x}" y2="${100-i*3}" stroke="${c.ink}" stroke-opacity=".6" stroke-width="2"/><line x1="${x-5}" y1="${75}" x2="${x}" y2="${75}" stroke="${c.ink}" stroke-opacity=".6" stroke-width="2"/>`).join('')}<text x="400" y="30" font-family="${c.serif}" font-size="12" fill="${c.ink}" font-weight="700" text-anchor="middle">Candlestick</text>${[370,395,420].map((x,i)=>`<rect x="${x-8}" y="${65+i*5}" width="16" height="${20-i*3}" fill="${i%2?c.rose:c.teal}" rx="2"/><line x1="${x}" y1="${55+i*5}" x2="${x}" y2="${95}" stroke="${i%2?c.rose:c.teal}" stroke-width="2"/>`).join('')}<line x1="20" y1="150" x2="440" y2="150" stroke="${c.ink}" stroke-opacity=".15"/>${['1m','5m','1H','1D'].map((t,i)=>`<rect x="${40+i*100}" y="165" width="80" height="30" rx="8" fill="${i===2?c.gold:'none'}" stroke="${c.ink}" stroke-opacity=".2"/><text x="${80+i*100}" y="184" font-family="${c.mono}" font-size="11" fill="${i===2?c.ink:c.ink}" fill-opacity="${i===2?1:0.6}" text-anchor="middle" font-weight="${i===2?700:400}">${t}</text>`).join('')}</svg>`,
+  cap:'Same price data, three ways to draw it — and the same chart looks completely different zoomed to 1 minute vs 1 day.',
+  take:'Candlestick charts pack the most information per glance; timeframe decides whether you\u2019re scalping or investing.',
+  text:{
+    layman:`<p>A chart type is just how price gets drawn. A line chart connects closing prices only. A bar chart adds highs/lows as tick marks. A candlestick chart shows open, high, low and close all at once, color-coded. Timeframe means how much time one candle represents — 1-minute moves fast and jumpy, daily is calm and zoomed out.</p>`,
+    kitchen:`<p>Line chart is only tasting the final dish. Bar chart is tasting the final dish plus knowing the saltiest and blandest moments. Candlestick is the full tasting notes — start, peak, dip, finish. Timeframe is deciding whether you're reviewing one spoonful (1-minute) or the whole week's meals (daily).</p>`,
+    plain:`<p>Chart type determines information density per period: line charts plot only closing price, bar charts add high/low ticks, candlesticks encode open, high, low, and close with color. Timeframe defines the duration each bar represents — shorter suits scalping/day trading, longer suits swing/position trading.</p>`,
+    hinglish:`<p>Chart type matlab price dikhane ka tarika. Line chart simple hai, bar chart usme high-low jod deta hai, candlestick sabse zyada info deta hai. Timeframe matlab ek candle kitne time ka hai — 1-minute fast bhaagta hai, daily chill rehta hai, bhai.</p>`
+  },
+  quiz:{q:'Which chart type shows open, high, low, and close all at once?', options:['Line chart','Bar chart only','Candlestick chart','None of these'], correct:2, right:'Right — candlesticks are the richest at-a-glance format.', wrong:'Candlestick charts show all four — open, high, low, close — in one glance.'},
+  tip:'Match your timeframe to your trade duration — day-trading off a weekly chart (or swing-trading off a 1-minute chart) is one of the most common beginner mismatches.',
+  example:'A trader wants to hold gold for a few days — they should read the 4-hour or daily chart for entries, not obsess over every wiggle on the 1-minute chart.'
+},
+{ id:'spread', tag:'THE COST OF TRADING', tier:'beginner', title:'The bid/ask spread — trading\u2019s hidden toll',
+  svg:(c)=>`<svg viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg"><rect x="60" y="60" width="140" height="60" rx="10" fill="${c.teal}" opacity=".15" stroke="${c.teal}"/><text x="130" y="85" font-family="${c.serif}" font-size="13" fill="${c.teal}" font-weight="700" text-anchor="middle">BID</text><text x="130" y="108" font-family="${c.mono}" font-size="14" fill="${c.ink}" text-anchor="middle">$1899.80</text><rect x="260" y="60" width="140" height="60" rx="10" fill="${c.rose}" opacity=".15" stroke="${c.rose}"/><text x="330" y="85" font-family="${c.serif}" font-size="13" fill="${c.rose}" font-weight="700" text-anchor="middle">ASK</text><text x="330" y="108" font-family="${c.mono}" font-size="14" fill="${c.ink}" text-anchor="middle">$1900.00</text><line x1="200" y1="90" x2="260" y2="90" stroke="${c.gold}" stroke-width="2" stroke-dasharray="4,3"/><text x="230" y="140" font-family="${c.serif}" font-size="12" fill="${c.gold}" font-weight="700" text-anchor="middle">Spread</text></svg>`,
+  cap:'You always sell at the (lower) bid and buy at the (higher) ask — the gap between them is the built-in cost.',
+  take:'Every trade starts slightly in the red because of the spread — it\u2019s how the market gets paid.',
+  text:{
+    layman:`<p>Every instrument has two prices at once: the 'bid' (what buyers offer) and the 'ask' (what sellers want). You always buy at the ask and sell at the bid — and the ask is always a little higher. That gap is the 'spread', the built-in cost of every trade, before the market even moves.</p>`,
+    kitchen:`<p>A fruit vendor buys mangoes from farmers at ₹80/kg but sells them to you at ₹85/kg. That ₹5 gap is his margin. Bid/ask spread works the same way — the price you buy at and the price you can immediately sell back at are never identical.</p>`,
+    plain:`<p>The bid is the highest price a buyer will pay; the ask is the lowest a seller will accept. A trader buys at the ask and sells at the bid, meaning any position opened is immediately slightly underwater by the spread. Spreads widen during low liquidity or high volatility, such as around major news releases.</p>`,
+    hinglish:`<p>Har instrument ke do price hote hain: 'bid' aur 'ask'. Tu hamesha ask pe khareedta hai aur bid pe bechta hai — ye chhota gap 'spread' kehlata hai, har trade ka built-in cost, market hile bhi nahi tab bhi.</p>`
+  },
+  quiz:{q:'You always buy at the ___ and sell at the ___.', options:['bid / ask','ask / bid','close / open','high / low'], correct:1, right:'Correct — you buy at the (higher) ask and sell at the (lower) bid.', wrong:'You buy at the ask (higher) and sell at the bid (lower) — the difference is the spread.'},
+  tip:'Spreads widen sharply right before and during major news events (like NFP or a Fed decision) — many pros avoid opening new trades in that exact window purely because of cost.',
+  example:'Gold shows a bid of $1899.80 and ask of $1900.00. The moment you buy at $1900.00, your position is already -$0.20/oz before price has even moved.'
+},
+{ id:'pips', tag:'UNITS OF MEASUREMENT', tier:'beginner', title:'Pips, lots & position value',
+  svg:(c)=>`<svg viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg"><text x="230" y="45" font-family="${c.mono}" font-size="30" fill="${c.ink}" text-anchor="middle">1900.<tspan fill="${c.gold}" font-weight="700">1</tspan>0</text><rect x="255" y="18" width="20" height="32" fill="none" stroke="${c.gold}" stroke-width="2" rx="3"/><text x="230" y="70" font-family="${c.mono}" font-size="10" fill="${c.gold}" text-anchor="middle">= 1 pip</text><rect x="40" y="110" width="110" height="40" rx="8" fill="${c.teal}" opacity=".18" stroke="${c.teal}"/><text x="95" y="135" font-family="${c.serif}" font-size="11" fill="${c.teal}" font-weight="700" text-anchor="middle">Standard 1.0</text><rect x="175" y="115" width="90" height="30" rx="8" fill="${c.gold}" opacity=".18" stroke="${c.gold}"/><text x="220" y="135" font-family="${c.serif}" font-size="10" fill="${c.gold}" font-weight="700" text-anchor="middle">Mini 0.1</text><rect x="290" y="120" width="70" height="20" rx="8" fill="${c.rose}" opacity=".18" stroke="${c.rose}"/><text x="325" y="134" font-family="${c.serif}" font-size="9" fill="${c.rose}" font-weight="700" text-anchor="middle">Micro 0.01</text></svg>`,
+  cap:'A pip is the smallest standard price move; a lot is the standard unit of position size.',
+  take:'Position size (lots) × pip value is what turns a price move into real profit or loss.',
+  text:{
+    layman:`<p>A 'pip' is the standard smallest unit a price usually moves in. A 'lot' is a standard trade size — Standard, Mini (1/10th), or Micro (1/100th). Bigger lot size means each pip of movement is worth more real money in your account, for better or worse.</p>`,
+    kitchen:`<p>A pip is like a single gram on your kitchen scale — the smallest useful unit for a tiny change. A lot is choosing between cooking a full pot (Standard), a saucepan (Mini), or a single bowl (Micro) — same recipe, wildly different quantities.</p>`,
+    plain:`<p>A pip is the standardized smallest price increment for an instrument. A lot is the standardized position size: 1 Standard, 0.1 Mini, or 0.01 Micro. The monetary value of one pip scales directly with lot size — position sizing is the actual lever that turns a price move into a specific dollar outcome.</p>`,
+    hinglish:`<p>Pip matlab price ka sabse chhota standard move. Lot matlab tera trade size — Standard (bada), Mini (1/10th), Micro (1/100th). Jitna bada lot utna zyada paisa har pip move pe, bhai.</p>`
+  },
+  quiz:{q:'What actually determines how much money one pip of movement is worth in your account?', options:['The color of the candle','Your lot (position) size','The time of day','The chart type you use'], correct:1, right:'Correct — lot size is the lever that converts a pip move into dollars.', wrong:'It\u2019s your lot (position) size — that\u2019s what converts a pip move into an actual dollar amount.'},
+  tip:'Never size your position by "how many lots feels right" — always work backward: (Account × Risk%) ÷ (Stop distance × pip value) = correct lot size.',
+  example:'A trader risking 1% of a $10,000 account ($100) with a 20-pip stop should trade roughly a 0.05-lot micro position — not a full 1.0 lot.'
+},
+{ id:'leverage', tag:'THE DOUBLE-EDGED TOOL', tier:'normal', title:'Leverage & margin',
+  svg:(c)=>`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg"><line x1="60" y1="140" x2="400" y2="140" stroke="${c.ink}" stroke-opacity=".2" stroke-width="10" stroke-linecap="round" transform="rotate(-16 230 140)"/><circle cx="230" cy="140" r="10" fill="${c.ink}" fill-opacity=".5"/><rect x="60" y="150" width="46" height="46" fill="${c.teal}" rx="4" transform="rotate(-16 230 140)"/><text x="70" y="230" font-family="${c.serif}" font-weight="700" font-size="12" fill="${c.teal}">Your capital</text><rect x="360" y="55" width="46" height="46" fill="${c.rose}" rx="4" transform="rotate(-16 230 140)"/><text x="345" y="45" font-family="${c.serif}" font-weight="700" font-size="12" fill="${c.rose}">Amplified gain / loss</text><text x="150" y="20" font-family="${c.mono}" font-size="10" fill="${c.ink}" fill-opacity=".55">small push in → big swing out</text></svg>`,
+  cap:'A lever: a small amount of your money controls a much bigger position. It magnifies wins — and losses — equally.',
+  take:'Leverage doesn\u2019t make you a better trader. It makes your mistakes bigger, faster.',
+  text:{
+    layman:`<p>Leverage lets you control a big position using a small deposit ("margin"). If you use 10x leverage, a 1% move becomes a 10% move in your account. That sounds exciting when you're right — and terrifying when you're wrong, because losses get amplified the same way gains do.</p>`,
+    kitchen:`<p>Leverage is a pressure cooker: it lets you cook a full meal using very little gas — much faster than a slow pan. Crank the pressure too high without watching it, and the same tool that cooked dinner fast can blow the lid off the kitchen.</p>`,
+    plain:`<p>Leverage is borrowed exposure: it allows a trader to control a position larger than their account balance by posting a fraction of the position's value as "margin." A 10:1 ratio means a 1% adverse move produces a 10% loss on margin. Leverage is directionally neutral — it magnifies both profit and loss proportionally.</p>`,
+    hinglish:`<p>Leverage matlab thoda paisa lagao, bada position control karo. 10x leverage hai toh 1% ka move seedha 10% ban jaata hai — jeetne pe party, haarne pe utni hi speed se scene ulta bhi hota hai, bhai.</p>`
+  },
+  quiz:{q:'Using 20x leverage, a 2% adverse price move causes what loss on your margin?', options:['2%','10%','40%','No loss — leverage protects you'], correct:2, right:'Correct — 2% × 20 = 40%.', wrong:'Multiply: 2% move × 20x leverage = 40% loss on your margin.'},
+  tip:'Higher leverage doesn\u2019t just amplify P&L — it shrinks the room your account has before a margin call. Many blown accounts weren\u2019t wrong on direction, just leveraged too high to survive being early.',
+  example:'Two traders are both right that gold will rise 1%. Trader A uses 5x leverage and gains 5%. Trader B uses 50x on the same move — but a small dip beforehand liquidates Trader B before the rise ever happens.'
+},
+{ id:'risk', tag:'SURVIVAL', tier:'normal', title:'Risk management — the only rule that matters',
+  svg:(c)=>`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="30" width="24" height="160" fill="${c.rose}" opacity=".9" rx="3"/><text x="30" y="205" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".6">no risk cap</text><rect x="120" y="150" width="24" height="40" fill="${c.teal}" rx="3"/><text x="100" y="205" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".6">1–2% risk</text><rect x="200" y="140" width="24" height="50" fill="${c.teal}" rx="3"/><rect x="280" y="120" width="24" height="70" fill="${c.teal}" rx="3"/><rect x="360" y="90" width="24" height="100" fill="${c.teal}" rx="3"/><text x="330" y="205" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".6">account survives, compounds</text><path d="M40 30 Q100 20 130 150" stroke="${c.rose}" stroke-dasharray="3,3" fill="none"/><text x="330" y="40" font-family="${c.serif}" font-size="11" fill="${c.teal}" font-weight="700">steady growth →</text></svg>`,
+  cap:'Big uncapped bets can wipe an account in one bad trade. Small, capped risk lets you survive to compound.',
+  take:'You don\u2019t need to win most trades. You need to never lose so much that you can\u2019t come back.',
+  text:{
+    layman:`<p>Never risk more than 1–2% of your total account on one trade. Even great traders are wrong 40–50% of the time. What separates survivors from blown accounts isn't how often they're right — it's that no single loss can ever wipe them out.</p>`,
+    kitchen:`<p>Good risk management is like never betting your whole spice rack on one dish. Use a pinch of expensive saffron in every recipe (1–2%) and you can experiment for years. Dump the whole jar into one risky dish and your cooking journey is over.</p>`,
+    plain:`<p>Risk management is the systematic capping of potential loss per trade, typically 1–2% of account equity. Because even a sound strategy produces losing streaks, position sizing — not win rate — is the primary determinant of long-term survival.</p>`,
+    hinglish:`<p>Kabhi bhi apne account ka 1–2% se zyada ek trade pe risk mat kar. Pro traders bhi 50% trades mein galat hote hain — scene ye nahi ki tu kitna sahi hai, scene ye hai ki ek bhi bura trade tera pura account na uda de, bhai.</p>`
+  },
+  quiz:{q:'Professional risk management usually means risking what percentage of your account per trade?', options:['20-30%','1-2%','50%','No fixed limit if you\u2019re confident'], correct:1, right:'Exactly — 1-2% is the professional standard.', wrong:'The professional standard is 1-2% per trade.'},
+  tip:'Risking 1-2% doesn\u2019t mean small gains only — a trader with a 1:3 risk/reward ratio can still grow an account significantly, just without ever risking ruin.',
+  example:'A trader with a $10,000 account risks $150 (1.5%) per trade. Even five losing trades in a row only costs about 7% of the account — painful, but fully recoverable.'
+},
+{ id:'trends', tag:'STRUCTURE', tier:'normal', title:'Trends, support & resistance',
+  svg:(c)=>`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg"><path d="M30 180 L100 150 L140 165 L200 110 L240 125 L300 70 L340 88 L420 40" stroke="${c.gold}" stroke-width="3" fill="none"/><line x1="20" y1="165" x2="440" y2="82" stroke="${c.teal}" stroke-dasharray="5,4" stroke-width="1.5"/><text x="360" y="72" font-family="${c.serif}" font-size="11" fill="${c.teal}" font-weight="700">Support (rising)</text><line x1="70" y1="135" x2="260" y2="105" stroke="${c.rose}" stroke-dasharray="5,4" stroke-width="1.5"/><text x="90" y="95" font-family="${c.serif}" font-size="11" fill="${c.rose}" font-weight="700">Resistance</text></svg>`,
+  cap:'Price rarely moves in a straight line — it steps up (or down), bouncing off invisible "floors" and "ceilings."',
+  take:'Support = where buyers keep showing up. Resistance = where sellers keep showing up.',
+  text:{
+    layman:`<p>A trend is price making higher highs and higher lows (uptrend) or lower highs and lower lows (downtrend). "Support" is a level where buyers repeatedly step in, like a floor. "Resistance" is where sellers repeatedly show up, like a ceiling.</p>`,
+    kitchen:`<p>Support is where dough, no matter how hard you press, stops giving way and pushes back — a floor. Resistance is like the rim of the bowl — the dough keeps rising until it hits that edge and gets pushed back down.</p>`,
+    plain:`<p>A trend is a sequence of higher swing highs and higher swing lows (uptrend) or the inverse (downtrend). Support denotes a zone where historical buying pressure has overcome selling pressure; resistance denotes the inverse.</p>`,
+    hinglish:`<p>Trend matlab price ek direction mein steps leke chal raha hai. Support wo level hai jahan buyers baar-baar aake price girne nahi dete. Resistance wo ceiling hai jahan sellers price upar nahi jaane dete, bhai.</p>`
+  },
+  quiz:{q:'In an uptrend, price makes a series of...', options:['Lower highs and lower lows','Higher highs and higher lows','Flat, sideways candles only','Random unrelated jumps'], correct:1, right:'Correct — a genuine uptrend is a staircase of higher highs and higher lows.', wrong:'An uptrend specifically means higher highs and higher lows.'},
+  tip:'The first pullback to a new trendline after a breakout is often a lower-risk entry than chasing the initial breakout candle itself.',
+  example:'Gold breaks above resistance, pulls back to retest it as new support, then continues higher — traders who waited for that retest got a safer entry than those who bought the initial spike.'
+},
+{ id:'indicators', tag:'TOOLS OF THE TRADE', tier:'normal', title:'Technical indicators — moving averages & RSI',
+  svg:(c)=>`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg"><path d="M20 90 L80 60 L140 100 L200 50 L260 80 L320 40 L380 70 L440 30" stroke="${c.ink}" stroke-opacity=".4" stroke-width="2" fill="none"/><path d="M20 95 L80 85 L140 90 L200 75 L260 72 L320 60 L380 62 L440 50" stroke="${c.gold}" stroke-width="3" fill="none"/><text x="30" y="30" font-family="${c.serif}" font-size="11" fill="${c.gold}" font-weight="700">Moving Average</text><rect x="20" y="140" width="420" height="60" fill="${c.ink}" opacity=".05" rx="6"/><line x1="20" y1="155" x2="440" y2="155" stroke="${c.rose}" stroke-dasharray="3,3"/><text x="440" y="152" font-family="${c.mono}" font-size="9" fill="${c.rose}" text-anchor="end">70 overbought</text><line x1="20" y1="185" x2="440" y2="185" stroke="${c.teal}" stroke-dasharray="3,3"/><text x="440" y="197" font-family="${c.mono}" font-size="9" fill="${c.teal}" text-anchor="end">30 oversold</text><path d="M20 175 L80 150 L140 180 L200 160 L260 190 L320 165 L380 150 L440 170" stroke="${c.ink}" stroke-opacity=".6" stroke-width="2" fill="none"/><text x="30" y="215" font-family="${c.mono}" font-size="10" fill="${c.ink}" fill-opacity=".6">RSI</text></svg>`,
+  cap:'A moving average smooths noise to reveal trend; RSI measures whether a move is "overheated."',
+  take:'Indicators don\u2019t predict the future — they summarize the past in a way that\u2019s easier to act on.',
+  text:{
+    layman:`<p>A moving average is the average price over the last X candles, smoothed into a line, filtering noise to show the trend. RSI is a 0-100 gauge of how fast price has moved — above 70 is "overbought" (maybe due a pause), below 30 "oversold" (maybe due a bounce).</p>`,
+    kitchen:`<p>A moving average is judging how a dish has trended over your last 10 attempts, not freaking out over one salty batch. RSI is a spice-tolerance meter — five spicy meals in a row (overbought) and you're probably due something milder next.</p>`,
+    plain:`<p>A moving average is the arithmetic mean of price over a lookback period, revealing directional bias while filtering noise. RSI is a momentum oscillator bounded 0-100; readings above 70 suggest overbought, below 30 oversold, though strong trends can remain extended for long periods.</p>`,
+    hinglish:`<p>Moving average matlab pichhle candles ka average, smooth line mein — trend dikhata hai. RSI ek 0-100 meter hai — 70 se upar overbought, 30 se niche oversold. Indicators future predict nahi karte, past samajhne mein help karte hain, bhai.</p>`
+  },
+  quiz:{q:'An RSI reading above 70 is conventionally read as...', options:['Oversold — likely to rise','Overbought — may be due for a pause','A buy signal, guaranteed','Irrelevant to price'], correct:1, right:'Correct — above 70 is conventionally overbought.', wrong:'Above 70 is read as overbought, meaning the move may be stretched — not oversold.'},
+  tip:'Indicators lag price because they\u2019re built from past data — never use one alone. Most pros combine a trend tool with a momentum tool rather than trading either in isolation.',
+  example:'Price is above its 50-period moving average (uptrend) and RSI dips to 35 then turns back up — many read that as a pullback-buy within the larger uptrend, not a reversal.'
+},
+{ id:'patterns', tag:'STRUCTURE', tier:'normal', title:'Chart patterns — shapes that repeat',
+  svg:(c)=>`<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg"><path d="M30 170 L110 100 L150 130 L230 40 L310 130 L350 100 L430 170" stroke="${c.gold}" stroke-width="3" fill="none"/><line x1="20" y1="150" x2="440" y2="150" stroke="${c.teal}" stroke-dasharray="5,4"/><text x="440" y="145" font-family="${c.serif}" font-size="11" fill="${c.teal}" font-weight="700" text-anchor="end">Neckline</text><text x="110" y="90" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".6" text-anchor="middle">L shoulder</text><text x="230" y="30" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".6" text-anchor="middle">Head</text><text x="350" y="90" font-family="${c.mono}" font-size="9" fill="${c.ink}" fill-opacity=".6" text-anchor="middle">R shoulder</text></svg>`,
+  cap:'A Head & Shoulders pattern: two smaller peaks around one larger peak, often signaling a trend running out of steam.',
+  take:'Patterns are crowd psychology repeating in a recognizable shape — useful context, never a certainty.',
+  text:{
+    layman:`<p>Chart patterns are recurring shapes that form because human behavior (fear, greed, hesitation) repeats. Head & Shoulders — two smaller peaks with one bigger peak between them — often appears near the top of an uptrend, hinting buyers are running out of steam.</p>`,
+    kitchen:`<p>Patterns are like recognizing every dinner party low on food behaves the same way — a rush, a lull, a smaller final rush. Head & Shoulders is that exact rhythm in price: strong push, stronger push, weaker final push — energy visibly fading.</p>`,
+    plain:`<p>Chart patterns are recognizable price formations reflecting common trader behavior. Head & Shoulders — a peak, a higher peak, a third peak roughly matching the first, resting on a "neckline" — is a classic potential reversal signal, confirmed only once price closes through the neckline.</p>`,
+    hinglish:`<p>Chart patterns repeat hote hain kyunki insaan ka behavior repeat hota hai. Head & Shoulders famous pattern hai — do chhote peaks ke beech ek bada peak, jo uptrend ke top pe dikhta hai aur signal deta hai buyers thak rahe hain, bhai.</p>`
+  },
+  quiz:{q:'A Head & Shoulders pattern is generally read as a potential signal for...', options:['Trend continuation, guaranteed','A possible trend reversal','A stock split','A change in company management'], correct:1, right:'Correct — a classic potential reversal signal, only meaningful once confirmed.', wrong:'It\u2019s read as a possible trend reversal signal, not a guarantee.'},
+  tip:'A pattern isn\u2019t confirmed just because it looks right — wait for the actual break (e.g. a close through the neckline) before acting.',
+  example:'Gold forms a clean Head & Shoulders, but price never closes below the neckline — traders who shorted on the shape alone got stopped out when price carried on higher.'
+},
+{ id:'sizing', tag:'THE MATH OF SURVIVAL', tier:'normal', title:'Position sizing & R-multiples',
+  svg:(c)=>`<svg viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="30" width="200" height="50" rx="8" fill="${c.gold}" opacity=".15" stroke="${c.gold}"/><text x="130" y="60" font-family="${c.mono}" font-size="12" fill="${c.ink}" text-anchor="middle">Risk$ = Balance × Risk%</text><rect x="250" y="30" width="200" height="50" rx="8" fill="${c.teal}" opacity=".15" stroke="${c.teal}"/><text x="350" y="60" font-family="${c.mono}" font-size="11" fill="${c.ink}" text-anchor="middle">Size = Risk$ ÷ Stop dist.</text><line x1="30" y1="140" x2="450" y2="140" stroke="${c.ink}" stroke-opacity=".2"/>${[[70,'-1R',c.rose],[170,'0',c.ink],[270,'+1R',c.teal],[350,'+2R',c.teal],[430,'+3R',c.teal]].map(([x,l,col])=>`<circle cx="${x}" cy="140" r="5" fill="${col}"/><text x="${x}" y="160" font-family="${c.serif}" font-size="11" fill="${col}" font-weight="700" text-anchor="middle">${l}</text>`).join('')}</svg>`,
+  cap:'Every trade\u2019s outcome can be measured in "R" — multiples of what you risked.',
+  take:'A trader who thinks in R (not dollars) can compare a $50 win and a $500 win on equal footing.',
+  text:{
+    layman:`<p>Position sizing is the math behind "risk 1-2%": take your risk in dollars, divide by your stop-loss distance, and that tells you how big a position to open. An "R-multiple" measures your result as a multiple of what you risked — losing the planned amount is '-1R', doubling it as profit is '+2R'.</p>`,
+    kitchen:`<p>Position sizing is portion size based on how hungry you actually are, not grabbing a random plate size. R-multiples rate every meal by "how many times better than my baseline hunger" — letting you compare a snack and a banquet fairly.</p>`,
+    plain:`<p>Position Size = (Account × Risk %) ÷ Stop-Loss Distance. The R-multiple framework expresses outcomes as multiples of initial risk, enabling comparison across trades of different sizes — a trade losing the planned risk is -1R; tripling risk as profit is +3R.</p>`,
+    hinglish:`<p>Position sizing matlab '1-2% risk' ka actual formula: risk amount ÷ stop-loss distance. 'R-multiple' matlab result ko risk ke multiple mein measure karna — double profit hua toh '+2R', bhai.</p>`
+  },
+  quiz:{q:'A trade that returns exactly double what you risked is expressed as...', options:['-1R','0R','+2R','+2%'], correct:2, right:'Correct — profit equal to twice your risk is +2R.', wrong:'Doubling your risk as profit is +2R, regardless of the actual dollar amount.'},
+  tip:'Track your R-multiples in a journal, not just win/loss. A trader who wins 40% of trades but averages +2.5R on winners is still hugely profitable — win rate alone is misleading.',
+  example:'Risking $100 (1R), a trader exits at $250 profit — that\u2019s +2.5R, a strong result even though the raw "win rate" for that single trade tells you nothing on its own.'
+},
+{ id:'macro', tag:'THE BIG PICTURE', tier:'pro', title:'Macro forces — Gold vs the Dollar (DXY)',
+  svg:(c)=>`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg"><path d="M20 60 Q100 40 150 80 T260 60 T420 100" stroke="${c.gold}" stroke-width="3" fill="none"/><text x="20" y="45" font-family="${c.serif}" font-size="12" fill="${c.gold}" font-weight="700">Gold (XAU)</text><path d="M20 150 Q100 175 150 130 T260 155 T420 110" stroke="${c.teal}" stroke-width="3" fill="none"/><text x="20" y="200" font-family="${c.serif}" font-size="12" fill="${c.teal}" font-weight="700">US Dollar Index (DXY)</text></svg>`,
+  cap:'When the dollar weakens, gold (priced in dollars) tends to strengthen — and vice versa.',
+  take:'You cannot trade gold seriously without watching the CPI, NFP, and Fed interest rate calendar.',
+  text:{
+    layman:`<p>Gold is priced in US dollars worldwide. When the dollar gets weaker, it takes more (weaker) dollars to buy the same ounce — the gold price rises. Gold traders watch inflation data (CPI), jobs data (NFP), and Fed decisions because those all move the dollar — and therefore gold.</p>`,
+    kitchen:`<p>Gold is a fixed amount of imported olive oil, and the dollar is your household budget. If your budget shrinks, the same bottle "costs more" in your weakened budget, even though nothing about the oil changed.</p>`,
+    plain:`<p>Gold exhibits a strong historical inverse correlation with the US Dollar Index, since gold is globally dollar-denominated: a weaker dollar lowers gold's "real cost" for other-currency holders, increasing demand and price. Gold is therefore highly sensitive to CPI, Non-Farm Payrolls, and FOMC decisions.</p>`,
+    hinglish:`<p>Gold hamesha dollar mein price hota hai. Dollar kamzor padta hai toh gold ka price upar chala jaata hai — inverse relationship. Isi wajah se gold traders CPI, NFP, Fed news pe puri nazar rakhte hain, bhai.</p>`
+  },
+  quiz:{q:'If the US Dollar (DXY) weakens sharply, gold prices typically...', options:['Fall','Rise','Stay exactly flat','Get delisted'], correct:1, right:'Correct — gold and the dollar are strongly inversely correlated.', wrong:'Gold and the dollar move inversely: a weaker dollar typically pushes gold up.'},
+  tip:'Mark major news events (CPI, NFP, FOMC) on your calendar in advance — many pros simply avoid new positions in the 30 minutes around these releases due to the spread and volatility spike alone.',
+  example:'A weaker-than-expected US CPI print sends the dollar falling and gold spiking higher within minutes — the macro correlation playing out in real time.'
+},
+{ id:'psych', tag:'THE INNER GAME', tier:'pro', title:'Trading psychology & discipline',
+  svg:(c)=>`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg"><circle cx="230" cy="110" r="80" stroke="${c.ink}" stroke-opacity=".2" stroke-width="2" fill="none"/><text x="230" y="45" font-family="${c.serif}" font-size="12" fill="${c.gold}" font-weight="700" text-anchor="middle">Plan the trade</text><text x="345" y="115" font-family="${c.serif}" font-size="12" fill="${c.teal}" font-weight="700" text-anchor="middle">Execute calmly</text><text x="230" y="185" font-family="${c.serif}" font-size="12" fill="${c.rose}" font-weight="700" text-anchor="middle">Accept outcome</text><text x="115" y="115" font-family="${c.serif}" font-size="12" fill="${c.gold}" font-weight="700" text-anchor="middle">Journal &amp; review</text></svg>`,
+  cap:'The cycle every professional runs on repeat — a loop, not a straight line.',
+  take:'Your strategy is math. Your psychology is what decides whether you actually follow the math.',
+  text:{
+    layman:`<p>Most losing traders don't lose because their strategy is bad — fear or greed makes them break their own rules. Moving your stop because you "just know it'll turn around" is how disciplined plans get destroyed.</p>`,
+    kitchen:`<p>A recipe only works if you follow it, even when tempted to "just add a bit more chili." A disciplined cook doesn't panic-dump ingredients mid-cook. Trading psychology is the same restraint.</p>`,
+    plain:`<p>Trading psychology concerns the behavioral gap between a rationally designed strategy and real-time execution under emotional pressure — loss aversion, overconfidence after wins, and revenge trading are the common failure modes. Journaling is the primary tool for surfacing these patterns.</p>`,
+    hinglish:`<p>Zyada tar log strategy ki wajah se nahi, apni feelings ki wajah se haarte hain. Stop-loss hataana ya overconfident hoke size double karna — yahi plans barbaad karta hai, bhai.</p>`
+  },
+  quiz:{q:'Moving your stop-loss further away mid-trade because "it\u2019ll turn around" is an example of...', options:['Disciplined risk management','Emotional rule-breaking','A recommended pro technique','Diversification'], correct:1, right:'Right — a classic emotional break from your plan.', wrong:'That\u2019s emotional rule-breaking — it turns a planned small loss into an unplanned big one.'},
+  tip:'Set a hard rule: after two losing trades in a row, stop for the day. This single rule prevents most "revenge trading" spirals before they start.',
+  example:'After an unexpected loss, a trader re-enters with double the size to "win it back" — turning one manageable 1% loss into a 4% loss within the hour.'
+},
+{ id:'path', tag:'THE ROADMAP', tier:'pro', title:'From demo to disciplined professional',
+  svg:(c)=>`<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg"><line x1="30" y1="150" x2="430" y2="70" stroke="${c.ink}" stroke-opacity=".2" stroke-width="2"/>${[[30,150,'Learn'],[160,125,'Demo'],[290,98,'Small live'],[420,72,'Scale']].map(([x,y,label],i)=>`<circle cx="${x}" cy="${y}" r="9" fill="${[c.rose,c.gold,c.teal,c.teal][i]}"/><text x="${x}" y="${y-16}" font-family="${c.serif}" font-size="12" fill="${[c.rose,c.gold,c.teal,c.teal][i]}" font-weight="700" text-anchor="middle">${label}</text>`).join('')}</svg>`,
+  cap:'Every professional walked this exact staircase. There is no shortcut version that skips a step.',
+  take:'Time in the market isn\u2019t the goal — time spent proving your process is repeatable is the goal.',
+  text:{
+    layman:`<p>You don't go from "learning about candles" to "trading real money" in a weekend. First you learn the concepts. Then you practice on a demo account with real prices but fake money, for 3–6 months minimum, keeping a journal. Only once your demo results are consistent do you go live — with the smallest position size possible.</p>`,
+    kitchen:`<p>You don't open a restaurant the day after your first successful dinner party. You cook the same dish repeatedly at home (demo trading) until it's reliably good. Then you cook for paying guests at a tiny scale — one table (small live account) — before you even think about a full restaurant.</p>`,
+    plain:`<p>Professional development follows a well-established progression: conceptual education, extended demo trading (3–6 months minimum) to validate consistency, minimal-size live trading to introduce genuine psychological pressure, then gradual scaling contingent on demonstrated discipline — not merely on capital availability.</p>`,
+    hinglish:`<p>Ek weekend mein candle padhke seedha real paisa lagana kaam nahi karta bro. Pehle concepts seekh, fir demo pe practice kar 3–6 mahine, real price real feel bas paisa fake. Results consistent lagein tabhi live jaana, wo bhi sabse chhoti size ke saath.</p>`
+  },
+  quiz:{q:'Before trading real money, professionals recommend demo trading for at least...', options:['One day','One weekend','3-6 months','It\u2019s unnecessary if you\u2019re confident'], correct:2, right:'Correct — 3-6 months of demo trading is the standard professional recommendation.', wrong:'The standard professional guidance is 3-6 months minimum of demo trading before going live.'},
+  tip:'Track your demo results the exact same way you\u2019d track a live account — including a written journal — or the demo phase teaches you nothing transferable.',
+  example:'A trader demo-trades for four months, logs 120 trades, finds a consistent 55% win rate with 1:2 risk/reward — only then do they move to a small live account, with data behind the decision.'
+},
+{ id:'fundamental', tag:'TWO LENSES, ONE MARKET', tier:'pro', title:'Fundamental vs technical analysis',
+  svg:(c)=>`<svg viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="40" width="160" height="100" rx="10" fill="${c.teal}" opacity=".12" stroke="${c.teal}"/><text x="100" y="70" font-family="${c.serif}" font-size="12" fill="${c.teal}" font-weight="700" text-anchor="middle">Fundamental</text><text x="100" y="92" font-family="${c.mono}" font-size="10" fill="${c.ink}" fill-opacity=".7" text-anchor="middle">News · Data</text><text x="100" y="108" font-family="${c.mono}" font-size="10" fill="${c.ink}" fill-opacity=".7" text-anchor="middle">Earnings · Macro</text><rect x="280" y="40" width="160" height="100" rx="10" fill="${c.gold}" opacity=".15" stroke="${c.gold}"/><text x="360" y="70" font-family="${c.serif}" font-size="12" fill="${c.gold}" font-weight="700" text-anchor="middle">Technical</text><text x="360" y="92" font-family="${c.mono}" font-size="10" fill="${c.ink}" fill-opacity=".7" text-anchor="middle">Chart · Trend</text><text x="360" y="108" font-family="${c.mono}" font-size="10" fill="${c.ink}" fill-opacity=".7" text-anchor="middle">Price action</text><circle cx="230" cy="90" r="30" fill="${c.ink}" opacity=".08" stroke="${c.ink}" stroke-opacity=".3"/><text x="230" y="94" font-family="${c.serif}" font-size="11" fill="${c.ink}" font-weight="700" text-anchor="middle">Decision</text></svg>`,
+  cap:'Fundamentals explain WHY price should move; technicals show WHERE and WHEN it\u2019s actually moving.',
+  take:'Most professionals use fundamentals for direction and technicals for timing.',
+  text:{
+    layman:`<p>Fundamental analysis studies real-world reasons a price should move — interest rates, jobs data, earnings, geopolitics. Technical analysis studies the chart itself — patterns, trends, indicators. Many pros use fundamentals to decide direction and technicals to decide timing.</p>`,
+    kitchen:`<p>Fundamental is understanding why a restaurant is busy — good reviews, a new chef. Technical is watching the actual queue outside right now. A smart diner uses both: know why it should be good, but check the current queue too.</p>`,
+    plain:`<p>Fundamental analysis evaluates intrinsic value and directional bias through macroeconomic data and events. Technical analysis evaluates price action itself under the premise that price already reflects available information. Many professionals blend both — fundamentals for thesis, technicals for entry timing.</p>`,
+    hinglish:`<p>Fundamental analysis matlab real-world reasons dekhna ki price kyun move hona chahiye. Technical matlab seedha chart dekhna. Zyada tar pros dono use karte hain: fundamentals se direction, technicals se exact timing, bhai.</p>`
+  },
+  quiz:{q:'Which type of analysis focuses primarily on interest rates, jobs data, and geopolitical events?', options:['Technical analysis','Fundamental analysis','Candlestick analysis','Pattern analysis'], correct:1, right:'Correct — that\u2019s fundamental analysis.', wrong:'That description is fundamental analysis — technical analysis studies the chart itself.'},
+  tip:'When fundamentals and technicals disagree, many pros reduce position size or stand aside rather than picking a side blindly.',
+  example:'Ahead of a Fed decision, a trader forms a fundamental view but waits for the chart to actually confirm a breakout before entering, rather than trading the prediction alone.'
+},
+{ id:'journal', tag:'THE PROFESSIONAL HABIT', tier:'pro', title:'Trading plan & journaling',
+  svg:(c)=>`<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg"><rect x="60" y="20" width="340" height="160" rx="12" fill="${c.paper||'#FBF8F1'}" stroke="${c.ink}" stroke-opacity=".2"/>${['Entry reason','Risk taken','Result','Lesson learned'].map((l,i)=>`<text x="80" y="${55+i*35}" font-family="${c.serif}" font-size="12" fill="${c.ink}" font-weight="700">${l}</text><line x1="80" y1="${65+i*35}" x2="380" y2="${65+i*35}" stroke="${c.ink}" stroke-opacity=".15"/>`).join('')}</svg>`,
+  cap:'A trading plan decides things in advance, calmly. A journal tells you, honestly, if you\u2019re following it.',
+  take:'If it\u2019s not written down before the trade, it\u2019s not a plan — it\u2019s a guess you\u2019re about to defend emotionally.',
+  text:{
+    layman:`<p>A trading plan is rules you decide before you're emotionally involved — what setups you take, how much you risk. A journal logs every trade afterward: why, what happened, what you'd do differently. Together they turn trading into a repeatable process.</p>`,
+    kitchen:`<p>A trading plan is a recipe written before you start cooking, so you're not winging it with a hot pan in hand. A journal is notes after every attempt — too salty, needed more time — so attempt #20 is genuinely better than attempt #1.</p>`,
+    plain:`<p>A trading plan formalizes entry criteria, risk parameters, and exit rules in advance. A journal systematically records rationale, execution, and outcome, enabling pattern recognition in one's own behavior — the single most cited tool for improving consistency.</p>`,
+    hinglish:`<p>Trading plan matlab likha hua rule-set jo dimaag calm hote hue banaya. Journal matlab har trade ke baad likhna — kyun liya, kya hua. Dono milke trading ko random feeling se improvable process bana dete hain, bhai.</p>`
+  },
+  quiz:{q:'The main purpose of a trading journal is to...', options:['Impress other traders','Reveal patterns in your own decisions over time','Replace the need for a stop-loss','Guarantee future profits'], correct:1, right:'Correct — a journal\u2019s real value is surfacing your own repeated patterns.', wrong:'A journal\u2019s core purpose is revealing patterns in your own behavior over time.'},
+  tip:'Log losing trades in just as much detail as winners — the losses usually contain the more useful lesson.',
+  example:'A trader reviewing three months of entries notices every big loss happened on a Friday-afternoon boredom trade — invisible without the written record, easily fixed once seen.'
+},
+{ id:'algo', tag:'WHERE THE FIELD IS HEADED', tier:'pro', title:'Algorithmic & quant trading basics',
+  svg:(c)=>`<svg viewBox="0 0 460 140" xmlns="http://www.w3.org/2000/svg">${[['Data',40],['Rules',175],['Signal',310],['Execution',420]].map(([l,x],i)=>`<rect x="${x-45}" y="45" width="90" height="50" rx="8" fill="${i%2?c.gold:c.teal}" opacity=".18" stroke="${i%2?c.gold:c.teal}"/><text x="${x}" y="75" font-family="${c.serif}" font-size="11" fill="${c.ink}" font-weight="700" text-anchor="middle">${l}</text>`).join('')}${[85,225,355].map(x=>`<line x1="${x}" y1="70" x2="${x+45}" y2="70" stroke="${c.ink}" stroke-opacity=".4" stroke-width="2"/>`).join('')}</svg>`,
+  cap:'An algorithm is your trading plan, written so precisely a computer can execute it without hesitation.',
+  take:'Writing rules precisely enough that a robot COULD follow them is what makes a plan testable.',
+  text:{
+    layman:`<p>Algorithmic trading means a computer executes trades automatically based on pre-set rules — no emotions, no hesitation. "Quant" trading uses statistics to find and test these rules before risking money. You don't need to code to benefit: writing your own rules precisely enough that a machine COULD follow them forces real discipline.</p>`,
+    kitchen:`<p>Algorithmic trading is a vending-machine version of cooking — exact ingredients, exact steps, same dish every time. Quant trading is a food scientist testing thousands of recipe variations in a lab before serving one to a real customer.</p>`,
+    plain:`<p>Algorithmic trading refers to automated execution according to predefined rules, removing discretionary decision-making. Quantitative trading applies statistical methods to research and backtest strategies against historical data before live deployment — revealing whether an "edge" is statistically real or just a story told after the fact.</p>`,
+    hinglish:`<p>Algorithmic trading matlab computer khud rules ke hisaab se trades karta hai — no emotions. Quant trading matlab statistics use karke rules test karna, real paisa lagane se pehle. Coder banna zaroori nahi, bas rules precise likhna discipline sikhata hai, bhai.</p>`
+  },
+  quiz:{q:'What is the main advantage algorithmic execution offers over manual discretionary trading?', options:['It guarantees profit','It removes emotion and hesitation from execution','It requires no strategy at all','It only works for gold'], correct:1, right:'Correct — the core benefit is consistent, emotion-free execution, not a profit guarantee.', wrong:'The core advantage is removing emotion and hesitation from execution.'},
+  tip:'Before ever coding a strategy, backtest it by hand on at least 50-100 historical setups — many "obviously good" ideas fall apart under rigorous testing.',
+  example:'A trader believes "buying gold every time RSI drops below 30 works great" — backtesting across two years reveals it only wins 45% of the time with poor risk/reward, saving real money.'
+}
+];
+
+/* RENDER LECTURES + CHAPTER BANNERS */
+const lecturesEl = document.getElementById('chapters');
+let lastTier = null;
+lectures.forEach((L, i)=>{
+  const num = String(i+1).padStart(2,'0');
+  if(L.tier !== lastTier){
+    const meta = chapterMeta[L.tier];
+    const banner = document.createElement('div');
+    banner.className = 'chapter-banner';
+    banner.dataset.tier = L.tier;
+    banner.innerHTML = `<div class="wrap"><div class="cb-inner"><span class="cb-icon">${meta.icon}</span><div><h2>${meta.label}</h2><p>${meta.desc}</p></div></div></div>`;
+    lecturesEl.appendChild(banner);
+    lastTier = L.tier;
+  }
+  const section = document.createElement('section');
+  section.className = 'lecture';
+  section.id = L.id;
+  section.dataset.tier = L.tier;
+  const dragWidget = L.id==='candles' ? `<div class="drag-candle-box">
+      <div class="drag-candle-title">🖐️ Try it — drag the gold dot up or down</div>
+      <svg id="dragCandleSvg" viewBox="0 0 200 240" width="180" xmlns="http://www.w3.org/2000/svg" style="touch-action:none; cursor:grab; margin:0 auto; display:block;">
+        <line x1="100" y1="20" x2="100" y2="220" stroke="#ccc" stroke-width="1"/>
+        <line id="dragOpenLine" x1="55" y1="130" x2="145" y2="130" stroke="${colors.gold}" stroke-dasharray="4,3" stroke-width="1.5"/>
+        <text x="150" y="127" font-family="${colors.mono}" font-size="8" fill="${colors.gold}">Open</text>
+        <rect id="dragBody" x="72" y="129" width="56" height="2" fill="${colors.teal}" rx="3"/>
+        <circle id="dragHandle" cx="100" cy="130" r="10" fill="${colors.gold}" stroke="#fff" stroke-width="2"/>
+      </svg>
+      <div class="drag-candle-readout" id="dragReadout">Open: $1900.00 · Drag the dot to set the Close price.</div>
+    </div>` : '';
+  section.innerHTML = `
+    <div class="wrap">
+      <div class="lecture-head">
+        <span class="lecture-num">${num}</span>
+        <div>
+          <h2>${L.title}</h2>
+          <span class="tag"><span class="tier-chip tier-${L.tier}">${L.tier}</span> ${L.tag}</span>
+        </div>
+      </div>
+      <div class="lecture-grid">
+        <div class="diagram-box">
+          ${L.svg(colors)}
+          <div class="diagram-cap">${L.cap}</div>
+          ${dragWidget}
+        </div>
+        <div class="explain-panel">
+          <div class="panel-top">
+            <span class="mode-label" data-label>🧠 Layman</span>
+            <button class="listen-btn" data-listen="${L.id}">🔊 Listen</button>
+          </div>
+          <div data-text>${L.text.layman}</div>
+          <div class="takeaway"><b>Core takeaway</b>${L.take}</div>
+          <div class="tip-box"><b>💡 Pro tip</b>${L.tip}</div>
+          <div class="example-box"><b>🧩 Real example</b>${L.example}</div>
+          <div class="quiz-box" data-quiz="${L.id}">
+            <div class="quiz-q">📝 Quick check: ${L.quiz.q}</div>
+            <div class="quiz-opts">${L.quiz.options.map((opt,idx)=>`<button class="quiz-opt" data-idx="${idx}">${opt}</button>`).join('')}</div>
+            <div class="quiz-feedback" hidden></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  lecturesEl.appendChild(section);
+});
+
+/* Games markup */
+const gamesWrap = document.createElement('div');
+gamesWrap.innerHTML = `
+<section class="game-section" id="candleGame" data-tier="practice">
+  <div class="wrap">
+    <h2>🕯️ Candle Reader — Bullish or Bearish?</h2>
+    <p>A quick reflex game: a fresh random candle appears, you call it, and I'll tell you exactly why you were right or wrong.</p>
+    <div class="candle-game-box">
+      <div id="candleSvgWrap"></div>
+      <div class="candle-buttons"><button id="btnBull">📈 Bullish</button><button id="btnBear">📉 Bearish</button></div>
+      <div id="candleFeedback" class="game-feedback" hidden></div>
+      <div class="game-score">Streak: <span id="candleStreak">0</span> · Correct: <span id="candleCorrect">0</span>/<span id="candleTotal">0</span></div>
+      <button id="nextCandle" class="btn-secondary" hidden>Next candle →</button>
+    </div>
+  </div>
+</section>
+<section class="game-section" id="tradeSim" data-tier="practice">
+  <div class="wrap">
+    <h2>🖥️ Pro Trading Terminal</h2>
+    <p>A full broker-style simulator with real candlesticks, a live trend/momentum/structure reader, and an auditor that grades every single move. Opens as its own full-screen app.</p>
+    <div class="launch-card">
+      <div class="launch-card-icon">🕯️</div>
+      <div class="launch-card-body">
+        <h3>Open the Trading Terminal</h3>
+        <ul>
+          <li>Live candlesticks with trend, RSI &amp; support/resistance</li>
+          <li>ⓘ Guide panel — what to check before every move</li>
+          <li>An auditor that grades and explains every entry and exit</li>
+        </ul>
+        <div class="launch-card-stats">Demo balance: <b id="launchBalancePreview">$10,000.00</b></div>
+      </div>
+      <button id="launchTerminal" class="launch-btn" type="button">🚀 Open Terminal</button>
+    </div>
+  </div>
+</section>
+`;
+document.body.insertBefore(gamesWrap, document.querySelector('.rules'));
+while(gamesWrap.firstChild) document.body.insertBefore(gamesWrap.firstChild, gamesWrap);
+gamesWrap.remove();
+
+/* MODE SWITCHING */
+let currentMode = 'layman';
+function applyMode(mode){
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>{
+    const active = b.dataset.mode === mode;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-selected', active ? 'true':'false');
+  });
+  lectures.forEach(L=>{
+    const section = document.getElementById(L.id);
+    if(!section) return;
+    section.querySelector('[data-text]').innerHTML = L.text[mode];
+    section.querySelector('[data-label]').textContent = modeLabels[mode];
+  });
+}
+document.querySelectorAll('.mode-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> { applyMode(btn.dataset.mode); stopSpeaking(); });
+});
+applyMode('layman');
+
+/* CHAPTER FILTERING */
+function applyChapter(chapter){
+  document.querySelectorAll('.chapter-btn').forEach(b=> b.classList.toggle('active', b.dataset.chapter===chapter));
+  document.querySelectorAll('.lecture, .chapter-banner').forEach(el=>{
+    if(chapter==='all') el.style.display='';
+    else if(chapter==='practice') el.style.display='none';
+    else el.style.display = (el.dataset.tier===chapter) ? '' : 'none';
+  });
+  document.querySelectorAll('.game-section').forEach(el=>{
+    el.style.display = (chapter==='all' || chapter==='practice') ? '' : 'none';
+  });
+}
+document.querySelectorAll('.chapter-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    applyChapter(btn.dataset.chapter);
+    const target = btn.dataset.chapter==='practice' ? document.getElementById('candleGame') :
+      (btn.dataset.chapter==='all' ? document.querySelector('.hero') : document.querySelector(`.chapter-banner[data-tier="${btn.dataset.chapter}"]`));
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+/* QUIZ LOGIC */
+let quizScore = 0;
+const answeredQuizzes = new Set();
+function updateScoreBadge(){
+  document.getElementById('scoreBadge').innerHTML = `🏅 Quiz ${quizScore}/${lectures.length} · 📈 Sim $${simBalance.toFixed(2)}`;
+  const preview = document.getElementById('launchBalancePreview');
+  if(preview) preview.textContent = '$'+simBalance.toFixed(2);
+}
+document.querySelectorAll('.quiz-box').forEach(box=>{
+  const lectureId = box.dataset.quiz;
+  const L = lectures.find(l=>l.id===lectureId);
+  const opts = box.querySelectorAll('.quiz-opt');
+  const fb = box.querySelector('.quiz-feedback');
+  opts.forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      if(answeredQuizzes.has(lectureId)) return;
+      answeredQuizzes.add(lectureId);
+      const idx = parseInt(opt.dataset.idx,10);
+      const isCorrect = idx === L.quiz.correct;
+      opts.forEach(o=>{
+        o.disabled = true;
+        const oidx = parseInt(o.dataset.idx,10);
+        if(oidx === L.quiz.correct) o.classList.add('correct');
+        else if(o===opt) o.classList.add('wrong');
+      });
+      fb.hidden = false;
+      fb.className = 'quiz-feedback ' + (isCorrect ? 'ok' : 'bad');
+      fb.textContent = (isCorrect ? '✅ Correct. ' : '❌ Not quite. ') + (isCorrect ? L.quiz.right : L.quiz.wrong);
+      if(isCorrect) quizScore++;
+      updateScoreBadge();
+    });
+  });
+});
+
+/* AUDIO / PODCAST */
+function stripHtml(html){ const d=document.createElement('div'); d.innerHTML=html; return d.textContent||''; }
+const speechSupported = ('speechSynthesis' in window) && ('SpeechSynthesisUtterance' in window);
+let currentUtterance = null;
+let speechKeepAlive = null;
+function stopSpeaking(){
+  if(speechSupported){ try{ window.speechSynthesis.cancel(); }catch(e){} }
+  if(speechKeepAlive){ clearInterval(speechKeepAlive); speechKeepAlive = null; }
+  currentUtterance = null;
+  document.querySelectorAll('.listen-btn.speaking').forEach(b=> { b.classList.remove('speaking'); b.textContent = '🔊 Listen'; });
+  podcastState.playing = false;
+  const pcBtn = document.getElementById('pcPlay');
+  if(pcBtn) pcBtn.textContent = '▶';
+}
+function speakText(text, onend, onerror){
+  if(!speechSupported){ if(onerror) onerror('unsupported'); return false; }
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.98; u.pitch = 1; u.volume = 1;
+  const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+  const enVoice = voices.find(v=>/en/i.test(v.lang));
+  if(enVoice) u.voice = enVoice;
+  u.onend = ()=>{ if(speechKeepAlive){ clearInterval(speechKeepAlive); speechKeepAlive = null; } currentUtterance = null; if(onend) onend(); };
+  u.onerror = (ev)=>{ if(speechKeepAlive){ clearInterval(speechKeepAlive); speechKeepAlive = null; } currentUtterance = null; if(onerror) onerror(ev.error || 'speech_error'); };
+  currentUtterance = u;
+  if(speechKeepAlive) clearInterval(speechKeepAlive);
+  speechKeepAlive = setInterval(()=>{
+    if(window.speechSynthesis.speaking && !window.speechSynthesis.paused){ window.speechSynthesis.pause(); window.speechSynthesis.resume(); }
+  }, 9000);
+  window.speechSynthesis.speak(u);
+  return true;
+}
+document.querySelectorAll('.listen-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const lectureId = btn.dataset.listen;
+    const isSpeaking = btn.classList.contains('speaking');
+    stopSpeaking();
+    if(isSpeaking) return;
+    if(!speechSupported){ btn.textContent = '🔇 Not supported here'; setTimeout(()=>{ btn.textContent = '🔊 Listen'; }, 2500); return; }
+    const L = lectures.find(l=>l.id===lectureId);
+    const text = stripHtml(L.text[currentMode]) + '. ' + L.take;
+    btn.classList.add('speaking'); btn.textContent = '⏸ Stop';
+    speakText(text, ()=>{ btn.classList.remove('speaking'); btn.textContent = '🔊 Listen'; }, ()=>{ btn.classList.remove('speaking'); btn.textContent = '⚠️ Audio failed — tap to retry'; });
+  });
+});
+const podcastState = {playing:false, queue:[], index:0};
+function visibleLectureIds(){ return lectures.filter(L=>{ const sec = document.getElementById(L.id); return sec && sec.style.display !== 'none'; }).map(L=>L.id); }
+function pcUpdateLabel(){
+  const id = podcastState.queue[podcastState.index];
+  const L = lectures.find(l=>l.id===id);
+  if(!L) return;
+  document.getElementById('pcTitle').textContent = `${podcastState.index+1}/${podcastState.queue.length} · ${L.title}`;
+  document.getElementById('pcSub').textContent = `Chapter: ${L.tier} · Mode: ${modeLabels[currentMode]}`;
+}
+function pcPlayCurrent(){
+  const id = podcastState.queue[podcastState.index];
+  if(!id) { stopSpeaking(); return; }
+  if(!speechSupported){ document.getElementById('pcTitle').textContent = '🔇 Audio isn\u2019t supported in this browser/view'; document.getElementById('pcSub').textContent = 'Try opening this page in Chrome or Safari directly.'; return; }
+  const L = lectures.find(l=>l.id===id);
+  const sec = document.getElementById(id);
+  if(sec) sec.scrollIntoView({behavior:'smooth', block:'center'});
+  pcUpdateLabel();
+  document.getElementById('pcPlay').textContent = '⏸';
+  podcastState.playing = true;
+  const text = stripHtml(L.text[currentMode]) + '. ' + L.take;
+  speakText(text,
+    ()=>{ if(!podcastState.playing) return; if(podcastState.index < podcastState.queue.length - 1){ podcastState.index++; pcPlayCurrent(); } else { podcastState.playing = false; document.getElementById('pcPlay').textContent = '▶'; document.getElementById('pcTitle').textContent = 'Chapter finished — press play to hear it again'; } },
+    ()=>{ podcastState.playing = false; document.getElementById('pcPlay').textContent = '▶'; document.getElementById('pcTitle').textContent = '⚠️ Audio failed — press play to retry'; }
+  );
+}
+document.getElementById('pcPlay').addEventListener('click', ()=>{
+  if(!speechSupported){ document.getElementById('pcTitle').textContent = '🔇 Audio isn\u2019t supported in this browser/view'; document.getElementById('pcSub').textContent = 'Try opening this page in Chrome or Safari directly.'; return; }
+  if(podcastState.playing && window.speechSynthesis.speaking){ window.speechSynthesis.pause(); podcastState.playing = false; document.getElementById('pcPlay').textContent = '▶'; return; }
+  if(window.speechSynthesis.paused){ window.speechSynthesis.resume(); podcastState.playing = true; document.getElementById('pcPlay').textContent = '⏸'; return; }
+  podcastState.queue = visibleLectureIds();
+  if(podcastState.queue.length===0) podcastState.queue = lectures.map(l=>l.id);
+  podcastState.index = 0;
+  pcPlayCurrent();
+});
+document.getElementById('pcNext').addEventListener('click', ()=>{ if(podcastState.queue.length===0) return; podcastState.index = Math.min(podcastState.index+1, podcastState.queue.length-1); pcPlayCurrent(); });
+document.getElementById('pcPrev').addEventListener('click', ()=>{ if(podcastState.queue.length===0) return; podcastState.index = Math.max(podcastState.index-1, 0); pcPlayCurrent(); });
+document.getElementById('pcStop').addEventListener('click', ()=>{ stopSpeaking(); podcastState.queue = []; podcastState.index = 0; document.getElementById('pcTitle').textContent = 'Podcast mode — press play to listen to the current chapter'; document.getElementById('pcSub').textContent = 'Reads the lecture text aloud in your selected mode'; });
+
+/* DRAGGABLE CANDLE WIDGET */
+function initDragCandle(){
+  const svg = document.getElementById('dragCandleSvg');
+  if(!svg) return;
+  const handle = document.getElementById('dragHandle');
+  const body = document.getElementById('dragBody');
+  const readout = document.getElementById('dragReadout');
+  const openY = 130, openPrice = 1900;
+  const priceForY = (y)=> (openPrice + (openY - y) * 1.5).toFixed(2);
+  let dragging = false;
+  function update(y){
+    y = Math.max(20, Math.min(220, y));
+    handle.setAttribute('cy', y);
+    const top = Math.min(y, openY);
+    const h = Math.max(4, Math.abs(y-openY));
+    body.setAttribute('y', top);
+    body.setAttribute('height', h);
+    const isBull = y < openY;
+    body.setAttribute('fill', isBull ? colors.teal : colors.rose);
+    handle.setAttribute('fill', isBull ? colors.teal : colors.rose);
+    const closePrice = priceForY(y);
+    readout.innerHTML = `Open: $${openPrice.toFixed(2)} · Close: $${closePrice} · <strong style="color:${isBull? colors.teal:colors.rose}">${isBull? 'BULLISH — buyers pushed price above the open.':'BEARISH — sellers pushed price below the open.'}</strong>`;
+  }
+  function getSvgY(evt){
+    const rect = svg.getBoundingClientRect();
+    const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+    return (clientY - rect.top) / rect.height * 240;
+  }
+  handle.addEventListener('pointerdown', (e)=>{ dragging=true; try{handle.setPointerCapture(e.pointerId);}catch(err){} svg.style.cursor='grabbing'; e.preventDefault(); });
+  svg.addEventListener('pointermove', (e)=>{ if(!dragging) return; update(getSvgY(e)); });
+  window.addEventListener('pointerup', ()=>{ dragging=false; svg.style.cursor='grab'; });
+  update(130);
+}
+initDragCandle();
+
+/* CANDLE READER GAME */
+let candleStreak=0, candleCorrect=0, candleTotal=0, currentCandle=null;
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function genCandle(){ const open = randInt(60,180); const close = randInt(60,180); const high = Math.max(open,close) + randInt(5,30); const low = Math.min(open,close) - randInt(5,30); return {open, close, high, low, isBull: close>open}; }
+function renderCandle(){
+  currentCandle = genCandle();
+  const c = currentCandle;
+  const scale = v => 220 - (v/220*180);
+  const bodyTop = scale(Math.max(c.open,c.close));
+  const bodyBot = scale(Math.min(c.open,c.close));
+  const wickTop = scale(c.high);
+  const wickBot = scale(c.low);
+  const color = c.isBull ? colors.teal : colors.rose;
+  document.getElementById('candleSvgWrap').innerHTML = `<svg viewBox="0 0 200 240" width="160" xmlns="http://www.w3.org/2000/svg"><line x1="100" y1="20" x2="100" y2="220" stroke="#ddd" stroke-width="1"/><line x1="100" y1="${wickTop}" x2="100" y2="${wickBot}" stroke="${color}" stroke-width="3"/><rect x="72" y="${bodyTop}" width="56" height="${Math.max(4,bodyBot-bodyTop)}" fill="${color}" rx="3"/></svg>`;
+  document.getElementById('candleFeedback').hidden = true;
+  document.getElementById('nextCandle').hidden = true;
+  document.getElementById('btnBull').disabled = false;
+  document.getElementById('btnBear').disabled = false;
+}
+function answerCandle(guessBull){
+  const c = currentCandle;
+  const correct = guessBull === c.isBull;
+  candleTotal++;
+  if(correct){ candleCorrect++; candleStreak++; } else { candleStreak = 0; }
+  document.getElementById('candleStreak').textContent = candleStreak;
+  document.getElementById('candleCorrect').textContent = candleCorrect;
+  document.getElementById('candleTotal').textContent = candleTotal;
+  const fb = document.getElementById('candleFeedback');
+  fb.hidden = false;
+  fb.className = 'game-feedback ' + (correct ? 'ok' : 'bad');
+  fb.textContent = (correct ? '✅ Correct! ' : '❌ Not quite. ') + `Open was ${c.open}, Close was ${c.close} — this candle closed ${c.isBull? 'above':'below'} where it opened, so it's ${c.isBull? 'bullish (green)':'bearish (red)'}.`;
+  document.getElementById('btnBull').disabled = true;
+  document.getElementById('btnBear').disabled = true;
+  document.getElementById('nextCandle').hidden = false;
+}
+document.getElementById('btnBull').addEventListener('click', ()=> answerCandle(true));
+document.getElementById('btnBear').addEventListener('click', ()=> answerCandle(false));
+document.getElementById('nextCandle').addEventListener('click', renderCandle);
+renderCandle();
+
+/* PRO TRADING TERMINAL */
+let simBalance = 10000;
+let simRisk = 1;
+let orderType = 'market';
+let openPosition = null;
+let pendingLimit = null;
+let tradeHistory = [];
+let tradeCounter = 0;
+
+function randG(a,b){ return a + Math.random()*(b-a); }
+const regime = {bias:0, remaining:8};
+function nextCandle(prevClose){
+  regime.remaining--;
+  if(regime.remaining<=0){ regime.bias = [1,-1,0,1,-1][randInt(0,4)]; regime.remaining = randInt(6,14); }
+  const drift = regime.bias * randG(0.15,0.4);
+  const noise = randG(-0.6,0.6);
+  const open = prevClose;
+  const close = Math.max(10, prevClose + drift + noise);
+  const high = Math.max(open,close) + Math.random()*0.6;
+  const low = Math.min(open,close) - Math.random()*0.6;
+  return {o:open,h:high,l:low,c:close};
+}
+let candles = [{o:4335.7,h:4336.7,l:4334.7,c:4335.7,t:Date.now()-431*700}];
+for(let i=0;i<430;i++){ const nc = nextCandle(candles[candles.length-1].c); nc.t = Date.now()-(430-i)*700; candles.push(nc); }
+
+function computeSMA(arr, period){
+  if(arr.length===0) return 0;
+  const p = Math.min(period, arr.length);
+  const slice = arr.slice(-p);
+  return slice.reduce((a,b)=>a+b,0)/slice.length;
+}
+function computeRSI(closes, period){
+  if(closes.length<period+1) return 50;
+  let gains=0, losses=0;
+  for(let i=closes.length-period;i<closes.length;i++){
+    const diff = closes[i]-closes[i-1];
+    if(diff>=0) gains+=diff; else losses-=diff;
+  }
+  const avgGain=gains/period, avgLoss=losses/period;
+  if(avgLoss===0) return 100;
+  const rs = avgGain/avgLoss;
+  return 100 - (100/(1+rs));
+}
+function supportResistance(){
+  const win = candles.slice(-25);
+  return { support: Math.min(...win.map(c=>c.l)), resistance: Math.max(...win.map(c=>c.h)) };
+}
+function currentTrend(){
+  const closes = candles.map(c=>c.c);
+  const smaNow = computeSMA(closes,10);
+  const smaPrev = closes.length>16 ? computeSMA(closes.slice(0,-6),10) : smaNow;
+  const lastClose = closes[closes.length-1];
+  if(lastClose>smaNow && smaNow>smaPrev*1.0004) return 'up';
+  if(lastClose<smaNow && smaNow<smaPrev*0.9996) return 'down';
+  return 'range';
+}
+function snapshotMarket(){
+  const closes = candles.map(c=>c.c);
+  const sr = supportResistance();
+  const avgRange = candles.slice(-10).reduce((a,c)=>a+(c.h-c.l),0)/Math.min(10,candles.length);
+  return {
+    rsi: computeRSI(closes,14),
+    trend: currentTrend(),
+    support: sr.support, resistance: sr.resistance,
+    lastClose: closes[closes.length-1],
+    avgRangePct: (avgRange/closes[closes.length-1])*100
+  };
+}
+let simLang = 'standard';
+function T(std, hi){ return simLang==='hinglish' ? hi : std; }
+function trendLabel(t){ return t==='up' ? '📈 Uptrend' : t==='down' ? '📉 Downtrend' : '➖ Range-bound'; }
+function trendNote(t){
+  if(t==='up') return T('Price is above its rising average — buyers in control. Beginners: this is a friendlier time to look for LONG (buy) setups.',
+    'Bhai buyers ka full control hai abhi — price apne average se upar chadh ke chal raha hai. Long lene ka mast time hai, soch kya raha hai!');
+  if(t==='down') return T('Price is below its falling average — sellers in control. Beginners: this is a friendlier time to look for SHORT (sell) setups.',
+    'Sellers ne scene pakad liya hai bhai — price apna average tod ke neeche gir raha hai. Short sochne ka time hai, upar wale sapne dekhna band kar de.');
+  return T('No clear direction — price is chopping sideways. Beginners: this is often the hardest, choppiest condition to trade — many pros simply wait it out.',
+    'Market abhi bilkul confused hai, idhar-udhar bhatak raha hai — koi direction nahi. Ye sabse mushkil waqt hota hai trade karne ka, smart log bas chill karte hain.');
+}
+function rsiNote(rsi){
+  if(rsi>=75) return T('Overbought — this move looks "stretched." Buying now means chasing a price that already ran up a lot.',
+    'RSI chilla raha hai overbought, bhai! Price already bohot bhaag chuka hai — ab buy karega toh late aake party khatam hone ke baad pahuchne jaisa hoga.');
+  if(rsi<=25) return T('Oversold — this move looks "stretched" downward. Selling now means chasing a price that already fell a lot.',
+    'RSI bol raha hai oversold — price pehle se hi bohot gir chuka hai. Ab sell karega toh doobte jahaz pe kood-ne wala scene hoga, zara ruk.');
+  if(rsi>60) return T('Leaning strong, but not extreme yet — momentum favors buyers a little.', 'Thoda strong lag raha hai, extreme nahi hai abhi — buyers ka halka sa upper hand hai.');
+  if(rsi<40) return T('Leaning weak, but not extreme yet — momentum favors sellers a little.', 'Thoda weak lag raha hai, extreme nahi hua abhi — sellers ka halka upper hand hai.');
+  return T('Neutral zone — momentum isn\u2019t giving a strong signal either way right now.', 'RSI ekdum neutral hai bhai — na yaha ka na waha ka, koi clear signal nahi de raha abhi.');
+}
+function structureNote(distRes,distSup){
+  if(distRes<0.4) return T('Price is pressed right against the ceiling (resistance) — risky to buy here unless it breaks through.',
+    'Price ekdum resistance ki chhat se takra raha hai — yaha buy karna matlab deewar se sar tapkana, jab tak breakout pakka na ho.');
+  if(distSup<0.4) return T('Price is pressed right against the floor (support) — risky to sell here unless it breaks below.',
+    'Price ekdum support ke floor pe hi hai — yaha sell karna risky hai jab tak neeche breakdown na ho.');
+  return T('Price is in the middle, no major floor or ceiling immediately in the way.', 'Price abhi beech mein hai bhai, koi bada floor ya chhat raaste mein nahi — khula maidan hai.');
+}
+
+/* ---- ICONS: small live SVGs so beginners can SEE the shape, not just read it ---- */
+function iconSparkline(closes, color){
+  const w=76,h=30; const data=closes.slice(-16);
+  const min=Math.min(...data), max=Math.max(...data); const range=(max-min)||1;
+  const pts = data.map((c,i)=> `${(i/(data.length-1||1))*w},${h-2-((c-min)/range)*(h-4)}`).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" width="76" height="30"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function iconGauge(value, color){
+  const angle = (value/100)*180 - 90;
+  const rad = angle*Math.PI/180;
+  const cx=38, cy=33, r=27;
+  const nx = cx + r*Math.sin(rad), ny = cy - r*Math.cos(rad);
+  return `<svg viewBox="0 0 76 38" width="76" height="38">
+    <path d="M8 33 A27 27 0 0 1 27 10" fill="none" stroke="#6fcbb4" stroke-width="5" stroke-linecap="round"/>
+    <path d="M27 10 A27 27 0 0 1 49 10" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M49 10 A27 27 0 0 1 68 33" fill="none" stroke="#f0a37e" stroke-width="5" stroke-linecap="round"/>
+    <line x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke="${color}" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="3" fill="${color}"/>
+  </svg>`;
+}
+function iconStructure(pctFromBottom, color){
+  const w=76,h=36; const y = 6 + (h-12) - ((pctFromBottom/100)*(h-12));
+  return `<svg viewBox="0 0 ${w} ${h}" width="76" height="${h}">
+    <line x1="4" y1="${h-5}" x2="${w-4}" y2="${h-5}" stroke="#6fcbb4" stroke-width="2" stroke-dasharray="3,2"/>
+    <line x1="4" y1="5" x2="${w-4}" y2="5" stroke="#f0a37e" stroke-width="2" stroke-dasharray="3,2"/>
+    <circle cx="${w/2}" cy="${y.toFixed(1)}" r="4.5" fill="${color}"/>
+  </svg>`;
+}
+function iconRiskDial(riskPct, color){
+  const pct = Math.min(1, riskPct/25);
+  const w=76,h=14;
+  return `<svg viewBox="0 0 ${w} ${h}" width="76" height="${h}">
+    <rect x="0" y="4" width="${w}" height="6" rx="3" fill="rgba(255,255,255,0.12)"/>
+    <rect x="0" y="4" width="${(w*Math.min(1,2/25)).toFixed(1)}" height="6" rx="3" fill="#6fcbb4" opacity="0.5"/>
+    <rect x="0" y="4" width="${(w*pct).toFixed(1)}" height="6" rx="3" fill="${color}"/>
+  </svg>`;
+}
+function iconPattern(type,color){
+  const icons = {
+    up: `<svg viewBox="0 0 76 30" width="76" height="30"><polyline points="4,26 20,18 20,26 36,10 36,18 52,4 52,10 68,4" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    down: `<svg viewBox="0 0 76 30" width="76" height="30"><polyline points="4,4 20,12 20,4 36,20 36,12 52,26 52,20 68,26" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    range: `<svg viewBox="0 0 76 30" width="76" height="30"><polyline points="4,10 20,20 36,10 52,20 68,10" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    nearRes: `<svg viewBox="0 0 76 30" width="76" height="30"><line x1="4" y1="6" x2="72" y2="6" stroke="${color}" stroke-width="2" stroke-dasharray="3,2"/><polyline points="4,26 32,14 54,8 64,6" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    nearSup: `<svg viewBox="0 0 76 30" width="76" height="30"><line x1="4" y1="24" x2="72" y2="24" stroke="${color}" stroke-width="2" stroke-dasharray="3,2"/><polyline points="4,4 32,16 54,22 64,24" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    doubleTop: `<svg viewBox="0 0 76 30" width="76" height="30"><line x1="4" y1="8" x2="72" y2="8" stroke="${color}" stroke-opacity="0.4" stroke-width="1.5" stroke-dasharray="2,2"/><polyline points="4,26 20,8 36,20 52,8 68,26" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    doubleBottom: `<svg viewBox="0 0 76 30" width="76" height="30"><line x1="4" y1="22" x2="72" y2="22" stroke="${color}" stroke-opacity="0.4" stroke-width="1.5" stroke-dasharray="2,2"/><polyline points="4,4 20,22 36,10 52,22 68,4" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  };
+  return icons[type] || icons.range;
+}
+
+/* ---- PATTERN DETECTION: pure local math, no AI, runs entirely offline ---- */
+function findSwings(lookback){
+  const arr = candles.slice(-lookback);
+  const highs=[], lows=[];
+  for(let i=2;i<arr.length-2;i++){
+    const c = arr[i];
+    if(c.h>arr[i-1].h && c.h>arr[i-2].h && c.h>arr[i+1].h && c.h>arr[i+2].h) highs.push(c.h);
+    if(c.l<arr[i-1].l && c.l<arr[i-2].l && c.l<arr[i+1].l && c.l<arr[i+2].l) lows.push(c.l);
+  }
+  return {highs, lows};
+}
+function detectPattern(snap){
+  const {highs, lows} = findSwings(35);
+  const distRes = (snap.resistance-snap.lastClose)/snap.lastClose*100;
+  const distSup = (snap.lastClose-snap.support)/snap.lastClose*100;
+  if(highs.length>=2){
+    const h1=highs[highs.length-2], h2=highs[highs.length-1];
+    if(Math.abs(h1-h2)/h2*100 < 0.6 && distRes<1.8) return {type:'doubleTop', label:'Possible Double Top', note:T('Price has tested a very similar high twice and struggled to break through — a classic warning sign for buyers.', 'Price do baar same high pe jaake wapas laut gaya — classic warning hai buyers ke liye, market bol raha hai "bas bhai, itna hi."')};
+  }
+  if(lows.length>=2){
+    const l1=lows[lows.length-2], l2=lows[lows.length-1];
+    if(Math.abs(l1-l2)/l2*100 < 0.6 && distSup<1.8) return {type:'doubleBottom', label:'Possible Double Bottom', note:T('Price has tested a very similar low twice and held — a classic sign buyers are defending this level.', 'Price do baar same low pe jaake bounce kar gaya — buyers dil se is level ko defend kar rahe hain, gate pe security jaisa.')};
+  }
+  if(distRes<0.5) return {type:'nearRes', label:'Testing Resistance', note:T('Price is pressing right into a ceiling it has struggled to break before.', 'Price wahi purani chhat se takra raha hai jise pehle bhi tod nahi paaya — deja vu scene hai, bhai.')};
+  if(distSup<0.5) return {type:'nearSup', label:'Testing Support', note:T('Price is pressing right into a floor that has held before.', 'Price wahi purana floor test kar raha hai jo pehle bhi tika tha — dekhte hain is baar bhi tikta hai ya nahi.')};
+  if(snap.trend==='up') return {type:'up', label:'Higher Highs &amp; Higher Lows', note:T('A clean staircase upward — the textbook definition of an uptrend.', 'Ekdum clean seedhi upar ja rahi hai — textbook wala uptrend, isse achha example milna mushkil hai.')};
+  if(snap.trend==='down') return {type:'down', label:'Lower Highs &amp; Lower Lows', note:T('A clean staircase downward — the textbook definition of a downtrend.', 'Ekdum clean seedhi neeche ja rahi hai — textbook wala downtrend, bilkul copy-paste jaisa.')};
+  return {type:'range', label:'Sideways / Range-bound', note:T('No clean staircase yet — price is chopping between levels.', 'Koi seedhi nahi bani abhi tak bhai — price bas do levels ke beech ping-pong khel raha hai.')};
+}
+
+function updateGuidePanel(){
+  if(guideCollapsed) return;
+  const snap = snapshotMarket();
+  const closes = candles.map(c=>c.c);
+  const distRes = ((snap.resistance-snap.lastClose)/snap.lastClose*100);
+  const distSup = ((snap.lastClose-snap.support)/snap.lastClose*100);
+  const pctFromBottom = Math.max(0,Math.min(100, (distSup/(distSup+distRes||1))*100));
+  const trendColor = snap.trend==='up' ? '#6fcbb4' : snap.trend==='down' ? '#f0a37e' : '#E4BE3E';
+  const rsiColor = snap.rsi>=70 ? '#f0a37e' : snap.rsi<=30 ? '#6fcbb4' : '#E4BE3E';
+  const pattern = detectPattern(snap);
+  const riskColor = simRisk<=2 ? '#6fcbb4' : '#f0a37e';
+  document.getElementById('guideGrid').innerHTML = `
+    <div class="guide-card"><div class="gc-icon">${iconSparkline(closes, trendColor)}</div><div class="gc-label">1 · Trend</div><div class="gc-value">${trendLabel(snap.trend)}</div><div class="gc-note">${trendNote(snap.trend)}</div></div>
+    <div class="guide-card"><div class="gc-icon">${iconGauge(snap.rsi, rsiColor)}</div><div class="gc-label">2 · Momentum (RSI)</div><div class="gc-value">${snap.rsi.toFixed(0)} / 100</div><div class="gc-note">${rsiNote(snap.rsi)}</div></div>
+    <div class="guide-card"><div class="gc-icon">${iconStructure(pctFromBottom, '#E4BE3E')}</div><div class="gc-label">3 · Structure</div><div class="gc-value">${distRes.toFixed(2)}% to ceiling</div><div class="gc-note">${structureNote(distRes,distSup)}</div></div>
+    <div class="guide-card"><div class="gc-icon">${iconPattern(pattern.type, '#E4BE3E')}</div><div class="gc-label">4 · Pattern right now</div><div class="gc-value">${pattern.label}</div><div class="gc-note">${pattern.note}</div></div>
+    <div class="guide-card"><div class="gc-icon">${iconRiskDial(simRisk, riskColor)}</div><div class="gc-label">5 · Your risk setting</div><div class="gc-value">${simRisk}% per trade</div><div class="gc-note">${simRisk<=2 ? T('Within the 1-2% professional guideline. Good.','Mast, 1-2% wale professional rule ke andar hai. Yehi tareeka hai bhai.') : T('Above the recommended 1-2% — beginners especially should lower this.','Bhai ye 1-2% se zyada hai — beginner hoke itna risk? Thoda control kar, account bacha ke rakh.')}</div></div>
+  `;
+}
+const patternExamples = [
+  {type:'up', label:'Uptrend', desc:'Each high and each low is a little higher than the last — a staircase climbing up.'},
+  {type:'down', label:'Downtrend', desc:'Each high and each low is a little lower than the last — a staircase going down.'},
+  {type:'range', label:'Range-bound', desc:'Price bounces sideways between a floor and a ceiling, going nowhere overall.'},
+  {type:'nearSup', label:'Near Support', desc:'Price is pushing down into a floor level that has held (bounced) before.'},
+  {type:'nearRes', label:'Near Resistance', desc:'Price is pushing up into a ceiling level it has failed to break before.'}
+];
+function renderPatternExamples(){
+  document.getElementById('patternExamplesStrip').innerHTML = patternExamples.map(p=>`
+    <div class="pattern-example-card">${iconPattern(p.type,'#E4BE3E')}<b>${p.label}</b><span>${p.desc}</span></div>
+  `).join('');
+}
+renderPatternExamples();
+let guideCollapsed = false;
+document.getElementById('guideCollapse').addEventListener('click', ()=>{
+  guideCollapsed = true;
+  document.getElementById('guidePanel').hidden = true;
+  document.getElementById('guideReopen').hidden = false;
+});
+document.getElementById('guideReopen').addEventListener('click', ()=>{
+  guideCollapsed = false;
+  document.getElementById('guidePanel').hidden = false;
+  document.getElementById('guideReopen').hidden = true;
+  updateGuidePanel();
+});
+document.querySelectorAll('.lang-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    simLang = btn.dataset.lang;
+    updateGuidePanel();
+  });
+});
+const tfPopoverEl = document.getElementById('tfPopover');
+document.getElementById('tfToolBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  newsPopoverEl.hidden = true;
+  tfPopoverEl.hidden = !tfPopoverEl.hidden;
+  if(!tfPopoverEl.hidden) updateRangeStrip();
+});
+document.getElementById('tfPopoverClose').addEventListener('click', ()=>{ tfPopoverEl.hidden = true; });
+const newsPopoverEl = document.getElementById('newsPopover');
+document.getElementById('newsToolBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  tfPopoverEl.hidden = true;
+  newsPopoverEl.hidden = !newsPopoverEl.hidden;
+});
+document.getElementById('newsPopoverClose').addEventListener('click', ()=>{ newsPopoverEl.hidden = true; });
+document.addEventListener('click', (e)=>{
+  if(!tfPopoverEl.hidden && !tfPopoverEl.contains(e.target) && e.target.id!=='tfToolBtn'){ tfPopoverEl.hidden = true; }
+  if(!newsPopoverEl.hidden && !newsPopoverEl.contains(e.target) && e.target.id!=='newsToolBtn'){ newsPopoverEl.hidden = true; }
+});
+function computeSentiment(){
+  const snap = snapshotMarket();
+  let buyers = 50;
+  buyers += snap.trend==='up' ? 15 : snap.trend==='down' ? -15 : 0;
+  buyers += (snap.rsi-50)*0.35;
+  const closes = candles.map(c=>c.c);
+  const recent = closes.slice(-10);
+  const momentumPct = recent.length>1 ? (recent[recent.length-1]-recent[0])/recent[0]*100 : 0;
+  buyers += momentumPct*3;
+  return Math.round(Math.max(8, Math.min(92, buyers)));
+}
+function updateSentimentBar(){
+  const buyEl = document.getElementById('sentBuy');
+  const sellEl = document.getElementById('sentSell');
+  if(!buyEl || !sellEl) return;
+  const buyers = computeSentiment();
+  const sellers = 100-buyers;
+  buyEl.style.width = buyers+'%';
+  sellEl.style.width = sellers+'%';
+  buyEl.textContent = buyers >= 20 ? buyers+'% Buyers' : '';
+  sellEl.textContent = sellers >= 20 ? sellers+'% Sellers' : '';
+}
+
+/* ================================================================
+   LIVE DATA MODE — a genuine fetch attempt, not a fake demo.
+   This WILL fail on the hosted claude.ai page (published pages can only
+   load scripts from a small allowlist and cannot call arbitrary APIs).
+   Download this file, get a free API key from a provider like goldapi.io
+   or metalpriceapi.com, paste it below, and self-host (GitHub Pages,
+   Netlify, or just opening the file) — then this same code goes live.
+================================================================ */
+const LIVE_API_URL = 'https://www.goldapi.io/api/XAU/USD';
+const LIVE_API_KEY = 'PASTE_YOUR_FREE_API_KEY_HERE';
+let liveMode = false;
+let liveInterval = null;
+
+async function fetchLivePrice(){
+  const res = await fetch(LIVE_API_URL, { headers: { 'x-access-token': LIVE_API_KEY, 'Content-Type':'application/json' } });
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const data = await res.json();
+  const price = data.price || data.ask || data.mid;
+  if(!price) throw new Error('No price field in the response — check the API\u2019s current JSON shape.');
+  return price;
+}
+function appendLiveCandle(price){
+  const prev = candles[candles.length-1];
+  const nc = { o: prev.c, h: Math.max(prev.c, price), l: Math.min(prev.c, price), c: price, t: Date.now() };
+  candles.push(nc);
+  if(candles.length>460) candles.shift();
+  drawTerminal(); updateTopStats(); updateRangeStrip(); updateGuidePanel(); updateSentimentBar();
+}
+async function toggleLiveMode(){
+  const btn = document.getElementById('liveModeBtn');
+  const statusEl = document.getElementById('liveModeStatus');
+  if(liveMode){
+    liveMode = false;
+    if(liveInterval){ clearInterval(liveInterval); liveInterval = null; }
+    btn.textContent = '🌐 Try live data';
+    btn.classList.remove('connected');
+    statusEl.hidden = true;
+    return;
+  }
+  btn.textContent = '⏳ Connecting\u2026';
+  try{
+    const price = await fetchLivePrice();
+    liveMode = true;
+    btn.textContent = '🔴 Live — tap to stop';
+    btn.classList.add('connected');
+    statusEl.hidden = true;
+    appendLiveCandle(price);
+    liveInterval = setInterval(async ()=>{
+      try{ const p = await fetchLivePrice(); appendLiveCandle(p); }
+      catch(e){ /* transient network hiccup — keep showing the last known price */ }
+    }, 20000);
+  }catch(err){
+    btn.textContent = '🌐 Try live data';
+    statusEl.hidden = false;
+    statusEl.innerHTML = `Couldn\u2019t reach a live feed from here — likely reason: <b>${(err&&err.message)||'network/CORS blocked'}</b>. This page can only load scripts from a small allowlist and can\u2019t call arbitrary price APIs while hosted on claude.ai. Download this file, get a free key from goldapi.io (or similar), paste it into the <code>LIVE_API_KEY</code> constant near the top of the script, and self-host it (GitHub Pages, Netlify, or just opening the file) — this exact button will then actually go live.`;
+  }
+}
+document.getElementById('liveModeBtn').addEventListener('click', toggleLiveMode);
+
+
+const termCanvas = document.getElementById('termCanvas');
+const termCtx = termCanvas.getContext('2d');
+function drawTerminal(){
+  const w = termCanvas.width, h = termCanvas.height;
+  const rsiH = 75, priceH = h - rsiH - 12;
+  termCtx.clearRect(0,0,w,h);
+  termCtx.fillStyle = '#0d1b2a'; termCtx.fillRect(0,0,w,h);
+  const data = candles.slice(-60);
+  const allPrices = data.flatMap(c=>[c.h,c.l]);
+  const lo = Math.min(...allPrices), hi = Math.max(...allPrices);
+  const pad = (hi-lo)*0.1 || 1;
+  const yMin = lo-pad, yMax = hi+pad;
+  const xStep = w/data.length;
+  const y = v => 10 + priceH - ((v-yMin)/(yMax-yMin))*(priceH-20);
+  const sr = supportResistance();
+  termCtx.setLineDash([4,3]); termCtx.lineWidth=1;
+  termCtx.strokeStyle='rgba(111,203,180,0.55)';
+  termCtx.beginPath(); termCtx.moveTo(0,y(sr.support)); termCtx.lineTo(w,y(sr.support)); termCtx.stroke();
+  termCtx.strokeStyle='rgba(240,163,126,0.55)';
+  termCtx.beginPath(); termCtx.moveTo(0,y(sr.resistance)); termCtx.lineTo(w,y(sr.resistance)); termCtx.stroke();
+  termCtx.setLineDash([]);
+  data.forEach((c,i)=>{
+    const x = i*xStep + xStep/2;
+    const color = c.c>=c.o ? '#2E7D6B' : '#B3532B';
+    termCtx.strokeStyle=color; termCtx.lineWidth=1;
+    termCtx.beginPath(); termCtx.moveTo(x,y(c.h)); termCtx.lineTo(x,y(c.l)); termCtx.stroke();
+    termCtx.fillStyle=color;
+    const bodyTop = y(Math.max(c.o,c.c)), bodyBot = y(Math.min(c.o,c.c));
+    termCtx.fillRect(x-xStep*0.32, bodyTop, xStep*0.64, Math.max(1,bodyBot-bodyTop));
+  });
+  termCtx.strokeStyle = '#E4BE3E'; termCtx.lineWidth=1.5; termCtx.beginPath();
+  const baseIdx = candles.length - data.length;
+  data.forEach((c,i)=>{
+    const upTo = candles.slice(0, baseIdx+i+1).map(cc=>cc.c);
+    const sma = computeSMA(upTo,10);
+    const x = i*xStep+xStep/2;
+    if(i===0) termCtx.moveTo(x,y(sma)); else termCtx.lineTo(x,y(sma));
+  });
+  termCtx.stroke();
+  if(openPosition){
+    termCtx.setLineDash([3,3]);
+    termCtx.strokeStyle = '#6fcbb4';
+    termCtx.beginPath(); termCtx.moveTo(0,y(openPosition.entry)); termCtx.lineTo(w,y(openPosition.entry)); termCtx.stroke();
+    termCtx.strokeStyle = '#f0a37e';
+    termCtx.beginPath(); termCtx.moveTo(0,y(openPosition.stopPrice)); termCtx.lineTo(w,y(openPosition.stopPrice)); termCtx.stroke();
+    termCtx.strokeStyle = '#7fb3ff';
+    termCtx.beginPath(); termCtx.moveTo(0,y(openPosition.tpPrice)); termCtx.lineTo(w,y(openPosition.tpPrice)); termCtx.stroke();
+    termCtx.setLineDash([]);
+  }
+  if(pendingLimit){
+    termCtx.setLineDash([2,3]);
+    termCtx.strokeStyle = '#E4BE3E';
+    termCtx.beginPath(); termCtx.moveTo(0,y(pendingLimit.price)); termCtx.lineTo(w,y(pendingLimit.price)); termCtx.stroke();
+    termCtx.setLineDash([]);
+  }
+  const rsiTop = priceH+18;
+  termCtx.strokeStyle='rgba(255,255,255,0.08)'; termCtx.strokeRect(0,rsiTop,w,rsiH-18);
+  const rsiY = v => rsiTop + (100-v)/100*(rsiH-18);
+  termCtx.setLineDash([3,3]);
+  termCtx.strokeStyle='rgba(240,163,126,0.4)'; termCtx.beginPath(); termCtx.moveTo(0,rsiY(70)); termCtx.lineTo(w,rsiY(70)); termCtx.stroke();
+  termCtx.strokeStyle='rgba(111,203,180,0.4)'; termCtx.beginPath(); termCtx.moveTo(0,rsiY(30)); termCtx.lineTo(w,rsiY(30)); termCtx.stroke();
+  termCtx.setLineDash([]);
+  termCtx.strokeStyle='#E4BE3E'; termCtx.lineWidth=1.3; termCtx.beginPath();
+  data.forEach((c,i)=>{
+    const upTo = candles.slice(0, baseIdx+i+1).map(cc=>cc.c);
+    const rsi = computeRSI(upTo,14);
+    const x=i*xStep+xStep/2;
+    if(i===0) termCtx.moveTo(x,rsiY(rsi)); else termCtx.lineTo(x,rsiY(rsi));
+  });
+  termCtx.stroke();
+  termCtx.fillStyle='rgba(255,255,255,0.45)'; termCtx.font='9px monospace'; termCtx.fillText('RSI', 4, rsiTop+11);
+}
+
+function updateTopStats(){
+  const last = candles[candles.length-1];
+  const first = candles[Math.max(0,candles.length-40)];
+  const price = last.c;
+  const chg = ((price-first.c)/first.c*100);
+  document.getElementById('termPrice').textContent = '$'+price.toFixed(2);
+  document.getElementById('wlPrice').textContent = price.toFixed(2);
+  const chgEl = document.getElementById('termChange');
+  chgEl.textContent = (chg>=0?'+':'')+chg.toFixed(2)+'%';
+  chgEl.className = 'terminal-change ' + (chg>=0?'up':'down');
+  if(orderType==='limit'){
+    const off = parseFloat(document.getElementById('limitSlider').value);
+    document.getElementById('limitValue').textContent = '$'+(price*(1+off/100)).toFixed(2);
+  }
+}
+
+function timeframeStats(windowMs){
+  if(candles.length===0) return null;
+  const now = candles[candles.length-1].t || Date.now();
+  const win = candles.filter(c => (now - (c.t||now)) <= windowMs);
+  if(win.length===0) return null;
+  return { high: Math.max(...win.map(c=>c.h)), low: Math.min(...win.map(c=>c.l)), closes: win.map(c=>c.c) };
+}
+function tfVerdict(price, high, low){
+  const range = (high-low) || 0.01;
+  const pct = (price-low)/range;
+  if(pct >= 0.85) return {cls:'high', label:'🔴 Near HIGH — possible sell zone'};
+  if(pct <= 0.15) return {cls:'low', label:'🟢 Near LOW — possible buy zone'};
+  return {cls:'mid', label:'⚪ Mid-range — no edge yet'};
+}
+function updateRangeStrip(){
+  const grid = document.getElementById('tfGrid');
+  if(!grid || candles.length===0) return;
+  const price = candles[candles.length-1].c;
+  const windows = [[60000,'1 minute'],[180000,'3 minutes'],[300000,'5 minutes']];
+  grid.innerHTML = windows.map(([ms,label])=>{
+    const stats = timeframeStats(ms);
+    if(!stats) return `<div class="tf-card"><div class="tf-card-label">${label}</div><div class="gc-note">Gathering data\u2026</div></div>`;
+    const v = tfVerdict(price, stats.high, stats.low);
+    return `<div class="tf-card">
+      <div class="tf-card-label">${label}</div>
+      <div class="tf-card-icon">${iconSparkline(stats.closes, '#E4BE3E')}</div>
+      <div class="tf-card-row tf-high"><span>Highest</span><b>$${stats.high.toFixed(2)}</b></div>
+      <div class="tf-card-row tf-low"><span>Lowest</span><b>$${stats.low.toFixed(2)}</b></div>
+      <div class="tf-verdict ${v.cls}">${v.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function toGrade(score){ return score>=85?'A': score>=70?'B': score>=55?'C': score>=40?'D':'F'; }
+
+function auditEntry(dir, snap, riskPct, stopDistance){
+  let score=50; const good=[], bad=[], improve=[];
+  if(dir==='long'){
+    if(snap.trend==='up'){ score+=20; good.push(T('You went long with the trend — price is above its rising average, so you\u2019re trading with the crowd, not against it.', 'Sahi pakde hai bhai — trend ke saath long liya, price upar hi ja raha hai. Crowd ke saath chal raha hai, akela hero nahi bana.')); }
+    else if(snap.trend==='down'){ score-=20; bad.push(T('You went long against a downtrend — price is below its falling average. This is a counter-trend bet and needs stronger justification than usual.', 'Ye kya kiya bhai — downtrend mein long le liya? Price neeche ja raha hai aur tu upar ki umeed laga baitha hai. Bina strong reason ke ulta tairna hai, doobega.')); improve.push(T('Consider waiting for the trend to actually turn (price reclaiming its average) before buying.', 'Thoda ruk jaa yaar, jab tak trend sach mein palte (price apne average se upar wapas aaye) tab tak wait kar.')); }
+    else { good.push(T('The market is range-bound rather than trending — going long is more reasonable near the bottom of that range.', 'Market range mein hai, trend nahi hai — range ke bottom ke paas long lena thoda samajh aata hai, beech mein lena gamble hai.')); }
+  } else {
+    if(snap.trend==='down'){ score+=20; good.push(T('You went short with the trend — price is below its falling average, trading with the crowd.', 'Badhiya bhai — downtrend ke saath short liya, crowd ke saath hi chal raha hai. Smart move.')); }
+    else if(snap.trend==='up'){ score-=20; bad.push(T('You went short against an uptrend — price is above its rising average. This is a counter-trend bet.', 'Uptrend mein short?! Price upar ja raha hai aur tu neeche ka bet laga raha hai — ye counter-trend gamble hai bhai.')); improve.push(T('Consider waiting for the trend to actually turn before selling.', 'Trend palatne ka wait kar le pehle, fir sell karna — patience rakh yaar.')); }
+    else { good.push(T('The market is range-bound — going short is more reasonable near the top of that range.', 'Market range mein hai — range ke top ke paas short lena zyada sense banata hai.')); }
+  }
+  if(dir==='long'){
+    if(snap.rsi>75){ score-=15; bad.push(T(`RSI is ${snap.rsi.toFixed(0)} — you\u2019re buying into an already overheated move (overbought). This is a classic "chasing" entry.`, `RSI ${snap.rsi.toFixed(0)} hai bhai, tu already garam ho chuke move mein buy kar raha hai (overbought). Classic "chasing" wali galti — party khatam hone ke baad pahuchna.`)); improve.push(T('Waiting for RSI to cool under 70, or for a pullback, usually gives a better entry price.', 'RSI 70 se niche aane ka ya pullback ka wait kar — better price milega, jaldi mein mat kud.')); }
+    else if(snap.rsi<40){ score+=10; good.push(T(`RSI is ${snap.rsi.toFixed(0)} — you\u2019re buying from a relatively cooled-off level, not chasing an extended move.`, `RSI ${snap.rsi.toFixed(0)} hai — thande level se buy kar raha hai, chasing nahi kar raha. Smart entry hai ye.`)); }
+  } else {
+    if(snap.rsi<25){ score-=15; bad.push(T(`RSI is ${snap.rsi.toFixed(0)} — you\u2019re selling into an already oversold move. This is a classic "chasing" entry.`, `RSI ${snap.rsi.toFixed(0)} — already bahut gira hua move hai aur tu ab sell kar raha hai? Classic chasing mistake, bhai.`)); improve.push(T('Waiting for RSI to recover above 30, or for a bounce, usually gives a better entry price.', 'RSI 30 ke upar aane ka ya bounce ka wait kar — patience se better price milega.')); }
+    else if(snap.rsi>60){ score+=10; good.push(T(`RSI is ${snap.rsi.toFixed(0)} — you\u2019re selling from a relatively stretched-up level, not chasing an extended drop.`, `RSI ${snap.rsi.toFixed(0)} — upar khinche hue level se sell kar raha hai, chasing nahi. Theek entry hai.`)); }
+  }
+  const distRes = (snap.resistance-snap.lastClose)/snap.lastClose*100;
+  const distSup = (snap.lastClose-snap.support)/snap.lastClose*100;
+  if(dir==='long' && distRes<0.4){ score-=10; bad.push(T(`Price is sitting right under resistance at $${snap.resistance.toFixed(2)} — buying this close to a ceiling has weaker reward-to-risk unless you\u2019re expecting a breakout.`, `Price $${snap.resistance.toFixed(2)} resistance ke ekdum niche hai — itne paas buy karna chhat se takrane ka risk hai, jab tak breakout ka pakka bharosa na ho.`)); improve.push(T('Wait for a confirmed breakout above resistance, or look for an entry nearer support instead.', 'Confirmed breakout ka wait kar resistance ke upar, ya support ke paas entry dhoond — jaldi mat kar bhai.')); }
+  if(dir==='long' && distSup<0.6){ score+=10; good.push(T(`You\u2019re buying close to support at $${snap.support.toFixed(2)} — a logical place to expect buyers to defend.`, `Support $${snap.support.toFixed(2)} ke paas buy kar raha hai — yahan buyers ke defend karne ka logical chance hai. Sahi jagah dekhi hai.`)); }
+  if(dir==='short' && distSup<0.4){ score-=10; bad.push(T(`Price is sitting right above support at $${snap.support.toFixed(2)} — selling this close to a floor has weaker reward-to-risk unless you\u2019re expecting a breakdown.`, `Price $${snap.support.toFixed(2)} support ke ekdum upar hai — itne paas sell karna floor se takrane jaisa risk hai, jab tak breakdown pakka na ho.`)); improve.push(T('Wait for a confirmed breakdown below support, or look for an entry nearer resistance instead.', 'Confirmed breakdown ka wait kar support ke neeche, ya resistance ke paas entry dhoond.')); }
+  if(dir==='short' && distRes<0.6){ score+=10; good.push(T(`You\u2019re selling close to resistance at $${snap.resistance.toFixed(2)} — a logical place to expect sellers to defend.`, `Resistance $${snap.resistance.toFixed(2)} ke paas sell kar raha hai — sellers ke defend karne ka logical chance hai yahan. Badhiya spot.`)); }
+  if(riskPct<=2){ score+=15; good.push(T(`Risking ${riskPct}% respects the professional 1-2% rule.`, `${riskPct}% risk — professional wala 1-2% rule follow kar raha hai. Yehi discipline hai bhai.`)); }
+  else { score-=Math.min(25,(riskPct-2)*3); bad.push(T(`Risking ${riskPct}% is well above the professional 1-2% guideline — a short losing streak at this size can seriously damage the account.`, `${riskPct}% risk?! Bhai ye professional 1-2% rule se kahi zyada hai — do-teen loss lagatar aaye toh account ka bhatta baith jayega.`)); improve.push(T('Lower your risk % before entering, especially while you\u2019re still building a track record.', 'Risk % kam kar le entry lene se pehle — abhi track record bana raha hai, itna bada bet lene ka time nahi hai.')); }
+  if(stopDistance < snap.avgRangePct*0.7){ score-=10; bad.push(T('Your stop-loss is tighter than the market\u2019s recent typical swing — normal noise could stop you out even if your idea is right.', 'Tera stop-loss market ke normal swing se bhi tight hai — sahi idea hoke bhi random noise mein stop-out ho jayega, bechara.')); improve.push(T('Consider a stop distance closer to, or beyond, the recent average candle range.', 'Stop thoda door rakh, recent average candle range ke barabar ya usse zyada — trade ko saans lene ki jagah de.')); }
+  score = Math.max(0,Math.min(100,score));
+  return {score, grade:toGrade(score), good, bad, improve};
+}
+function exitScore(reason, pnl){
+  if(reason==='tp') return 90;
+  if(reason==='stop') return 55;
+  return pnl>=0 ? 75 : 60;
+}
+function exitNotes(reason, pnl, entryAudit){
+  const good=[], bad=[], improve=[];
+  if(reason==='tp'){ good.push(T('Your take-profit target triggered automatically — a pre-planned exit is exactly how professionals bank gains, no second-guessing required.', 'Take-profit khud trigger ho gaya bhai — pehle se plan kiya hua exit, yehi asli professional style hai. Bina soch-vichar seedha profit bank, mast!')); }
+  else if(reason==='stop'){
+    if(entryAudit.grade==='A'||entryAudit.grade==='B'){ good.push(T('The stop did its job — a small, planned loss on an otherwise well-reasoned entry. This is what a healthy process looks like, even on a losing trade.', 'Stop-loss ne apna kaam kiya bhai — chhota, planned loss hua, wo bhi ek achhi soch wali entry pe. Loss hoke bhi ye healthy process hai, tension mat le.')); }
+    else { improve.push(T('The stop protected you, but the bigger lesson is in tightening up entry selection (see the entry review above), not the exit.', 'Stop ne bacha liya, lekin asli lesson entry mein hai (upar dekh) — exit theek tha, entry mein gadbad thi. Agli baar entry pe dhyaan de.')); }
+  } else {
+    if(pnl>=0){ good.push(T('You closed manually for a profit — locking in gains is never wrong, though compare this to where your take-profit target was to see if you exited early.', 'Manually close karke profit book kiya — kabhi galat nahi hota profit lena. Bas check kar le target se compare karke, kahi jaldi toh nahi nikal gaya.')); }
+    else { good.push(T('Closing a losing trade manually, before the stop, can be a sign of good discipline — you didn\u2019t need to wait for the worst case to act.', 'Stop se pehle hi manually loss wali trade band kar di — ye discipline ki nishani hai, worst case ka wait nahi kiya. Respect, bhai.')); }
+  }
+  return {good,bad,improve};
+}
+function gradeBadgeHtml(grade){ return `<div class="grade-badge grade-${grade}">${grade}</div>`; }
+
+function showEntryAuditToast(dir, audit){
+  const toast = document.getElementById('entryAuditToast');
+  toast.hidden = false;
+  const top = audit.good[0] || audit.bad[0] || 'Position opened.';
+  toast.innerHTML = `<div class="audit-row">${gradeBadgeHtml(audit.grade)}<div><b>Entry check: grade ${audit.grade}</b><br>${top}</div></div>`;
+}
+
+function buildReportHtml(t){
+  const goodAll = [...t.entryAudit.good, ...t.exitNotesData.good];
+  const badAll = [...t.entryAudit.bad, ...t.exitNotesData.bad];
+  const improveAll = [...t.entryAudit.improve, ...t.exitNotesData.improve];
+  return `
+    <div class="tr-head">${gradeBadgeHtml(t.overallGrade)}<div><h3>Trade #${t.id} report — ${t.dir==='long'?'Long':'Short'} ${t.reason==='tp'?'(hit target)':t.reason==='stop'?'(hit stop)':'(closed manually)'}</h3><p>Entry $${t.entry.toFixed(2)} → Exit $${t.exitPrice.toFixed(2)} · P&amp;L ${(t.pnl>=0?'+':'')}$${t.pnl.toFixed(2)} · Risked ${t.riskPct}%</p></div></div>
+    ${goodAll.length?`<div class="tr-section good"><h4>✅ What you did well</h4><ul>${goodAll.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}
+    ${badAll.length?`<div class="tr-section bad"><h4>⚠️ What hurt this trade</h4><ul>${badAll.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}
+    ${improveAll.length?`<div class="tr-section improve"><h4>🔧 What to do differently next time</h4><ul>${improveAll.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}
+    <button class="tr-ask-btn" data-ask-trade="${t.id}" type="button">🎓 Ask Professor about this trade</button>
+  `;
+}
+
+function renderPositionCard(){
+  const card = document.getElementById('positionCard');
+  if(openPosition){
+    const price = candles[candles.length-1].c;
+    const pnlPct = openPosition.dir==='long' ? (price-openPosition.entry)/openPosition.entry*100 : (openPosition.entry-price)/openPosition.entry*100;
+    const openPnl = openPosition.riskAmount * (pnlPct/openPosition.stopDistance);
+    card.className = '';
+    card.innerHTML = `
+      <div class="pos-detail"><span>Direction</span><b>${openPosition.dir==='long'?'LONG':'SHORT'}</b></div>
+      <div class="pos-detail"><span>Entry</span><b>$${openPosition.entry.toFixed(2)}</b></div>
+      <div class="pos-detail"><span>Stop-loss</span><b>$${openPosition.stopPrice.toFixed(2)}</b></div>
+      <div class="pos-detail"><span>Take-profit</span><b>$${openPosition.tpPrice.toFixed(2)}</b></div>
+      <div class="pos-detail"><span>Risked</span><b>${openPosition.riskPct}%</b></div>
+      <div class="pos-detail"><span>Open P&amp;L</span><b style="color:${openPnl>=0?'#6fcbb4':'#f0a37e'}">${(openPnl>=0?'+':'')}$${openPnl.toFixed(2)}</b></div>
+      <button id="simClose" class="btn-close" style="margin-top:10px;width:100%;">Close position</button>
+    `;
+    document.getElementById('simClose').addEventListener('click', ()=> closePosition('manual'));
+  } else if(pendingLimit){
+    card.className = '';
+    card.innerHTML = `
+      <div class="pos-detail"><span>Pending order</span><b>${pendingLimit.dir==='long'?'BUY LIMIT':'SELL LIMIT'}</b></div>
+      <div class="pos-detail"><span>Trigger price</span><b>$${pendingLimit.price.toFixed(2)}</b></div>
+      <div class="pos-detail"><span>Risked (on fill)</span><b>${pendingLimit.riskPct}%</b></div>
+      <button id="cancelLimit" class="btn-close" style="margin-top:10px;width:100%;">Cancel order</button>
+    `;
+    document.getElementById('cancelLimit').addEventListener('click', ()=>{ pendingLimit=null; renderPositionCard(); });
+  } else {
+    card.className = 'position-card-empty';
+    card.innerHTML = 'No open position and no pending order. Head to the Order tab, check the ⓘ Guide, then place a trade.';
+  }
+}
+function renderHistory(){
+  const list = document.getElementById('historyList');
+  if(tradeHistory.length===0){ list.innerHTML = '<div class="hist-empty">No trades yet this session — your audited trade history will build up here.</div>'; return; }
+  list.innerHTML = tradeHistory.slice().reverse().map(t=>`
+    <div class="hist-row" data-hist="${t.id}">
+      ${gradeBadgeHtml(t.overallGrade)}
+      <div class="hist-meta"><b>Trade #${t.id} · ${t.dir==='long'?'Long':'Short'}</b><span>${t.reason==='tp'?'Take-profit':t.reason==='stop'?'Stopped out':'Manual close'}</span></div>
+      <div class="hist-pnl ${t.pnl>=0?'pos':'neg'}">${t.pnl>=0?'+':''}$${t.pnl.toFixed(2)}</div>
+    </div>
+  `).join('');
+  list.querySelectorAll('.hist-row').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const t = tradeHistory.find(x=>x.id===parseInt(row.dataset.hist,10));
+      showTradeReport(t);
+    });
+  });
+}
+function showTradeReport(t){
+  const report = document.getElementById('tradeReport');
+  report.hidden = false;
+  report.innerHTML = buildReportHtml(t);
+  report.scrollIntoView({behavior:'smooth', block:'center'});
+  const askBtn = report.querySelector('[data-ask-trade]');
+  if(askBtn){
+    askBtn.addEventListener('click', ()=>{
+      if(location.hash === '#terminal') history.back(); else closeTerminalScreenUI();
+      askPanelEl.classList.add('open');
+      document.getElementById('askInput').value = `Can you review my trade #${t.id}? I went ${t.dir} at $${t.entry.toFixed(2)}, risked ${t.riskPct}%, and it closed ${t.reason==='tp'?'on my take-profit target':t.reason==='stop'?'on my stop-loss':'manually'} at $${t.exitPrice.toFixed(2)} for ${(t.pnl>=0?'a profit of $':'a loss of $')}${Math.abs(t.pnl).toFixed(2)}. What should I take away from this?`;
+      document.getElementById('askInput').focus();
+    });
+  }
+}
+
+function openMarketPosition(dir){
+  if(openPosition) return;
+  const stopDistance = parseFloat(document.getElementById('slSlider').value);
+  const tpDistance = parseFloat(document.getElementById('tpSlider').value);
+  const price = candles[candles.length-1].c;
+  const riskAmount = simBalance * (simRisk/100);
+  const stopPrice = dir==='long' ? price*(1-stopDistance/100) : price*(1+stopDistance/100);
+  const tpPrice = dir==='long' ? price*(1+tpDistance/100) : price*(1-tpDistance/100);
+  const snap = snapshotMarket();
+  const entryAudit = auditEntry(dir, snap, simRisk, stopDistance);
+  openPosition = {dir, entry:price, riskPct:simRisk, stopDistance, tpDistance, riskAmount, stopPrice, tpPrice, entryAudit, entrySnap:snap};
+  showEntryAuditToast(dir, entryAudit);
+  document.getElementById('simBuy').disabled = true;
+  document.getElementById('simSell').disabled = true;
+  renderPositionCard();
+}
+function armLimitOrder(dir){
+  if(openPosition || pendingLimit) return;
+  const off = parseFloat(document.getElementById('limitSlider').value);
+  const price = candles[candles.length-1].c;
+  const limitPrice = price*(1+off/100);
+  pendingLimit = {dir, price:limitPrice, riskPct:simRisk};
+  const toast = document.getElementById('entryAuditToast');
+  toast.hidden = false;
+  toast.innerHTML = `<div class="audit-row"><div class="grade-badge grade-C">⏳</div><div><b>Limit order armed</b><br>Waiting for price to reach $${limitPrice.toFixed(2)}. I\u2019ll audit the entry the moment it fills — conditions at fill matter more than conditions when you placed the order.</div></div>`;
+  renderPositionCard();
+}
+function checkPendingLimit(){
+  if(!pendingLimit) return;
+  const closes = candles.map(c=>c.c);
+  const prev = closes[closes.length-2], cur = closes[closes.length-1];
+  if(prev===undefined) return;
+  const target = pendingLimit.price;
+  if((prev-target)*(cur-target) <= 0){
+    const dir = pendingLimit.dir;
+    const stopDistance = parseFloat(document.getElementById('slSlider').value);
+    const tpDistance = parseFloat(document.getElementById('tpSlider').value);
+    const riskAmount = simBalance * (pendingLimit.riskPct/100);
+    const stopPrice = dir==='long' ? target*(1-stopDistance/100) : target*(1+stopDistance/100);
+    const tpPrice = dir==='long' ? target*(1+tpDistance/100) : target*(1-tpDistance/100);
+    const snap = snapshotMarket();
+    const entryAudit = auditEntry(dir, snap, pendingLimit.riskPct, stopDistance);
+    openPosition = {dir, entry:target, riskPct:pendingLimit.riskPct, stopDistance, tpDistance, riskAmount, stopPrice, tpPrice, entryAudit, entrySnap:snap};
+    pendingLimit = null;
+    document.getElementById('simBuy').disabled = true;
+    document.getElementById('simSell').disabled = true;
+    showEntryAuditToast(dir, entryAudit);
+    renderPositionCard();
+  }
+}
+function checkOpenPosition(){
+  if(!openPosition) return;
+  const price = candles[candles.length-1].c;
+  const pnlPct = openPosition.dir==='long' ? (price-openPosition.entry)/openPosition.entry*100 : (openPosition.entry-price)/openPosition.entry*100;
+  if(pnlPct <= -openPosition.stopDistance) closePosition('stop');
+  else if(pnlPct >= openPosition.tpDistance) closePosition('tp');
+}
+function closePosition(reason){
+  if(!openPosition) return;
+  const price = candles[candles.length-1].c;
+  const dir = openPosition.dir;
+  const pnlPct = dir==='long' ? (price-openPosition.entry)/openPosition.entry*100 : (openPosition.entry-price)/openPosition.entry*100;
+  let pnl;
+  if(reason==='stop') pnl = -openPosition.riskAmount;
+  else if(reason==='tp') pnl = openPosition.riskAmount * (openPosition.tpDistance/openPosition.stopDistance);
+  else pnl = openPosition.riskAmount * (pnlPct/openPosition.stopDistance);
+  simBalance += pnl;
+  const exitData = exitNotes(reason, pnl, openPosition.entryAudit);
+  const overallScore = Math.round(openPosition.entryAudit.score*0.6 + exitScore(reason,pnl)*0.4);
+  tradeCounter++;
+  const record = { id:tradeCounter, dir, entry:openPosition.entry, exitPrice:price, riskPct:openPosition.riskPct, reason, pnl, entryAudit:openPosition.entryAudit, exitNotesData:exitData, overallGrade:toGrade(overallScore) };
+  tradeHistory.push(record);
+  showTradeReport(record);
+  renderHistory();
+  openPosition = null;
+  document.getElementById('simBuy').disabled = false;
+  document.getElementById('simSell').disabled = false;
+  document.getElementById('entryAuditToast').hidden = true;
+  renderPositionCard();
+  document.getElementById('simBalance').textContent = '$'+simBalance.toFixed(2);
+  if(simBalance<=0){ simBalance = 10000; document.getElementById('simBalance').textContent = '$'+simBalance.toFixed(2); }
+  updateScoreBadge();
+}
+
+function terminalTick(){
+  const last = candles[candles.length-1];
+  const nc = nextCandle(last.c);
+  nc.t = Date.now();
+  candles.push(nc);
+  if(candles.length>460) candles.shift();
+  drawTerminal();
+  updateTopStats();
+  updateRangeStrip();
+  checkPendingLimit();
+  checkOpenPosition();
+  updateGuidePanel();
+  updateSentimentBar();
+  updateScoreBadge();
+}
+setInterval(terminalTick, 700);
+
+document.querySelectorAll('.risk-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ document.querySelectorAll('.risk-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); simRisk = parseFloat(btn.dataset.risk); updateGuidePanel(); });
+});
+document.getElementById('levSlider').addEventListener('input', (e)=>{ document.getElementById('levValue').textContent = e.target.value+'x'; });
+document.getElementById('slSlider').addEventListener('input', (e)=>{ document.getElementById('slValue').textContent = parseFloat(e.target.value).toFixed(1)+'%'; });
+document.getElementById('tpSlider').addEventListener('input', (e)=>{ document.getElementById('tpValue').textContent = parseFloat(e.target.value).toFixed(1)+'%'; });
+document.getElementById('limitSlider').addEventListener('input', ()=> updateTopStats());
+document.querySelectorAll('.info-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ const info = document.getElementById('info-'+btn.dataset.info); if(info) info.hidden = !info.hidden; });
+});
+document.querySelectorAll('.ot-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.ot-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    orderType = btn.dataset.ot;
+    document.getElementById('limitRow').hidden = orderType!=='limit';
+    updateTopStats();
+  });
+});
+document.querySelectorAll('.tt-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tt-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.ticket-panel').forEach(p=>p.hidden=true);
+    document.getElementById('panel-'+btn.dataset.tab).hidden = false;
+    if(btn.dataset.tab==='positions') renderPositionCard();
+    if(btn.dataset.tab==='history') renderHistory();
+  });
+});
+document.getElementById('simBuy').addEventListener('click', ()=> orderType==='limit' ? armLimitOrder('long') : openMarketPosition('long'));
+document.getElementById('simSell').addEventListener('click', ()=> orderType==='limit' ? armLimitOrder('short') : openMarketPosition('short'));
+document.getElementById('simReset').addEventListener('click', ()=>{
+  simBalance = 10000; openPosition = null; pendingLimit = null; tradeHistory = []; tradeCounter = 0;
+  candles = [{o:4335.7,h:4336.7,l:4334.7,c:4335.7,t:Date.now()-46*700}];
+  for(let i=0;i<45;i++){ const nc = nextCandle(candles[candles.length-1].c); nc.t = Date.now()-(45-i)*700; candles.push(nc); }
+  document.getElementById('simBalance').textContent = '$10,000.00';
+  document.getElementById('simBuy').disabled = false;
+  document.getElementById('simSell').disabled = false;
+  document.getElementById('entryAuditToast').hidden = true;
+  document.getElementById('tradeReport').hidden = true;
+  renderPositionCard();
+  renderHistory();
+  updateScoreBadge();
+  updateRangeStrip();
+});
+drawTerminal();
+updateTopStats();
+renderPositionCard();
+updateSentimentBar();
+updateScoreBadge();
+updateRangeStrip();
+
+/* FULL-SCREEN APP NAVIGATION for the terminal */
+const terminalScreenEl = document.getElementById('terminalScreen');
+function openTerminalScreen(){
+  document.body.classList.add('terminal-open');
+  terminalScreenEl.classList.add('open');
+  if(location.hash !== '#terminal') history.pushState({terminal:true}, '', '#terminal');
+  drawTerminal(); updateTopStats(); renderPositionCard(); updateRangeStrip();
+  if(!document.getElementById('guidePanel').hidden) updateGuidePanel();
+}
+function closeTerminalScreenUI(){
+  document.body.classList.remove('terminal-open');
+  terminalScreenEl.classList.remove('open');
+}
+document.getElementById('launchTerminal').addEventListener('click', openTerminalScreen);
+document.getElementById('heroLaunchTerminal').addEventListener('click', openTerminalScreen);
+document.getElementById('terminalBack').addEventListener('click', ()=>{
+  if(location.hash === '#terminal') history.back();
+  else closeTerminalScreenUI();
+});
+window.addEventListener('popstate', ()=>{
+  if(location.hash !== '#terminal') closeTerminalScreenUI();
+  else { terminalScreenEl.classList.add('open'); document.body.classList.add('terminal-open'); }
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape' && terminalScreenEl.classList.contains('open')){
+    if(location.hash === '#terminal') history.back(); else closeTerminalScreenUI();
+  }
+});
+
+
+/* ASK PROFESSOR */
+let sampleFn = null;
+(async ()=>{ try{ if(window.claude && window.claude.use){ sampleFn = await window.claude.use('sample'); } }catch(e){ sampleFn = null; } })();
+function courseContext(){ return lectures.map((L,i)=>`${i+1}. [${L.tier}] ${L.title} — ${L.take}`).join('\n'); }
+function localFallbackAnswer(q){
+  const qlow = q.toLowerCase();
+  const words = qlow.split(/\W+/).filter(w=>w.length>3);
+  let best=null, bestScore=-1;
+  lectures.forEach(L=>{
+    const hay = (L.title+' '+L.tag+' '+L.take+' '+stripHtml(L.text[currentMode])).toLowerCase();
+    let score=0; words.forEach(w=>{ if(hay.includes(w)) score++; });
+    if(score>bestScore){ bestScore=score; best=L; }
+  });
+  if(best && bestScore>0) return `Here's the closest thing we've covered — <strong>${best.title}</strong>: ${best.take} Scroll up to that lecture (${best.tier} guide) for the full explanation in your current mode.`;
+  return `I don't have a direct answer cached in this view, but try the lecture closest to your question above, or rephrase and ask again — I'm listening.`;
+}
+function addMsg(role, html){
+  const body = document.getElementById('askBody');
+  const div = document.createElement('div');
+  div.className = 'ask-msg ' + (role==='user' ? 'user' : 'prof');
+  div.innerHTML = html;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+  return div;
+}
+async function askProfessor(question){
+  addMsg('user', question);
+  const thinkingEl = addMsg('prof', 'Thinking…');
+  const body = document.getElementById('askBody');
+  if(chatProvider === 'site'){ thinkingEl.innerHTML = localFallbackAnswer(question); body.scrollTop = 999999; return; }
+  let notePrefix = '';
+  if(chatProvider === 'gemini'){ notePrefix = `<span class="provider-note">Gemini isn't connected inside this page yet, so I'm answering with Claude instead:</span>`; }
+  if(sampleFn){
+    try{
+      const modeName = {layman:'simple layman language, no jargon', kitchen:'a cooking/kitchen analogy', plain:'clear plain professional English', hinglish:'casual modern Hinglish (Hindi-English mix)'}[currentMode];
+      const prompt = `You are Professor Robert Shiller teaching a trading course called "Trading DNA". Answer the student's question about trading or markets concisely (under 130 words), warmly, and in ${modeName}. Only answer trading/finance/markets education questions; if the question is unrelated or asks for advice on a specific live trade, gently redirect toward general educational concepts instead.\n\nCourse lectures for reference:\n${courseContext()}\n\nStudent question: ${question}`;
+      const res = await sampleFn(prompt, {modelTier:'quick', cache:false, onText:({text})=>{ thinkingEl.innerHTML = notePrefix + text; body.scrollTop = 999999; }});
+      thinkingEl.innerHTML = notePrefix + res.text;
+    }catch(err){ thinkingEl.innerHTML = notePrefix + localFallbackAnswer(question); }
+  } else {
+    setTimeout(()=>{ thinkingEl.innerHTML = notePrefix + localFallbackAnswer(question); body.scrollTop = 999999; }, 450);
+  }
+  body.scrollTop = 999999;
+}
+const askPanelEl = document.getElementById('askPanel');
+document.getElementById('askFab').addEventListener('click', ()=>{ askPanelEl.classList.toggle('open'); if(askPanelEl.classList.contains('open')) document.getElementById('askInput').focus(); });
+document.getElementById('askClose').addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); askPanelEl.classList.remove('open'); });
+let chatProvider = 'claude';
+document.querySelectorAll('.provider-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ document.querySelectorAll('.provider-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); chatProvider = btn.dataset.provider; });
+});
+document.getElementById('askForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const input = document.getElementById('askInput');
+  const q = input.value.trim();
+  if(!q) return;
+  input.value = '';
+  askProfessor(q);
+});
+</script>
+</body>
+</html>
