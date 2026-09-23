@@ -1556,24 +1556,29 @@ function updateSentimentBar(){
 }
 
 /* ================================================================
-   LIVE DATA MODE — a genuine fetch attempt, not a fake demo.
-   This WILL fail on the hosted claude.ai page (published pages can only
-   load scripts from a small allowlist and cannot call arbitrary APIs).
-   Download this file, get a free API key from a provider like goldapi.io
-   or metalpriceapi.com, paste it below, and self-host (GitHub Pages,
-   Netlify, or just opening the file) — then this same code goes live.
+   LIVE DATA MODE — calls YOUR OWN proxy, never GoldAPI directly.
+   Why: this file is meant to be published (e.g. GitHub Pages), where
+   anyone can view-source it. A raw API key in client-side JS on a
+   public site is visible to every visitor and gets scraped/abused
+   fast. So this calls a small serverless proxy that holds the real
+   key server-side (see gold-price-proxy-worker.js — a free
+   Cloudflare Worker you deploy once). Until you set LIVE_PROXY_URL
+   below to your deployed worker's address, this button will
+   correctly fail with an explanation rather than pretend to work.
 ================================================================ */
-const LIVE_API_URL = 'https://www.goldapi.io/api/XAU/USD';
-const LIVE_API_KEY = 'PASTE_YOUR_FREE_API_KEY_HERE';
+const LIVE_PROXY_URL = 'https://trading-dna-proxy.tz-prasant-official.workers.dev/gold'; // e.g. https://gold-price-proxy.yourname.workers.dev
 let liveMode = false;
 let liveInterval = null;
 
 async function fetchLivePrice(){
-  const res = await fetch(LIVE_API_URL, { headers: { 'x-access-token': LIVE_API_KEY, 'Content-Type':'application/json' } });
+  if(!LIVE_PROXY_URL || LIVE_PROXY_URL.indexOf('PASTE_YOUR') === 0){
+    throw new Error('No proxy configured yet — set LIVE_PROXY_URL (see gold-price-proxy-worker.js for setup steps).');
+  }
+  const res = await fetch(LIVE_PROXY_URL);
   if(!res.ok) throw new Error('HTTP '+res.status);
   const data = await res.json();
   const price = data.price || data.ask || data.mid;
-  if(!price) throw new Error('No price field in the response — check the API\u2019s current JSON shape.');
+  if(!price) throw new Error(data.error || 'No price field in the response.');
   return price;
 }
 function appendLiveCandle(price){
@@ -1609,7 +1614,7 @@ async function toggleLiveMode(){
   }catch(err){
     btn.textContent = '🌐 Try live data';
     statusEl.hidden = false;
-    statusEl.innerHTML = `Couldn\u2019t reach a live feed from here — likely reason: <b>${(err&&err.message)||'network/CORS blocked'}</b>. This page can only load scripts from a small allowlist and can\u2019t call arbitrary price APIs while hosted on claude.ai. Download this file, get a free key from goldapi.io (or similar), paste it into the <code>LIVE_API_KEY</code> constant near the top of the script, and self-host it (GitHub Pages, Netlify, or just opening the file) — this exact button will then actually go live.`;
+    statusEl.innerHTML = `Couldn\u2019t reach live data — <b>${(err&&err.message)||'network blocked'}</b>. This site calls a proxy (see <code>gold-price-proxy-worker.js</code>) instead of putting an API key in public JavaScript. Deploy the free Cloudflare Worker once, set <code>LIVE_PROXY_URL</code> to its address, and every visitor to your site will share real live gold data safely.`;
   }
 }
 document.getElementById('liveModeBtn').addEventListener('click', toggleLiveMode);
@@ -2085,8 +2090,32 @@ async function askProfessor(question){
   const thinkingEl = addMsg('prof', 'Thinking…');
   const body = document.getElementById('askBody');
   if(chatProvider === 'site'){ thinkingEl.innerHTML = localFallbackAnswer(question); body.scrollTop = 999999; return; }
-  let notePrefix = '';
-  if(chatProvider === 'gemini'){ notePrefix = `<span class="provider-note">Gemini isn't connected inside this page yet, so I'm answering with Claude instead:</span>`; }
+  let geminiFallbackNote = '';
+
+  if(chatProvider === 'gemini'){
+    const configured = CHAT_PROXY_URL && CHAT_PROXY_URL.indexOf('PASTE_YOUR') !== 0;
+    if(configured){
+      try{
+        const res = await fetch(CHAT_PROXY_URL, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ question, mode: currentMode })
+        });
+        const data = await res.json();
+        if(!res.ok || data.error) throw new Error(data.error || ('HTTP '+res.status));
+        const searchNote = data.usedSearch ? `<span class="provider-note">🌐 Answered with a live web search + Gemini:</span>` : `<span class="provider-note">Answered with Gemini:</span>`;
+        thinkingEl.innerHTML = searchNote + data.answer;
+        body.scrollTop = 999999;
+        return;
+      }catch(err){
+        geminiFallbackNote = `<span class="provider-note">Live search+Gemini failed (${err.message}) — falling back to Claude:</span>`;
+      }
+    } else {
+      geminiFallbackNote = `<span class="provider-note">Gemini proxy isn't configured yet (set CHAT_PROXY_URL near the top of the script) — answering with Claude instead:</span>`;
+    }
+  }
+
+  let notePrefix = geminiFallbackNote;
   if(sampleFn){
     try{
       const modeName = {layman:'simple layman language, no jargon', kitchen:'a cooking/kitchen analogy', plain:'clear plain professional English', hinglish:'casual modern Hinglish (Hindi-English mix)'}[currentMode];
@@ -2103,6 +2132,7 @@ const askPanelEl = document.getElementById('askPanel');
 document.getElementById('askFab').addEventListener('click', ()=>{ askPanelEl.classList.toggle('open'); if(askPanelEl.classList.contains('open')) document.getElementById('askInput').focus(); });
 document.getElementById('askClose').addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); askPanelEl.classList.remove('open'); });
 let chatProvider = 'claude';
+const CHAT_PROXY_URL = 'https://trading-dna-proxy.tz-prasant-official.workers.dev/chat'; // e.g. https://trading-dna-proxy.yourname.workers.dev/chat
 document.querySelectorAll('.provider-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{ document.querySelectorAll('.provider-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); chatProvider = btn.dataset.provider; });
 });
