@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- BUILD MARKER: v2026-admin-dashboard — if you can't find this comment via Ctrl+F in your browser's "View Page Source", you are NOT looking at the current file. -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -40,7 +41,8 @@ button{font-family:inherit; cursor:pointer;}
 .auth-btn.signed-in{background:rgba(201,162,39,0.16); color:var(--gold-bright); border-color:rgba(228,190,62,0.4);}
 .auth-modal{position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; padding:20px;}
 .auth-modal.open{display:flex;}
-.auth-card{background:#16273F; border:1px solid var(--line); border-radius:16px; width:min(360px,100%); padding:20px; box-shadow:0 24px 60px rgba(0,0,0,0.5);}
+[hidden]{display:none !important;} /* author display rules (e.g. .auth-body{display:flex}) must never override the hidden attribute */
+.auth-card{max-height:calc(100dvh - 40px); overflow-y:auto; background:#16273F; border:1px solid var(--line); border-radius:16px; width:min(360px,100%); padding:20px; box-shadow:0 24px 60px rgba(0,0,0,0.5);}
 .auth-head{display:flex; justify-content:space-between; align-items:center; font-family:var(--serif); font-weight:700; font-size:0.98rem; margin-bottom:14px;}
 .auth-head button{background:none; border:none; color:rgba(251,248,241,0.6); font-size:1.1rem; cursor:pointer;}
 .auth-tabs{display:flex; gap:6px; margin-bottom:14px;}
@@ -53,6 +55,39 @@ button{font-family:inherit; cursor:pointer;}
 .auth-note{margin-top:12px; font-size:0.74rem; color:rgba(251,248,241,0.5); line-height:1.4;}
 .auth-signedin{margin-top:14px; display:flex; flex-direction:column; gap:10px;}
 .auth-signedin-email{font-family:var(--mono); font-size:0.82rem; color:var(--gold-bright); text-align:center;}
+/* ============ ADMIN PANEL ============ */
+.admin-fab{position:fixed; left:16px; bottom:calc(16px + env(safe-area-inset-bottom,0px)); z-index:250; background:linear-gradient(135deg,var(--gold-bright),var(--gold)); color:var(--ink); border:none; font-weight:800; font-size:0.82rem; padding:10px 16px; border-radius:999px; box-shadow:0 10px 30px rgba(0,0,0,0.45);}
+.admin-screen{position:fixed; inset:0; z-index:280; background:var(--bg); overflow-y:auto; padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px));}
+.admin-inner{max-width:1080px; margin:0 auto;}
+.admin-top{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
+.admin-top h2{font-family:var(--serif); font-size:1.3rem;}
+.admin-top h2 span{color:var(--gold-bright);}
+.admin-actions{display:flex; gap:8px; flex-wrap:wrap;}
+.admin-btn{background:rgba(251,248,241,0.06); border:1px solid var(--line); color:var(--fg); font-size:0.8rem; font-weight:700; padding:8px 13px; border-radius:9px;}
+.admin-btn:hover{background:rgba(251,248,241,0.12);}
+.admin-btn.gold{background:var(--gold-bright); color:var(--ink); border-color:var(--gold-bright);}
+.admin-btn.danger{color:#f0a37e; border-color:rgba(240,163,126,0.45);}
+.admin-stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:14px;}
+.admin-stat{background:#16273F; border:1px solid var(--line); border-radius:12px; padding:12px 14px;}
+.admin-stat b{display:block; font-family:var(--mono); font-size:1.3rem; color:var(--gold-bright);}
+.admin-stat small{font-size:0.74rem; color:rgba(251,248,241,0.6);}
+.admin-search{width:100%; background:rgba(251,248,241,0.06); border:1px solid var(--line); border-radius:9px; padding:10px 12px; color:var(--fg); font-size:0.88rem; margin-bottom:10px;}
+.admin-table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px;}
+.admin-table{width:100%; border-collapse:collapse; font-size:0.82rem; min-width:640px;}
+.admin-table th{text-align:left; font-family:var(--mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:.05em; color:rgba(251,248,241,0.55); padding:10px 12px; background:#16273F; position:sticky; top:0;}
+.admin-table td{padding:10px 12px; border-top:1px solid var(--line); vertical-align:top;}
+.admin-table tbody tr{cursor:pointer;}
+.admin-table tbody tr:hover{background:rgba(185,140,255,0.08);}
+.admin-msg{font-size:0.82rem; color:rgba(251,248,241,0.7); padding:16px; text-align:center;}
+.admin-msg.err{color:#f0a37e;}
+.admin-detail{margin-top:16px; background:#16273F; border:1px solid var(--line); border-radius:12px; padding:16px;}
+.admin-detail h3{font-family:var(--serif); font-size:1.05rem; margin-bottom:4px;}
+.admin-detail .meta{font-family:var(--mono); font-size:0.74rem; color:rgba(251,248,241,0.6); margin-bottom:12px; word-break:break-all;}
+.admin-edit{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:14px;}
+.admin-edit label{font-size:0.78rem; color:rgba(251,248,241,0.7);}
+.admin-edit input{width:130px; background:rgba(251,248,241,0.06); border:1px solid var(--line); border-radius:8px; padding:8px 10px; color:var(--fg); font-family:var(--mono); font-size:0.85rem;}
+.admin-trades{font-family:var(--mono); font-size:0.74rem; max-height:320px; overflow:auto;}
+.admin-trades div{padding:6px 0; border-top:1px dashed var(--line);}
 .mode-switch{display:flex; gap:6px; background:rgba(251,248,241,0.06); padding:4px; border-radius:999px; flex-wrap:wrap;}
 .mode-btn{border:none; background:transparent; color:rgba(251,248,241,0.65); font-size:0.78rem; font-weight:600; padding:8px 13px; border-radius:999px; transition:.2s ease; white-space:nowrap;}
 .mode-btn:hover{color:var(--fg);}
@@ -591,6 +626,86 @@ input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; 
   </footer>
 </div>
 
+<!-- Auth modal lives OUTSIDE #mainApp: a child of a [hidden] parent can never be shown, even with position:fixed. -->
+<div class="auth-modal" id="authModal">
+  <div class="auth-card">
+    <div class="auth-head">
+      <span>👤 Your B2P in Trade Account</span>
+      <button class="auth-close" id="authClose" type="button" aria-label="Close">✕</button>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-authtab="signin" type="button">Sign In</button>
+      <button class="auth-tab" data-authtab="register" type="button">Register</button>
+    </div>
+    <div class="auth-body" id="authBodySignin">
+      <input type="text" id="signinEmail" placeholder="Username or Email" autocomplete="username" />
+      <input type="password" id="signinPassword" placeholder="Password" autocomplete="current-password" />
+      <div class="auth-remember-row"><input type="checkbox" id="signinRemember" checked /><label for="signinRemember">Remember me on this device</label></div>
+      <button class="auth-submit" id="signinSubmit" type="button">Sign In</button>
+      <div class="auth-divider">or</div>
+      <button class="auth-google-btn" id="googleSigninBtn" type="button"><span>🔵</span> Continue with Google</button>
+    </div>
+    <div class="auth-body" id="authBodyRegister" hidden>
+      <input type="text" id="registerName" placeholder="Full name" autocomplete="name" />
+      <input type="tel" id="registerMobile" placeholder="Mobile number" autocomplete="tel" />
+      <input type="email" id="registerEmail" placeholder="Email" autocomplete="email" />
+      <input type="password" id="registerPassword" placeholder="Password (6+ characters)" autocomplete="new-password" />
+      <input type="password" id="registerPassword2" placeholder="Confirm password" autocomplete="new-password" />
+      <button class="auth-submit" id="registerSubmit" type="button">Create Account</button>
+      <div class="auth-divider">or</div>
+      <button class="auth-google-btn" id="googleRegisterBtn" type="button"><span>🔵</span> Continue with Google</button>
+    </div>
+    <div class="auth-error" id="authError" hidden></div>
+    <div class="auth-note">Your balance, trade history, and quiz score are saved to your account and follow you across devices once you sign in.</div>
+    <div class="auth-signedin" id="authSignedIn" hidden>
+      <div class="auth-signedin-email" id="authEmailDisplay"></div>
+      <button class="auth-submit" id="signOutBtn" type="button">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN (only visible to accounts Firestore rules treat as admin) ============ -->
+<button class="admin-fab" id="adminFab" type="button" hidden>🛡️ Admin</button>
+<div class="admin-screen" id="adminScreen" hidden>
+  <div class="admin-inner">
+    <div class="admin-top">
+      <h2>🛡️ <span>Admin</span> Dashboard</h2>
+      <div class="admin-actions">
+        <button class="admin-btn" id="adminRefresh" type="button">↻ Refresh</button>
+        <button class="admin-btn" id="adminExport" type="button">⬇ Export CSV</button>
+        <button class="admin-btn gold" id="adminClose" type="button">✕ Close</button>
+      </div>
+    </div>
+    <div class="admin-stats">
+      <div class="admin-stat"><b id="admStatUsers">–</b><small>Registered students</small></div>
+      <div class="admin-stat"><b id="admStatNew">–</b><small>Joined in last 7 days</small></div>
+      <div class="admin-stat"><b id="admStatQuiz">–</b><small>Average quiz score</small></div>
+      <div class="admin-stat"><b id="admStatBal">–</b><small>Average demo balance</small></div>
+    </div>
+    <input class="admin-search" id="adminSearch" type="search" placeholder="Search by name, email or mobile…" autocomplete="off" />
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Balance</th><th>Quiz</th><th>Joined</th><th>Last active</th></tr></thead>
+        <tbody id="adminTbody"></tbody>
+      </table>
+      <div class="admin-msg" id="adminMsg">Loading…</div>
+    </div>
+    <div class="admin-detail" id="adminDetail" hidden>
+      <h3 id="admDetName"></h3>
+      <div class="meta" id="admDetMeta"></div>
+      <div class="admin-edit">
+        <label for="admDetBalance">Demo balance $</label><input id="admDetBalance" type="number" step="0.01" min="0" />
+        <label for="admDetQuiz">Quiz score</label><input id="admDetQuiz" type="number" step="1" min="0" />
+        <button class="admin-btn gold" id="admDetSave" type="button">Save</button>
+        <button class="admin-btn danger" id="admDetReset" type="button">Reset account</button>
+      </div>
+      <div class="admin-msg" id="admDetStatus" hidden></div>
+      <div style="font-weight:700; font-size:0.85rem; margin-bottom:6px;">Recent trades</div>
+      <div class="admin-trades" id="admDetTrades"></div>
+    </div>
+  </div>
+</div>
+
 <div id="mainApp" hidden>
 <div class="topbar">
   <div class="topbar-inner">
@@ -730,43 +845,6 @@ input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; 
     <input id="askInput" type="text" placeholder="Ask a question..." autocomplete="off" />
     <button type="submit">Send</button>
   </form>
-</div>
-
-<div class="auth-modal" id="authModal">
-  <div class="auth-card">
-    <div class="auth-head">
-      <span>👤 Your B2P in Trade Account</span>
-      <button class="auth-close" id="authClose" type="button" aria-label="Close">✕</button>
-    </div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" data-authtab="signin" type="button">Sign In</button>
-      <button class="auth-tab" data-authtab="register" type="button">Register</button>
-    </div>
-    <div class="auth-body" id="authBodySignin">
-      <input type="text" id="signinEmail" placeholder="Username or Email" autocomplete="username" />
-      <input type="password" id="signinPassword" placeholder="Password" autocomplete="current-password" />
-      <div class="auth-remember-row"><input type="checkbox" id="signinRemember" checked /><label for="signinRemember">Remember me on this device</label></div>
-      <button class="auth-submit" id="signinSubmit" type="button">Sign In</button>
-      <div class="auth-divider">or</div>
-      <button class="auth-google-btn" id="googleSigninBtn" type="button"><span>🔵</span> Continue with Google</button>
-    </div>
-    <div class="auth-body" id="authBodyRegister" hidden>
-      <input type="text" id="registerName" placeholder="Full name" autocomplete="name" />
-      <input type="tel" id="registerMobile" placeholder="Mobile number" autocomplete="tel" />
-      <input type="email" id="registerEmail" placeholder="Email" autocomplete="email" />
-      <input type="password" id="registerPassword" placeholder="Password (6+ characters)" autocomplete="new-password" />
-      <input type="password" id="registerPassword2" placeholder="Confirm password" autocomplete="new-password" />
-      <button class="auth-submit" id="registerSubmit" type="button">Create Account</button>
-      <div class="auth-divider">or</div>
-      <button class="auth-google-btn" id="googleRegisterBtn" type="button"><span>🔵</span> Continue with Google</button>
-    </div>
-    <div class="auth-error" id="authError" hidden></div>
-    <div class="auth-note">Your balance, trade history, and quiz score are saved to your account and follow you across devices once you sign in.</div>
-    <div class="auth-signedin" id="authSignedIn" hidden>
-      <div class="auth-signedin-email" id="authEmailDisplay"></div>
-      <button class="auth-submit" id="signOutBtn" type="button">Sign Out</button>
-    </div>
-  </div>
 </div>
 
 <div class="app-screen" id="terminalScreen">
@@ -2501,6 +2579,7 @@ if(fbAuth){
   fbAuth.onAuthStateChanged((user)=>{
     fbUser = user;
     updateAuthButton();
+    checkAdmin(user);
     const signedInBox = document.getElementById('authSignedIn');
     const emailDisplay = document.getElementById('authEmailDisplay');
     if(user){
@@ -2647,7 +2726,7 @@ function enterApp(destination){
   }
 }
 function handleLandingCta(destination){
-  if(fbUser || !firebaseConfigured){ enterApp(destination); return; }
+  if(fbUser || !firebaseConfigured || !fbAuth){ enterApp(destination); return; }
   pendingDestination = destination;
   authModalEl.classList.add('open');
 }
@@ -2656,7 +2735,168 @@ function afterAuthSuccess(){
 }
 ['ctaCourse','ctaCourse2'].forEach(id=> document.getElementById(id).addEventListener('click', ()=> handleLandingCta('course')));
 ['ctaSimulator','ctaSimulator2'].forEach(id=> document.getElementById(id).addEventListener('click', ()=> handleLandingCta('simulator')));
-document.getElementById('landingAuthBtn').addEventListener('click', ()=>{ authErr(''); authModalEl.classList.add('open'); });
+document.getElementById('landingAuthBtn').addEventListener('click', ()=>{
+  authErr(fbAuth ? '' : 'Sign-in service couldn\u2019t load (check your connection or ad-blocker). You can still use the course and simulator as a guest.');
+  authModalEl.classList.add('open');
+});
+/* ============ ADMIN DASHBOARD ============
+   Security lives in the Firestore rules (isAdmin() checks a verified email).
+   This code only decides whether to SHOW the button: it probes a query that
+   Firestore refuses for anyone who isn't an admin. Hacking this JS can't
+   reveal any data. */
+let isAdminUser = false, adminUsers = [], adminSelectedUid = null;
+const adminFab = document.getElementById('adminFab');
+const adminScreen = document.getElementById('adminScreen');
+
+async function checkAdmin(user){
+  isAdminUser = false;
+  adminFab.hidden = true;
+  if(!user || !fbDb || !user.emailVerified) return;
+  try{
+    await fbDb.collection('users').limit(1).get();   // denied by rules unless admin
+    isAdminUser = true;
+    adminFab.hidden = false;
+  }catch(e){ /* permission-denied = normal user */ }
+}
+
+function admFmtDate(ts){
+  if(!ts || typeof ts.toDate !== 'function') return '—';
+  const d = ts.toDate();
+  return d.toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric'});
+}
+function admMoney(n){ return typeof n === 'number' ? '$' + n.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2}) : '—'; }
+function admCell(tr, text){ const td = document.createElement('td'); td.textContent = text; tr.appendChild(td); return td; } // textContent = no HTML injection from student-entered names
+
+async function loadAdminUsers(){
+  const msg = document.getElementById('adminMsg');
+  msg.hidden = false; msg.className = 'admin-msg'; msg.textContent = 'Loading students…';
+  try{
+    const snap = await fbDb.collection('users').get();
+    adminUsers = [];
+    snap.forEach(doc => adminUsers.push({ uid: doc.id, ...doc.data() }));
+    adminUsers.sort((a,b) => ((b.createdAt && b.createdAt.seconds) || 0) - ((a.createdAt && a.createdAt.seconds) || 0));
+    renderAdminStats();
+    renderAdminTable();
+  }catch(e){
+    msg.className = 'admin-msg err';
+    msg.textContent = 'Could not load students: ' + e.message;
+  }
+}
+
+function renderAdminStats(){
+  const n = adminUsers.length;
+  const weekAgo = Date.now()/1000 - 7*86400;
+  const quizzes = adminUsers.filter(u => typeof u.quizScore === 'number').map(u => u.quizScore);
+  const bals = adminUsers.filter(u => typeof u.balance === 'number').map(u => u.balance);
+  const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+  document.getElementById('admStatUsers').textContent = n;
+  document.getElementById('admStatNew').textContent = adminUsers.filter(u => u.createdAt && u.createdAt.seconds > weekAgo).length;
+  const q = avg(quizzes); document.getElementById('admStatQuiz').textContent = q === null ? '—' : q.toFixed(1);
+  const b = avg(bals);    document.getElementById('admStatBal').textContent = b === null ? '—' : admMoney(b);
+}
+
+function renderAdminTable(){
+  const tbody = document.getElementById('adminTbody');
+  const msg = document.getElementById('adminMsg');
+  const q = document.getElementById('adminSearch').value.trim().toLowerCase();
+  const rows = adminUsers.filter(u => !q || [u.name,u.email,u.mobile].some(v => (v||'').toString().toLowerCase().includes(q)));
+  tbody.innerHTML = '';
+  rows.forEach(u => {
+    const tr = document.createElement('tr');
+    admCell(tr, u.name || '—'); admCell(tr, u.email || '—'); admCell(tr, u.mobile || '—');
+    admCell(tr, admMoney(u.balance)); admCell(tr, typeof u.quizScore === 'number' ? u.quizScore : '—');
+    admCell(tr, admFmtDate(u.createdAt)); admCell(tr, admFmtDate(u.updatedAt));
+    tr.addEventListener('click', () => openAdminDetail(u.uid));
+    tbody.appendChild(tr);
+  });
+  msg.hidden = rows.length > 0;
+  msg.className = 'admin-msg';
+  msg.textContent = adminUsers.length ? 'No students match that search.' : 'No students have registered yet.';
+}
+
+async function openAdminDetail(uid){
+  const u = adminUsers.find(x => x.uid === uid); if(!u) return;
+  adminSelectedUid = uid;
+  const box = document.getElementById('adminDetail');
+  box.hidden = false;
+  document.getElementById('admDetName').textContent = u.name || u.email || uid;
+  document.getElementById('admDetMeta').textContent = [u.email, u.mobile, 'UID ' + uid].filter(Boolean).join('  ·  ');
+  document.getElementById('admDetBalance').value = typeof u.balance === 'number' ? u.balance.toFixed(2) : '';
+  document.getElementById('admDetQuiz').value = typeof u.quizScore === 'number' ? u.quizScore : '';
+  document.getElementById('admDetStatus').hidden = true;
+  const tradesEl = document.getElementById('admDetTrades');
+  tradesEl.textContent = 'Loading trades…';
+  box.scrollIntoView({behavior:'smooth', block:'start'});
+  try{
+    const snap = await fbDb.collection('users').doc(uid).collection('trades').orderBy('ts','desc').limit(50).get();
+    tradesEl.innerHTML = '';
+    if(snap.empty){ tradesEl.textContent = 'No trades yet.'; return; }
+    snap.forEach(doc => {
+      const t = doc.data();
+      const line = document.createElement('div');
+      const parts = [admFmtDate(t.ts)];
+      if(t.dir) parts.push(String(t.dir).toUpperCase());
+      if(typeof t.entry === 'number') parts.push('entry ' + t.entry.toFixed(2));
+      if(typeof t.exitPrice === 'number') parts.push('exit ' + t.exitPrice.toFixed(2));
+      if(typeof t.pnl === 'number') parts.push('P&L ' + (t.pnl >= 0 ? '+' : '') + admMoney(t.pnl));
+      if(t.reason) parts.push(t.reason === 'tp' ? 'take-profit' : t.reason === 'stop' ? 'stop-loss' : String(t.reason));
+      if(t.overallGrade) parts.push('grade ' + t.overallGrade);
+      line.textContent = parts.join('  ·  ');
+      tradesEl.appendChild(line);
+    });
+  }catch(e){ tradesEl.textContent = 'Could not load trades: ' + e.message; }
+}
+
+function admStatus(text, isErr){
+  const el = document.getElementById('admDetStatus');
+  el.hidden = false; el.className = 'admin-msg' + (isErr ? ' err' : ''); el.textContent = text;
+}
+async function adminSaveUser(patch, label){
+  if(!adminSelectedUid) return;
+  try{
+    await fbDb.collection('users').doc(adminSelectedUid).update({ ...patch, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    const u = adminUsers.find(x => x.uid === adminSelectedUid); Object.assign(u, patch);
+    renderAdminStats(); renderAdminTable();
+    admStatus('✓ ' + label);
+  }catch(e){ admStatus('Save failed: ' + e.message, true); }
+}
+document.getElementById('admDetSave').addEventListener('click', () => {
+  const bal = parseFloat(document.getElementById('admDetBalance').value);
+  const qz = parseInt(document.getElementById('admDetQuiz').value, 10);
+  if(!isFinite(bal) || bal < 0 || !isFinite(qz) || qz < 0){ admStatus('Enter a valid balance and quiz score (0 or more).', true); return; }
+  adminSaveUser({ balance: Math.round(bal*100)/100, quizScore: qz }, 'Saved.');
+});
+document.getElementById('admDetReset').addEventListener('click', () => {
+  const u = adminUsers.find(x => x.uid === adminSelectedUid); if(!u) return;
+  if(!confirm('Reset ' + (u.name || u.email) + ' to $10,000 and quiz score 0? Their trade history stays.')) return;
+  document.getElementById('admDetBalance').value = '10000.00';
+  document.getElementById('admDetQuiz').value = 0;
+  adminSaveUser({ balance: 10000, quizScore: 0, answeredQuizIds: [] }, 'Account reset to $10,000 / quiz 0.');
+});
+
+function exportAdminCsv(){
+  const esc = v => { let s = (v === undefined || v === null) ? '' : String(v); if(/^[=+\-@]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g,'""') + '"'; }; // guard against spreadsheet formula injection
+  const head = ['Name','Email','Mobile','Balance','Quiz score','Joined','Last active','UID'];
+  const lines = [head.map(esc).join(',')].concat(adminUsers.map(u => [u.name,u.email,u.mobile,u.balance,u.quizScore,admFmtDate(u.createdAt),admFmtDate(u.updatedAt),u.uid].map(esc).join(',')));
+  const blob = new Blob(['﻿' + lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'b2p-students-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+adminFab.addEventListener('click', () => {
+  if(!isAdminUser) return;
+  adminScreen.hidden = false;
+  document.body.style.overflow = 'hidden';
+  loadAdminUsers();
+});
+document.getElementById('adminClose').addEventListener('click', () => { adminScreen.hidden = true; document.body.style.overflow = ''; });
+document.getElementById('adminRefresh').addEventListener('click', loadAdminUsers);
+document.getElementById('adminExport').addEventListener('click', exportAdminCsv);
+document.getElementById('adminSearch').addEventListener('input', renderAdminTable);
+
 </script>
 </body>
 </html>
