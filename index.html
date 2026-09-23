@@ -3,10 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Trading DNA — The Shiller Method</title>
+<title>B2P in Trade — Basic 2 Pro in Trade | Aakriti Marketing Agency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<!-- Firebase (Authentication + Firestore) — only loads/works once self-hosted with your own
+     project config below; harmless no-op until then. -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <style>
 :root{
   --ink:#0F1B2D; --paper:#FBF8F1; --gold:#C9A227; --gold-bright:#E4BE3E;
@@ -29,6 +34,24 @@ button{font-family:inherit; cursor:pointer;}
 .brand{display:flex; align-items:center; gap:9px; font-family:var(--serif); font-weight:700; font-size:1.02rem;}
 .brand .mark{width:28px;height:28px; border-radius:50%; background:conic-gradient(from 210deg, var(--gold), var(--rose), var(--teal), var(--gold)); flex-shrink:0;}
 .score-badge{font-family:var(--mono); font-size:0.72rem; background:rgba(201,162,39,0.14); color:var(--gold-bright); padding:6px 10px; border-radius:999px; white-space:nowrap;}
+.auth-btn{font-family:var(--sans); font-size:0.74rem; font-weight:700; background:rgba(46,125,107,0.16); color:#8fdcc4; border:1px solid rgba(111,203,180,0.4); padding:7px 12px; border-radius:999px; white-space:nowrap;}
+.auth-btn:hover{background:rgba(46,125,107,0.26);}
+.auth-btn.signed-in{background:rgba(201,162,39,0.16); color:var(--gold-bright); border-color:rgba(228,190,62,0.4);}
+.auth-modal{position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; padding:20px;}
+.auth-modal.open{display:flex;}
+.auth-card{background:#16273F; border:1px solid var(--line); border-radius:16px; width:min(360px,100%); padding:20px; box-shadow:0 24px 60px rgba(0,0,0,0.5);}
+.auth-head{display:flex; justify-content:space-between; align-items:center; font-family:var(--serif); font-weight:700; font-size:0.98rem; margin-bottom:14px;}
+.auth-head button{background:none; border:none; color:rgba(251,248,241,0.6); font-size:1.1rem; cursor:pointer;}
+.auth-tabs{display:flex; gap:6px; margin-bottom:14px;}
+.auth-tab{flex:1; border:1px solid var(--line); background:transparent; color:rgba(251,248,241,0.7); font-size:0.8rem; font-weight:700; padding:8px; border-radius:9px;}
+.auth-tab.active{background:var(--gold-bright); color:var(--ink); border-color:var(--gold-bright);}
+.auth-body{display:flex; flex-direction:column; gap:9px;}
+.auth-body input{background:rgba(251,248,241,0.06); border:1px solid var(--line); border-radius:9px; padding:10px 12px; color:var(--fg); font-size:0.88rem;}
+.auth-submit{margin-top:4px; background:var(--gold-bright); color:var(--ink); border:none; font-weight:700; padding:11px; border-radius:9px; font-size:0.88rem;}
+.auth-error{margin-top:10px; font-size:0.8rem; color:#f0a37e; background:rgba(179,83,43,0.14); border-left:3px solid #f0a37e; border-radius:0 8px 8px 0; padding:9px 11px;}
+.auth-note{margin-top:12px; font-size:0.74rem; color:rgba(251,248,241,0.5); line-height:1.4;}
+.auth-signedin{margin-top:14px; display:flex; flex-direction:column; gap:10px;}
+.auth-signedin-email{font-family:var(--mono); font-size:0.82rem; color:var(--gold-bright); text-align:center;}
 .mode-switch{display:flex; gap:6px; background:rgba(251,248,241,0.06); padding:4px; border-radius:999px; flex-wrap:wrap;}
 .mode-btn{border:none; background:transparent; color:rgba(251,248,241,0.65); font-size:0.78rem; font-weight:600; padding:8px 13px; border-radius:999px; transition:.2s ease; white-space:nowrap;}
 .mode-btn:hover{color:var(--fg);}
@@ -407,8 +430,9 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 
 <div class="topbar">
   <div class="topbar-inner">
-    <div class="brand"><span class="mark"></span> Trading DNA</div>
+    <div class="brand"><span class="mark"></span> B2P in Trade</div>
     <span class="score-badge" id="scoreBadge">🏅 Quiz 0/18 · 📈 Sim $10,000</span>
+    <button class="auth-btn" id="authBtn" type="button">👤 Sign in to save progress</button>
     <div class="mode-switch" role="tablist" aria-label="Explanation style">
       <button class="mode-btn active" data-mode="layman" role="tab" aria-selected="true">🧠 Layman</button>
       <button class="mode-btn" data-mode="kitchen" role="tab" aria-selected="false">🍳 Kitchen</button>
@@ -498,7 +522,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 
 <footer>
   <div class="wrap">
-    <div>Trading DNA — a foundations course. Educational content only, not financial advice.</div>
+    <div><b>B2P in Trade</b> (Basic 2 Pro in Trade) — a foundations course by Aakriti Marketing Agency. Educational content only, not financial advice.</div>
     <div>Taught in four modes, for every kind of mind.</div>
   </div>
 </footer>
@@ -535,6 +559,35 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
     <input id="askInput" type="text" placeholder="Ask a question..." autocomplete="off" />
     <button type="submit">Send</button>
   </form>
+</div>
+
+<div class="auth-modal" id="authModal">
+  <div class="auth-card">
+    <div class="auth-head">
+      <span>👤 Your B2P in Trade Account</span>
+      <button class="auth-close" id="authClose" type="button" aria-label="Close">✕</button>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-authtab="signin" type="button">Sign In</button>
+      <button class="auth-tab" data-authtab="register" type="button">Register</button>
+    </div>
+    <div class="auth-body" id="authBodySignin">
+      <input type="email" id="signinEmail" placeholder="Email" autocomplete="email" />
+      <input type="password" id="signinPassword" placeholder="Password" autocomplete="current-password" />
+      <button class="auth-submit" id="signinSubmit" type="button">Sign In</button>
+    </div>
+    <div class="auth-body" id="authBodyRegister" hidden>
+      <input type="email" id="registerEmail" placeholder="Email" autocomplete="email" />
+      <input type="password" id="registerPassword" placeholder="Password (6+ characters)" autocomplete="new-password" />
+      <button class="auth-submit" id="registerSubmit" type="button">Create Account</button>
+    </div>
+    <div class="auth-error" id="authError" hidden></div>
+    <div class="auth-note">Your balance, trade history, and quiz score are saved to your account and follow you across devices once you sign in.</div>
+    <div class="auth-signedin" id="authSignedIn" hidden>
+      <div class="auth-signedin-email" id="authEmailDisplay"></div>
+      <button class="auth-submit" id="signOutBtn" type="button">Sign Out</button>
+    </div>
+  </div>
 </div>
 
 <div class="app-screen" id="terminalScreen">
@@ -1123,6 +1176,7 @@ document.querySelectorAll('.quiz-box').forEach(box=>{
       fb.textContent = (isCorrect ? '✅ Correct. ' : '❌ Not quite. ') + (isCorrect ? L.quiz.right : L.quiz.wrong);
       if(isCorrect) quizScore++;
       updateScoreBadge();
+      saveUserSnapshot();
     });
   });
 });
@@ -1949,6 +2003,7 @@ function closePosition(reason){
   tradeCounter++;
   const record = { id:tradeCounter, dir, entry:openPosition.entry, exitPrice:price, riskPct:openPosition.riskPct, reason, pnl, entryAudit:openPosition.entryAudit, exitNotesData:exitData, overallGrade:toGrade(overallScore) };
   tradeHistory.push(record);
+  saveTradeToCloud(record);
   showTradeReport(record);
   renderHistory();
   openPosition = null;
@@ -2013,6 +2068,7 @@ document.getElementById('simReset').addEventListener('click', ()=>{
   simBalance = 10000; openPosition = null; pendingLimit = null; tradeHistory = []; tradeCounter = 0;
   candles = [{o:4335.7,h:4336.7,l:4334.7,c:4335.7,t:Date.now()-46*700}];
   for(let i=0;i<45;i++){ const nc = nextCandle(candles[candles.length-1].c); nc.t = Date.now()-(45-i)*700; candles.push(nc); }
+  saveUserSnapshot();
   document.getElementById('simBalance').textContent = '$10,000.00';
   document.getElementById('simBuy').disabled = false;
   document.getElementById('simSell').disabled = false;
@@ -2119,7 +2175,7 @@ async function askProfessor(question){
   if(sampleFn){
     try{
       const modeName = {layman:'simple layman language, no jargon', kitchen:'a cooking/kitchen analogy', plain:'clear plain professional English', hinglish:'casual modern Hinglish (Hindi-English mix)'}[currentMode];
-      const prompt = `You are Professor Robert Shiller teaching a trading course called "Trading DNA". Answer the student's question about trading or markets concisely (under 130 words), warmly, and in ${modeName}. Only answer trading/finance/markets education questions; if the question is unrelated or asks for advice on a specific live trade, gently redirect toward general educational concepts instead.\n\nCourse lectures for reference:\n${courseContext()}\n\nStudent question: ${question}`;
+      const prompt = `You are Professor Robert Shiller teaching a trading course called "B2P in Trade" (Basic 2 Pro in Trade). Answer the student's question about trading or markets concisely (under 130 words), warmly, and in ${modeName}. Only answer trading/finance/markets education questions; if the question is unrelated or asks for advice on a specific live trade, gently redirect toward general educational concepts instead.\n\nCourse lectures for reference:\n${courseContext()}\n\nStudent question: ${question}`;
       const res = await sampleFn(prompt, {modelTier:'quick', cache:false, onText:({text})=>{ thinkingEl.innerHTML = notePrefix + text; body.scrollTop = 999999; }});
       thinkingEl.innerHTML = notePrefix + res.text;
     }catch(err){ thinkingEl.innerHTML = notePrefix + localFallbackAnswer(question); }
@@ -2143,6 +2199,146 @@ document.getElementById('askForm').addEventListener('submit', (e)=>{
   if(!q) return;
   input.value = '';
   askProfessor(q);
+});
+
+/* ================================================================
+   ACCOUNTS & CLOUD SAVE — Firebase Authentication + Firestore.
+   Paste your project's config below (Firebase console -> Project
+   settings -> Your apps -> the </> web icon -> "firebaseConfig").
+   This config block is safe to be public — Firebase access is
+   controlled by security rules, not by hiding these values.
+   Until you fill this in, the button below simply says so and the
+   app keeps working exactly as before, in local/guest-only mode.
+================================================================ */
+const firebaseConfig = {
+  apiKey: 'AIzaSyB8pp1fMPzjjV745z792Fh0KceqcZ1S1Hk',
+  authDomain: 'b2p-in-trade.firebaseapp.com',
+  projectId: 'b2p-in-trade',
+  storageBucket: 'b2p-in-trade.firebasestorage.app',
+  messagingSenderId: '1057264698263',
+  appId: '1:1057264698263:web:4e700068ad45fbd8b03ad2',
+};
+let fbAuth = null, fbDb = null, fbUser = null;
+const firebaseConfigured = firebaseConfig.apiKey.indexOf('PASTE_YOUR') !== 0;
+if(firebaseConfigured && window.firebase){
+  try{
+    firebase.initializeApp(firebaseConfig);
+    fbAuth = firebase.auth();
+    fbDb = firebase.firestore();
+  }catch(e){ console.warn('Firebase init failed:', e); }
+}
+
+function authErr(msg){
+  const el = document.getElementById('authError');
+  el.hidden = !msg;
+  el.textContent = msg || '';
+}
+function updateAuthButton(){
+  const btn = document.getElementById('authBtn');
+  if(fbUser){ btn.textContent = '👤 ' + fbUser.email; btn.classList.add('signed-in'); }
+  else { btn.textContent = '👤 Sign in to save progress'; btn.classList.remove('signed-in'); }
+}
+async function saveUserSnapshot(){
+  if(!fbDb || !fbUser) return;
+  try{
+    await fbDb.collection('users').doc(fbUser.uid).set({
+      balance: simBalance, quizScore, answeredQuizIds: Array.from(answeredQuizzes),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+  }catch(e){ console.warn('Cloud save (snapshot) failed:', e); }
+}
+async function saveTradeToCloud(trade){
+  if(!fbDb || !fbUser) return;
+  try{
+    await fbDb.collection('users').doc(fbUser.uid).collection('trades').add({
+      ...trade, ts: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    await saveUserSnapshot();
+  }catch(e){ console.warn('Cloud save (trade) failed:', e); }
+}
+async function loadUserData(){
+  if(!fbDb || !fbUser) return;
+  try{
+    const userDoc = await fbDb.collection('users').doc(fbUser.uid).get();
+    if(userDoc.exists){
+      const d = userDoc.data();
+      if(typeof d.balance === 'number'){ simBalance = d.balance; document.getElementById('simBalance').textContent = '$'+simBalance.toFixed(2); }
+      if(typeof d.quizScore === 'number') quizScore = d.quizScore;
+      if(Array.isArray(d.answeredQuizIds)) d.answeredQuizIds.forEach(id=>answeredQuizzes.add(id));
+    }
+    const tradesSnap = await fbDb.collection('users').doc(fbUser.uid).collection('trades').orderBy('ts','desc').limit(100).get();
+    tradeHistory = [];
+    tradesSnap.forEach(doc=>{
+      const t = doc.data();
+      tradeCounter = Math.max(tradeCounter, t.id || 0);
+      tradeHistory.push(t);
+    });
+    tradeHistory.reverse();
+    renderHistory();
+    updateScoreBadge();
+  }catch(e){ console.warn('Cloud load failed:', e); }
+}
+
+if(fbAuth){
+  fbAuth.onAuthStateChanged((user)=>{
+    fbUser = user;
+    updateAuthButton();
+    const signedInBox = document.getElementById('authSignedIn');
+    const emailDisplay = document.getElementById('authEmailDisplay');
+    if(user){
+      signedInBox.hidden = false;
+      emailDisplay.textContent = user.email;
+      document.getElementById('authBodySignin').hidden = true;
+      document.getElementById('authBodyRegister').hidden = true;
+      document.querySelector('.auth-tabs').hidden = true;
+      loadUserData();
+    } else {
+      signedInBox.hidden = true;
+      document.querySelector('.auth-tabs').hidden = false;
+      document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('active', i===0));
+      document.getElementById('authBodySignin').hidden = false;
+      document.getElementById('authBodyRegister').hidden = true;
+    }
+  });
+}
+
+const authModalEl = document.getElementById('authModal');
+document.getElementById('authBtn').addEventListener('click', ()=>{
+  if(!firebaseConfigured){ authErr('Accounts aren\u2019t set up yet — this site\u2019s owner needs to add a Firebase project config. Your progress stays local to this browser for now.'); authModalEl.classList.add('open'); return; }
+  authErr('');
+  authModalEl.classList.add('open');
+});
+document.getElementById('authClose').addEventListener('click', ()=> authModalEl.classList.remove('open'));
+authModalEl.addEventListener('click', (e)=>{ if(e.target===authModalEl) authModalEl.classList.remove('open'); });
+document.querySelectorAll('.auth-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    authErr('');
+    document.getElementById('authBodySignin').hidden = tab.dataset.authtab!=='signin';
+    document.getElementById('authBodyRegister').hidden = tab.dataset.authtab!=='register';
+  });
+});
+document.getElementById('signinSubmit').addEventListener('click', async ()=>{
+  if(!fbAuth) return;
+  const email = document.getElementById('signinEmail').value.trim();
+  const pw = document.getElementById('signinPassword').value;
+  authErr('');
+  try{ await fbAuth.signInWithEmailAndPassword(email, pw); authModalEl.classList.remove('open'); }
+  catch(e){ authErr(e.message); }
+});
+document.getElementById('registerSubmit').addEventListener('click', async ()=>{
+  if(!fbAuth) return;
+  const email = document.getElementById('registerEmail').value.trim();
+  const pw = document.getElementById('registerPassword').value;
+  authErr('');
+  try{ await fbAuth.createUserWithEmailAndPassword(email, pw); authModalEl.classList.remove('open'); }
+  catch(e){ authErr(e.message); }
+});
+document.getElementById('signOutBtn').addEventListener('click', async ()=>{
+  if(!fbAuth) return;
+  await fbAuth.signOut();
+  authModalEl.classList.remove('open');
 });
 </script>
 </body>
