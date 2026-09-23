@@ -499,12 +499,14 @@ body.terminal-open .ask-panel.open{display:flex !important; z-index:400; bottom:
 #mainApp ~ .ask-fab, .ask-fab{background:linear-gradient(135deg,var(--x-violet),var(--x-violet2)) !important;}
 
 /* ---------- Responsive ---------- */
+@media (max-width:1560px){ .xh-chip.score{display:none;} .xh-link{padding:0 11px;} .xh-in{gap:12px;} }
+@media (max-width:1320px){ .xh-ticker .sym, .xh-brand small, .xh-live{display:none;} .xh-link{padding:0 9px; font-size:.86rem;} .xh-sim{padding:0 12px;} }
 @media (max-width:1180px){
-  .xh-chip.score{display:none;}
+  .xh-ticker .sym{display:none;}
   .x-lesson{grid-template-columns:1fr;}
   .x-rail{position:static; display:none;}
 }
-@media (max-width:980px){
+@media (max-width:1100px){
   .xh-nav, .xh-sim, .xh-ticker .ch{display:none;}
   .x-gamebox, .x-quizwrap{grid-template-columns:1fr;}
   .x-simpromo{grid-template-columns:1fr;}
@@ -556,6 +558,40 @@ body.terminal-open .ask-panel.open{display:flex !important; z-index:400; bottom:
   .x-fig{padding:14px;}
 }
 #xQuizArea,#xGameTabs{scroll-margin-top:76px;}
+
+/* ---------- News desk ---------- */
+.xh-live{font-size:.58rem; font-weight:900; letter-spacing:.06em; padding:2px 5px; border-radius:4px; background:rgba(242,71,90,.18); color:#FF8A99;}
+.d{display:inline-block; width:9px; height:9px; border-radius:50%; margin:0 5px 0 8px; vertical-align:middle;}
+.d.lv3, .x-news-item.lv3 .mk{background:#F2475A;} .d.lv2, .x-news-item.lv2 .mk{background:#F5C542;} .d.lv1, .x-news-item.lv1 .mk{background:#3B82F6;}
+.x-news-bar{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:22px 0 10px; align-items:center;}
+.x-news-filters{display:flex; gap:6px; flex-wrap:wrap;}
+.x-news-filters button{height:38px; padding:0 14px; border-radius:10px; border:1px solid var(--x-line); background:var(--x-panel); color:var(--x-sub); font-weight:700; font-size:.82rem; display:flex; align-items:center;}
+.x-news-filters button .d{margin-left:0;}
+.x-news-filters button .n{font-family:var(--x-num); font-size:.7rem; margin-left:8px; padding:1px 6px; border-radius:5px; background:rgba(255,255,255,.07);}
+.x-news-filters button.on{border-color:var(--x-gold); color:var(--x-text); background:rgba(231,192,74,.08);}
+.x-news-tools{display:flex; gap:8px; flex:1; max-width:520px; min-width:260px;}
+.x-news-tools input{flex:1; min-width:0; height:38px; border-radius:10px; border:1px solid var(--x-line); background:var(--x-panel); color:var(--x-text); padding:0 12px; font-size:.86rem;}
+.x-news-meta{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-size:.74rem; color:var(--x-mute); margin-bottom:10px;}
+.x-news-key .d:first-child{margin-left:0;}
+.x-news-list{display:flex; flex-direction:column; gap:8px;}
+.x-news-day{font-size:.72rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--x-gold); margin:16px 0 4px; position:sticky; top:calc(var(--x-head) + 4px); background:var(--x-bg); padding:6px 0; z-index:2;}
+.x-news-item{position:relative; display:flex; gap:14px; align-items:center; padding:14px 16px 14px 20px; border-radius:14px; background:var(--x-panel); border:1px solid var(--x-line); color:var(--x-text); text-decoration:none; overflow:hidden; transition:border-color .15s, transform .15s;}
+.x-news-item:hover{border-color:var(--x-line2); transform:translateX(2px);}
+.x-news-item .mk{position:absolute; left:0; top:0; bottom:0; width:5px;}
+.x-news-item.lv3{background:linear-gradient(90deg,rgba(242,71,90,.10),var(--x-panel) 40%); border-color:rgba(242,71,90,.28);}
+.x-news-item.lv2{background:linear-gradient(90deg,rgba(245,197,66,.08),var(--x-panel) 40%);}
+.x-news-item .nb{flex:1; min-width:0;}
+.x-news-item .nt{font-weight:700; font-size:.95rem; line-height:1.4;}
+.x-news-item .nm{display:flex; gap:6px; flex-wrap:wrap; font-size:.76rem; color:var(--x-mute); margin-top:5px;}
+.x-news-item .nm b{color:var(--x-sub);}
+.x-news-item .ntag{flex-shrink:0; font-size:.64rem; font-weight:900; letter-spacing:.06em; text-transform:uppercase; padding:4px 8px; border-radius:6px;}
+.x-news-item.lv3 .ntag{background:rgba(242,71,90,.16); color:#FF8A99;} .x-news-item.lv2 .ntag{background:rgba(245,197,66,.14); color:#F5C542;} .x-news-item.lv1 .ntag{background:rgba(59,130,246,.14); color:#93C5FD;}
+.x-news-item.compact{padding:10px 12px 10px 16px; border-radius:10px;} .x-news-item.compact .nt{font-size:.84rem;} .x-news-item.compact .ntag{display:none;}
+.xt-newslive{display:flex; flex-direction:column; gap:6px;}
+.x-news-empty{padding:28px; text-align:center; color:var(--x-sub); line-height:1.7; border:1px dashed var(--x-line2); border-radius:14px;}
+.x-news-empty a{color:var(--x-gold);}
+.x-news-note{font-size:.74rem; color:var(--x-mute); margin-top:14px; line-height:1.5;}
+@media (max-width:640px){ .x-news-item .ntag{display:none;} .x-news-item .nt{font-size:.9rem;} .x-news-tools{max-width:none;} .x-news-key{display:none;} .x-news-filters button{height:34px; padding:0 10px; font-size:.76rem;} }
 
 /* =====================================================================
    GOLD TRADE SIMULATOR — pro terminal
@@ -764,6 +800,25 @@ body.terminal-open .ask-fab, body.terminal-open .ask-panel, body.terminal-open .
 }
 @media (min-width:901px){ .xt-btabs button[data-bt=check]{display:none;} }
 
+/* live / simulator mode */
+.xt-mode .sh{display:none;}
+.xt-px .c{white-space:nowrap;}
+.xt-mode{display:flex; padding:3px; gap:3px; border-radius:10px; background:var(--x-bg); border:1px solid var(--x-line); flex-shrink:0;}
+.xt-mode button{height:30px; padding:0 12px; border:none; border-radius:7px; background:none; color:var(--x-sub); font-size:.78rem; font-weight:800; display:flex; align-items:center; gap:6px; white-space:nowrap;}
+.xt-mode button .lv{width:8px; height:8px; border-radius:50%; background:#F2475A; box-shadow:0 0 0 3px rgba(242,71,90,.2);}
+.xt-mode button.on{background:var(--x-elev); color:var(--x-text);}
+.xt-mode button[data-mode=live].on{color:#FF8A99;} .xt-mode button[data-mode=sim].on{color:var(--x-gold);}
+.xt-feed.closed{color:#FFA3AE; border-color:rgba(242,71,90,.4);} .xt-feed.closed i{background:var(--x-down);}
+.xt-closed{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:5; width:min(420px, calc(100% - 32px)); text-align:center; padding:24px; border-radius:18px; background:rgba(14,17,24,.94); border:1px solid var(--x-line2); box-shadow:var(--x-shadow); backdrop-filter:blur(8px);}
+.xt-closed .ic{font-size:2.2rem;}
+.xt-closed b{display:block; font-size:1.1rem; margin:6px 0;}
+.xt-closed p{font-size:.86rem; color:var(--x-sub); line-height:1.55; margin-bottom:14px;}
+.xt-place:disabled{opacity:.45; cursor:not-allowed; filter:grayscale(.6);}
+.xt.xt-loading #xtCanvas{opacity:.35;}
+@media (max-width:900px){ .xt-mode .fl{display:none;} .xt-mode .sh{display:inline !important;} .xt-mode button{padding:0 9px;} .xt-feed span{max-width:74px; overflow:hidden; text-overflow:ellipsis;} }
+@media (max-width:420px){ .xt-feed{display:none;} }
+
+
 </style>
 </head>
 <body>
@@ -949,6 +1004,7 @@ body.terminal-open .ask-fab, body.terminal-open .ask-panel, body.terminal-open .
       </div>
       <button class="xh-link" data-nav="game" data-go="#/game" type="button">🎮 Game</button>
       <button class="xh-link" data-nav="quiz" data-go="#/quiz" type="button">🧠 Quiz</button>
+      <button class="xh-link" data-nav="news" data-go="#/news" type="button">📰 News <span class="xh-live">LIVE</span></button>
       <button class="xh-sim" id="topSimBtn" type="button"><span class="dot"></span>🥇 Gold Trade Simulator</button>
     </nav>
     <div class="xh-right">
@@ -1016,6 +1072,24 @@ body.terminal-open .ask-fab, body.terminal-open .ask-panel, body.terminal-open .
     <div id="xGameArea"></div>
   </section>
 
+  <!-- NEWS -->
+  <section class="x-view" data-view="news">
+    <div class="x-banner"><img src="assets/img/hero_news.webp" alt=""><div><span class="x-kicker">● LIVE · GOLD ONLY</span><h1>Gold News Desk</h1><p>The latest gold headlines from across the web — with date, time and source — ranked by how much they can move the price. Scroll down for older news.</p></div></div>
+    <div class="x-news-bar">
+      <div class="x-news-filters" id="xNewsFilters">
+        <button data-lv="0" class="on" type="button">All <span class="n">0</span></button>
+        <button data-lv="3" type="button"><i class="d lv3"></i>Very important <span class="n">0</span></button>
+        <button data-lv="2" type="button"><i class="d lv2"></i>Important <span class="n">0</span></button>
+        <button data-lv="1" type="button"><i class="d lv1"></i>Normal <span class="n">0</span></button>
+      </div>
+      <div class="x-news-tools"><input id="xNewsSearch" type="search" placeholder="Search headlines — e.g. Fed, CPI, central bank…" autocomplete="off"><button class="x-btn sm" id="xNewsRefresh" type="button">↻ Refresh</button></div>
+    </div>
+    <div class="x-news-meta"><span id="xNewsUpd"></span><span class="x-news-key"><i class="d lv3"></i>Can move gold sharply (Fed, CPI, jobs, war, records) <i class="d lv2"></i>Market-moving context (dollar, yields, central banks, ETFs) <i class="d lv1"></i>General coverage</span></div>
+    <div class="x-news-list" id="xNewsList"></div>
+    <button class="x-btn" id="xNewsMore" type="button" style="width:100%;margin-top:14px">Show older news</button>
+    <p class="x-news-note">Headlines are collected automatically from Google News and link to the original publisher. The importance colour is an automatic keyword rating — always read the article. Educational use only, not financial advice.</p>
+  </section>
+
   <!-- QUIZ -->
   <section class="x-view" data-view="quiz">
     <div class="x-banner"><img src="assets/img/hero_quiz.webp" alt=""><div><span class="x-kicker">TEST YOURSELF</span><h1>The B2P Exam Hall</h1><p>A large bank of questions across all three levels, many with charts. Pick a level, beat the timer and collect badges. Your best score is saved to your account.</p></div></div>
@@ -1033,7 +1107,7 @@ body.terminal-open .ask-fab, body.terminal-open .ask-panel, body.terminal-open .
   <button data-go="#/game" data-nav="game" type="button"><i>🎮</i>Game</button>
   <button class="sim" data-open-sim type="button"><i>🥇</i>Simulator</button>
   <button data-go="#/quiz" data-nav="quiz" type="button"><i>🧠</i>Quiz</button>
-  <button id="xTabAcct" type="button"><i>👤</i>Account</button>
+  <button data-go="#/news" data-nav="news" type="button"><i>📰</i>News</button>
 </nav>
 <button class="ask-fab" id="askFab" aria-label="Ask Professor">🎓</button>
 <div class="ask-panel" id="askPanel">
@@ -1058,6 +1132,7 @@ body.terminal-open .ask-fab, body.terminal-open .ask-panel, body.terminal-open .
   <div class="xt-app">
     <button class="xt-back" id="terminalBack" type="button" aria-label="Close simulator">←</button>
     <div class="xt-sym"><div class="xt-coin">XAU</div><div><b>XAUUSD</b><span>Gold Spot / U.S. Dollar · Demo account</span></div></div>
+    <div class="xt-mode" id="xtMode"><button data-mode="live" type="button" title="Real gold price, virtual money — follows real market hours"><i class="lv"></i><span class="fl">Live demo</span><span class="sh">Live</span></button><button data-mode="sim" type="button" title="Practice market that runs 24/7, even on weekends">🎮 <span class="fl">Simulator</span><span class="sh">Sim</span></button></div>
     <div class="xt-px"><span class="p" id="termPrice">—</span><span class="c" id="termChange">—</span></div>
     <button class="xt-feed sim" id="xtFeed" type="button" title="Data source"><i></i><span>CONNECTING…</span></button>
     <div class="xt-acct">
@@ -1091,7 +1166,7 @@ body.terminal-open .ask-fab, body.terminal-open .ask-panel, body.terminal-open .
       <button class="xt-tb" id="xtIndBtn" type="button"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 16l5-6 4 3 7-9"/><circle cx="7" cy="10" r="1.5"/><circle cx="11" cy="13" r="1.5"/></svg>Indicators</button>
       <button class="xt-tb" id="xtDrawBtn" type="button" title="Drawing tools">✏️ Draw</button>
     </div>
-    <div class="xt-grp">
+    <div class="xt-grp" id="xtSpeedGrp">
       <span class="xt-lbl">SPEED</span>
       <button class="xt-tb" data-speed="1" type="button">1×</button>
       <button class="xt-tb on" data-speed="10" type="button">10×</button>
@@ -1127,6 +1202,7 @@ body.terminal-open .ask-fab, body.terminal-open .ask-panel, body.terminal-open .
       </div>
       <div class="xt-toast" id="entryAuditToast" hidden></div>
       <div class="xt-drawhint" id="xtDrawHint" hidden></div>
+      <div class="xt-closed" id="xtClosed" hidden><div class="ic">🌙</div><b>Gold market is closed</b><p></p><button class="x-btn gold sm" id="xtGoSim" type="button">🎮 Practise in the Simulator</button></div>
     </div>
 
     <div class="xt-bottom">
@@ -1779,15 +1855,19 @@ const XS = {
   side: 'buy', ordType: 'market', auto: true,
   riskPct: 1, slDist: 8, rr: 2, lev: 50, lots: 0.10,
   hover: null, open: false, started: false,
-  lastLossAt: 0,
+  lastLossAt: 0, mode: 'live', backfill: false, liveStartT: 0, prevClose: 0,
 };
 
-/* ---- persistence (guest: this browser; signed in: Firestore too) ---- */
+/* ---- two separate demo accounts: LIVE (real gold price) and SIMULATOR (practice any time) ---- */
+const ACC = { live: { bal:10000, hist:[], cnt:0, pos:[], ord:[] }, sim: { bal:10000, hist:[], cnt:0, pos:[], ord:[] } };
+function syncAcc(){ const a = ACC[XS.mode]; a.bal = simBalance; a.hist = tradeHistory; a.cnt = tradeCounter; a.pos = XS.positions; a.ord = XS.orders; }
+function loadAcc(m){ const a = ACC[m]; simBalance = a.bal; tradeHistory = a.hist; tradeCounter = a.cnt; XS.positions = a.pos; XS.orders = a.ord; }
 function xtSaveLocal(){
+  syncAcc();
   try{
-    localStorage.setItem('b2p_sim_v2', JSON.stringify({
-      bal: simBalance, hist: tradeHistory.slice(-200), cnt: tradeCounter,
-      pos: XS.positions, ord: XS.orders, draw: XS.drawings.slice(-60),
+    const pack = a => ({ bal:a.bal, hist:a.hist.slice(-200), cnt:a.cnt, pos:a.pos, ord:a.ord });
+    localStorage.setItem('b2p_sim_v3', JSON.stringify({
+      mode: XS.mode, accounts: { live: pack(ACC.live), sim: pack(ACC.sim) }, draw: XS.drawings.slice(-60),
       ui: { tf:XS.tf, type:XS.type, ind:XS.ind, speed:XS.speed, risk:XS.riskPct, sl:XS.slDist, rr:XS.rr, lev:XS.lev, auto:XS.auto, lang:simLang },
       nextId: XS.nextId
     }));
@@ -1795,13 +1875,11 @@ function xtSaveLocal(){
 }
 function xtLoadLocal(){
   try{
-    const d = JSON.parse(localStorage.getItem('b2p_sim_v2') || 'null');
+    let d = JSON.parse(localStorage.getItem('b2p_sim_v3') || 'null');
+    if(!d){ const old = JSON.parse(localStorage.getItem('b2p_sim_v2') || 'null'); if(old) d = { accounts:{ sim:{ bal:old.bal, hist:old.hist, cnt:old.cnt, pos:[], ord:[] } }, draw:old.draw, ui:old.ui, nextId:old.nextId }; }
     if(!d) return;
-    if(typeof d.bal === 'number') simBalance = d.bal;
-    if(Array.isArray(d.hist)) tradeHistory = d.hist;
-    tradeCounter = d.cnt || tradeHistory.length;
-    if(Array.isArray(d.pos)) XS.positions = d.pos;
-    if(Array.isArray(d.ord)) XS.orders = d.ord;
+    ['live','sim'].forEach(m => { const a = d.accounts && d.accounts[m]; if(a){ ACC[m] = { bal: typeof a.bal==='number'?a.bal:10000, hist: Array.isArray(a.hist)?a.hist:[], cnt: a.cnt || (a.hist||[]).length, pos: Array.isArray(a.pos)?a.pos:[], ord: Array.isArray(a.ord)?a.ord:[] }; } });
+    if(d.mode === 'live' || d.mode === 'sim') XS.mode = d.mode;
     if(Array.isArray(d.draw)) XS.drawings = d.draw;
     XS.nextId = d.nextId || 1;
     const u = d.ui || {};
@@ -1869,57 +1947,108 @@ function rebaseTo(P){
   XS.dayOpen += delta; XS.price = P;
 }
 
-/* ---- live feed (Cloudflare Worker → GoldAPI) ---- */
-async function fetchLivePrice(){
-  const ctrl = new AbortController(); const to = setTimeout(()=>ctrl.abort(), 6000);
-  try{
-    const res = await fetch(LIVE_PROXY_URL, { signal: ctrl.signal });
-    const data = await res.json();
-    if(!res.ok) throw new Error(data.error || ('HTTP '+res.status));
-    const p = Number(data.price || data.ask || data.bid);
-    if(!p) throw new Error(data.error || 'no price');
-    return p;
-  } finally { clearTimeout(to); }
+/* ---- live feed: your Cloudflare Worker first, then the free key-less gold-api.com feed ---- */
+const WORKER = LIVE_PROXY_URL.replace(/\/gold$/, '');
+async function getJSON(url, ms){
+  const ctrl = new AbortController(); const to = setTimeout(()=>ctrl.abort(), ms || 6000);
+  try{ const r = await fetch(url, { signal: ctrl.signal, cache:'no-store' }); const d = await r.json(); if(!r.ok || d.error) throw new Error(d.error || ('HTTP '+r.status)); return d; }
+  finally{ clearTimeout(to); }
 }
+async function fetchLivePrice(){
+  try{ const d = await getJSON(LIVE_PROXY_URL, 5000); const p = Number(d.price || d.ask || d.bid); if(p) return { price:p, ts: d.ts || Date.now(), source: d.source || 'Cloudflare Worker', open: d.open, prevClose: d.prevClose }; }
+  catch(e){}
+  const d = await getJSON('https://api.gold-api.com/price/XAU', 5000);
+  if(!d.price) throw new Error('no price');
+  return { price: Number(d.price), ts: Date.parse(d.updatedAt) || Date.now(), source: 'gold-api.com' };
+}
+/* Spot gold trades Sunday 22:00 UTC → Friday 21:00 UTC, with a one-hour break 21:00–22:00 UTC. */
+function goldOpenAt(t){
+  const d = t.getUTCDay(), h = t.getUTCHours() + t.getUTCMinutes()/60;
+  if(d === 6) return false;
+  if(d === 0) return h >= 22;
+  if(d === 5) return h < 21;
+  return !(h >= 21 && h < 22);
+}
+function marketStatus(now){
+  now = now || new Date();
+  if(goldOpenAt(now)) return { open:true };
+  const n = new Date(now); n.setUTCMinutes(0,0,0);
+  for(let i=0;i<72;i++){ n.setUTCHours(n.getUTCHours()+1); if(goldOpenAt(n)) break; }
+  const d = now.getUTCDay(), h = now.getUTCHours();
+  return { open:false, reopens:n, weekend: d===6 || d===0 || (d===5 && h>=21) };
+}
+function liveTradable(){ return XS.mode !== 'live' || (marketStatus().open && XS.live.ok && (Date.now() - XS.live.at) < 5*MIN); }
 async function pollLive(){
   try{
-    const p = await fetchLivePrice();
-    XS.live = { ok:true, price:p, at:Date.now(), tried:true, err:'' };
-    if(!XS.started){ return p; }
-    if(Math.abs(p - XS.price)/p > 0.004) rebaseTo(p);
+    const q = await fetchLivePrice();
+    XS.live = { ok:true, price:q.price, at:Date.now(), quoteTs:q.ts, tried:true, err:'', source:q.source };
+    if(q.prevClose) XS.prevClose = q.prevClose;
+    if(XS.mode === 'live' && XS.started && XS.backfill && Math.abs(q.price - XS.price)/q.price > 0.01) rebaseTo(q.price);
   }catch(e){
     XS.live.ok = false; XS.live.tried = true; XS.live.err = (e && e.message) || 'network';
   }
-  updateFeedBadge();
-  return null;
+  updateFeedBadge(); updateMarketBanner();
+  return XS.live.ok ? XS.live.price : null;
 }
 function updateFeedBadge(){
   const el = document.getElementById('xtFeed'); if(!el) return;
   const sp = el.querySelector('span');
-  if(XS.live.ok){
-    el.className = 'xt-feed live';
-    const age = Math.round((Date.now()-XS.live.at)/1000);
-    sp.textContent = (XS.speed===1 ? 'LIVE XAU' : 'LIVE-ANCHORED ×'+XS.speed) + (age>90 ? ' · stale' : '');
-    el.title = 'Anchored to the real gold spot price $' + fmt(XS.live.price) + ' (via your Cloudflare Worker), updated ' + new Date(XS.live.at).toLocaleTimeString() + '. Candles between updates are simulated ticks around it.';
-  } else {
-    el.className = 'xt-feed sim';
-    sp.textContent = XS.live.tried ? 'SIMULATED ×'+XS.speed : 'CONNECTING…';
-    el.title = XS.live.tried ? ('Live gold feed unavailable ('+XS.live.err+') — running a realistic simulated market. Tap to retry.') : 'Connecting to live gold price…';
+  if(XS.mode === 'sim'){
+    el.className = 'xt-feed sim'; sp.textContent = 'SIMULATOR ×' + XS.speed;
+    el.title = 'Practice market — realistic simulated gold prices that run 24/7, even on weekends. Speed it up to see more setups.';
+    return;
   }
+  const ms = marketStatus();
+  if(!ms.open){ el.className = 'xt-feed closed'; sp.textContent = 'MARKET CLOSED'; el.title = 'Gold is closed. Reopens ' + ms.reopens.toLocaleString([], {weekday:'short', hour:'2-digit', minute:'2-digit'}) + '. Switch to Simulator to practise now.'; return; }
+  if(XS.live.ok){
+    el.className = 'xt-feed live'; sp.textContent = 'LIVE · REAL PRICE';
+    el.title = 'Real gold spot price from ' + (XS.live.source||'live feed') + ', last update ' + new Date(XS.live.quoteTs || XS.live.at).toLocaleTimeString() + '.';
+  } else {
+    el.className = 'xt-feed closed'; sp.textContent = XS.live.tried ? 'LIVE FEED OFFLINE' : 'CONNECTING…';
+    el.title = XS.live.tried ? ('Could not reach the live gold price (' + XS.live.err + '). Tap to retry, or switch to Simulator.') : 'Connecting to the live gold price…';
+  }
+}
+
+/* ---- real price history for LIVE mode (via the Worker's /candles route) ---- */
+async function loadLiveHistory(P0){
+  const got = {};
+  await Promise.all(TFS.map(async tf => {
+    try{ const d = await getJSON(`${WORKER}/candles?tf=${tf}`, 9000); if(d.candles && d.candles.length > 30) got[tf] = d.candles; } catch(e){}
+  }));
+  const okAll = TFS.every(tf => got[tf]);
+  if(okAll){
+    TFS.forEach(tf => XS.series[tf] = got[tf].slice(-1200));
+    XS.backfill = false;
+    const last = got[1][got[1].length-1].c;
+    XS.price = P0 || last;
+    if(P0 && Math.abs(P0-last)/P0 > 0.0005){ const d = P0 - last; TFS.forEach(tf => { const k = XS.series[tf][XS.series[tf].length-1]; k.c = P0; k.h = Math.max(k.h,P0); k.l = Math.min(k.l,P0); }); }
+    const dd = XS.series[1440]; XS.dayOpen = XS.prevClose || dd[dd.length-1].o; XS.liveDayOpen = XS.dayOpen;
+  } else {
+    buildHistory(P0);             // history service unreachable: synthetic backfill, clearly marked on the chart
+    XS.backfill = true;
+  }
+  XS.liveStartT = Date.now();
 }
 
 /* ---- tick engine ---- */
 let xtTimer = null;
 function tick(){
-  if(XS.paused) return;
-  const dtReal = 250, dtSim = dtReal * XS.speed;
-  XS.simTime += dtSim;
-  const s = sigma1m(XS.price) * Math.sqrt(dtSim/MIN);
-  XS.drift = 0.985*XS.drift + gauss()*0.05*s;
-  let step = gauss()*s + XS.drift;
-  if(XS.live.ok && XS.live.price){ step += (XS.live.price - XS.price) * (XS.speed===1 ? 0.03 : 0.012); }
-  XS.price = Math.max(1, XS.price + step);
-  const p = XS.price;
+  if(!XS.series[1] || !XS.series[1440]) return;          // market data still loading (e.g. while switching modes)
+  if(XS.paused && XS.mode === 'sim') return;
+  let p, step = 0, s = 1;
+  if(XS.mode === 'live'){
+    if(!marketStatus().open || !XS.live.ok) { if(XS.open) updateQuotes(); return; }
+    XS.simTime = Date.now();
+    step = (XS.live.price - XS.price) * 0.12;       // glide to each real quote — no invented moves
+    XS.price += step; p = XS.price; s = Math.max(0.01, Math.abs(step));
+  } else {
+    const dtSim = 250 * XS.speed;
+    XS.simTime += dtSim;
+    s = sigma1m(XS.price) * Math.sqrt(dtSim/MIN);
+    XS.drift = 0.985*XS.drift + gauss()*0.05*s;
+    step = gauss()*s + XS.drift;
+    XS.price = Math.max(1, XS.price + step); p = XS.price;
+  }
   TFS.forEach(tf => {
     const arr = XS.series[tf]; const tfMs = tf*MIN;
     let last = arr[arr.length-1];
@@ -1927,9 +2056,9 @@ function tick(){
     if(slot > last.t){
       last = { t:slot, o:last.c, h:Math.max(last.c,p), l:Math.min(last.c,p), c:p, v:0 };
       arr.push(last); if(arr.length > 1500) arr.shift();
-      if(tf===1440) XS.dayOpen = last.o;
+      if(tf===1440 && XS.mode==='sim') XS.dayOpen = last.o;
     } else { last.h = Math.max(last.h,p); last.l = Math.min(last.l,p); last.c = p; }
-    last.v += Math.round(Math.random()*18*Math.sqrt(tf)*(1+Math.abs(step)/s));
+    last.v += XS.mode==='sim' ? Math.round(Math.random()*18*Math.sqrt(tf)*(1+Math.abs(step)/s)) : 0;
   });
   processOrders();
   if(XS.open){ requestDraw(); updateQuotes(); }
@@ -2085,7 +2214,7 @@ function drawChart(){
     ctx.fillStyle = C.axis; ctx.fillText(timeLabel(raw[i].t, XS.tf, false), x, H-TIME_H/2);
   }
   // watermark
-  ctx.save(); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='rgba(255,255,255,0.028)'; ctx.font='800 '+Math.round(Math.min(plotR,mainH)*0.14)+'px Inter, sans-serif'; ctx.fillText('XAUUSD · '+TF_LABEL[XS.tf], plotR/2, mainH/2); ctx.font='700 '+Math.round(Math.min(plotR,mainH)*0.045)+'px Inter, sans-serif'; ctx.fillText('B2P in Trade — Demo', plotR/2, mainH/2 + Math.min(plotR,mainH)*0.1); ctx.restore();
+  ctx.save(); ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='rgba(255,255,255,0.028)'; ctx.font='800 '+Math.round(Math.min(plotR,mainH)*0.14)+'px Inter, sans-serif'; ctx.fillText('XAUUSD · '+TF_LABEL[XS.tf], plotR/2, mainH/2); ctx.font='700 '+Math.round(Math.min(plotR,mainH)*0.045)+'px Inter, sans-serif'; ctx.fillText(XS.mode==='live' ? 'LIVE demo · real gold price' : 'SIMULATOR · practice market', plotR/2, mainH/2 + Math.min(plotR,mainH)*0.1); ctx.restore();
 
   ctx.save(); ctx.beginPath(); ctx.rect(0,0,plotR,mainH); ctx.clip();
 
@@ -2158,6 +2287,11 @@ function drawChart(){
     ctx.fillStyle = tr.pnl>=0 ? C.up : C.down; ctx.beginPath(); ctx.arc(x2,y2,3.5,0,7); ctx.fill();
   });
 
+  // where real-time data begins (only when the history service was unreachable and the past is a backfill)
+  if(XS.mode==='live' && XS.backfill && XS.liveStartT){
+    const xl = xOf(idxOfT(XS.liveStartT));
+    if(xl > 0 && xl < plotR){ ctx.fillStyle='rgba(255,255,255,0.025)'; ctx.fillRect(0,0,xl,mainH); ctx.strokeStyle='rgba(242,71,90,.6)'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(xl,0); ctx.lineTo(xl,mainH); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle='#FF8A99'; ctx.font='700 10px Inter, sans-serif'; ctx.textAlign='right'; ctx.fillText('← illustrative history · live data →', xl-6, mainH-12); }
+  }
   // drawings
   XS.drawings.concat(XS.draft ? [XS.draft] : []).forEach(dw => drawShape(ctx, dw, idxOfT, xOf, yOf, plotR));
 
@@ -2420,6 +2554,7 @@ function ticketCalc(){
   return { side, px, lots, risk$, riskPct, sl, tp, reward$: risk$*XS.rr, margin, perDollar: lots*CONTRACT };
 }
 function placeOrder(){
+  if(!liveTradable()){ updateMarketBanner(); showToast(T('The live market is closed or the live feed is offline — switch to <b>Simulator</b> to practise now.','Live market band hai ya feed offline — abhi <b>Simulator</b> mein practice kar.'), null, 4000); return; }
   const t = ticketCalc();
   const warnEl = document.getElementById('xtWarn');
   const freeMargin = equity() - usedMargin();
@@ -2449,6 +2584,7 @@ function openPosition(side, lots, entry, slDist, rr, lev, riskPct){
   renderPositions(); requestDraw(); xtSaveLocal();
 }
 function processOrders(){
+  if(XS.mode === 'live' && !liveTradable()) return;
   const a = ask(), b = bid();
   for(const o of XS.orders.slice()){
     const hit = o.type==='limit' ? (o.side==='buy' ? a <= o.px : b >= o.px) : (o.side==='buy' ? a >= o.px : b <= o.px);
@@ -2474,7 +2610,7 @@ function closePos(p, reason, exitPx){
   const exitData = exitNotes(reason, pnl, p.audit, R);
   const overall = Math.round(p.audit.score*0.6 + exitScore(reason, pnl, R)*0.4);
   tradeCounter++;
-  const rec = { id: tradeCounter, dir: p.side==='buy'?'long':'short', lots: p.lots, entry: p.entry, exitPrice: exitPx, sl: p.sl, tp: p.tp, riskPct: p.riskPct, lev: p.lev,
+  const rec = { mode: XS.mode, id: tradeCounter, dir: p.side==='buy'?'long':'short', lots: p.lots, entry: p.entry, exitPrice: exitPx, sl: p.sl, tp: p.tp, riskPct: p.riskPct, lev: p.lev,
     reason, pnl: Math.round(pnl*100)/100, R: Math.round(R*100)/100, openT: p.openT, closeT: XS.simTime, openReal: p.openReal, closeReal: Date.now(), tf: p.tf,
     trend: p.trend, rsi: p.rsi, slDist: p.slDist, atr: p.atr, rr: p.rr, checkScore: p.checkScore,
     entryAudit: p.audit, exitNotesData: exitData, overallGrade: toGrade(overall) };
@@ -2588,9 +2724,13 @@ function exitNotes(reason, pnl, entryAudit, R){
    ===================================================================== */
 function updateHeaderTicker(){
   const px = document.getElementById('xTickPx'), ch = document.getElementById('xTickCh');
-  if(!px || !XS.price) return;
-  const d = XS.price - XS.dayOpen, dp = d/XS.dayOpen*100;
-  px.textContent = fmt(XS.price); ch.textContent = `${d>=0?'+':''}${fmt(dp)}%`; ch.className = 'ch ' + (d>=0?'x-up':'x-down');
+  if(!px) return;
+  const live = XS.live.ok ? XS.live.price : null;
+  const P = live || XS.price; if(!P) return;
+  const ref = live ? (XS.prevClose || XS.liveDayOpen) : XS.dayOpen;
+  px.textContent = fmt(P);
+  if(ref){ const dp = (P-ref)/ref*100; ch.textContent = `${dp>=0?'+':''}${fmt(dp)}%`; ch.className = 'ch ' + (dp>=0?'x-up':'x-down'); } else { ch.textContent = live ? 'LIVE' : ''; ch.className = 'ch'; }
+  const sym = document.querySelector('#xTicker .sym'); if(sym) sym.textContent = live ? (marketStatus().open ? 'XAUUSD ●' : 'XAUUSD · closed') : 'XAUUSD';
 }
 let lastQuoteDraw = 0;
 function updateQuotes(){
@@ -2742,14 +2882,16 @@ function drawEquity(H){
 function renderNews(){
   const el = document.getElementById('xtNews'); if(!el) return;
   const ev = upcomingEvents();
-  el.innerHTML = `<div class="xt-an2"><div><h4 style="font-size:.72rem;letter-spacing:.1em;color:var(--x-mute);margin-bottom:8px">📅 ${T('GOLD-MOVING EVENTS (APPROX. SCHEDULE)','GOLD HILANE WALE EVENTS')}</h4><table class="xt-cal">${ev.map(e => { const mins = Math.round((e.t-Date.now())/MIN); const when = mins < 0 ? T('just released','abhi aaya') : mins < 60 ? `in ${mins} min` : mins < 1440 ? `in ${Math.floor(mins/60)}h ${mins%60}m` : e.t.toLocaleDateString([], {weekday:'short', day:'numeric', month:'short'}); return `<tr><td style="white-space:nowrap"><span class="xt-imp">${[1,2,3].map(i=>`<i class="${i<=e.imp?'on':''}"></i>`).join('')}</span></td><td><b>${e.name}</b><div style="font-size:.74rem;color:var(--x-sub)">${e.why}</div></td><td style="white-space:nowrap;font-family:var(--x-num);font-size:.76rem;color:${mins<60?'#FF8A99':'var(--x-sub)'}">${when}<br><span style="color:var(--x-mute)">${e.t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span></td></tr>`; }).join('')}</table><div class="xt-help">${T('Dates follow the usual US release pattern (NFP first Friday, CPI mid-month, FOMC calendar). Always confirm on a live economic calendar.','Dates normal US release pattern pe hain. Live calendar pe confirm kar.')}</div></div>
-  <div class="xt-news"><h4 style="font-size:.72rem;letter-spacing:.1em;color:var(--x-mute);margin-bottom:8px">📰 ${T('LIVE GOLD NEWS SOURCES','LIVE GOLD NEWS')}</h4>
+  el.innerHTML = `<div class="xt-an2"><div><h4 style="font-size:.72rem;letter-spacing:.1em;color:var(--x-mute);margin-bottom:8px">🔴 ${T('LIVE GOLD HEADLINES','LIVE GOLD NEWS')} <span style="font-weight:600;text-transform:none;letter-spacing:0"><i class="d lv3"></i>very important <i class="d lv2"></i>important <i class="d lv1"></i>normal</span></h4><div id="xtNewsLive" class="xt-newslive"></div></div><div><h4 style="font-size:.72rem;letter-spacing:.1em;color:var(--x-mute);margin-bottom:8px">📅 ${T('GOLD-MOVING EVENTS (APPROX. SCHEDULE)','GOLD HILANE WALE EVENTS')}</h4><table class="xt-cal">${ev.map(e => { const mins = Math.round((e.t-Date.now())/MIN); const when = mins < 0 ? T('just released','abhi aaya') : mins < 60 ? `in ${mins} min` : mins < 1440 ? `in ${Math.floor(mins/60)}h ${mins%60}m` : e.t.toLocaleDateString([], {weekday:'short', day:'numeric', month:'short'}); return `<tr><td style="white-space:nowrap"><span class="xt-imp">${[1,2,3].map(i=>`<i class="${i<=e.imp?'on':''}"></i>`).join('')}</span></td><td><b>${e.name}</b><div style="font-size:.74rem;color:var(--x-sub)">${e.why}</div></td><td style="white-space:nowrap;font-family:var(--x-num);font-size:.76rem;color:${mins<60?'#FF8A99':'var(--x-sub)'}">${when}<br><span style="color:var(--x-mute)">${e.t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span></td></tr>`; }).join('')}</table><div class="xt-help">${T('Dates follow the usual US release pattern (NFP first Friday, CPI mid-month, FOMC calendar). Always confirm on a live economic calendar.','Dates normal US release pattern pe hain. Live calendar pe confirm kar.')}</div>
+  <div class="xt-news" style="margin-top:12px"><h4 style="font-size:.72rem;letter-spacing:.1em;color:var(--x-mute);margin-bottom:8px">📰 ${T('LIVE GOLD NEWS SOURCES','LIVE GOLD NEWS')}</h4>
     <a href="https://www.kitco.com/news/category/mining/gold" target="_blank" rel="noopener">🟡 Kitco — Gold news<span>kitco.com ↗</span></a>
     <a href="https://www.reuters.com/markets/commodities/" target="_blank" rel="noopener">📰 Reuters — Commodities<span>reuters.com ↗</span></a>
     <a href="https://www.investing.com/commodities/gold-news" target="_blank" rel="noopener">📈 Investing.com — Gold news<span>investing.com ↗</span></a>
     <a href="https://www.forexfactory.com/calendar" target="_blank" rel="noopener">📅 Forex Factory — Economic calendar<span>forexfactory.com ↗</span></a>
     <a href="https://www.tradingview.com/symbols/XAUUSD/" target="_blank" rel="noopener">📊 TradingView — XAUUSD<span>tradingview.com ↗</span></a>
-    <button class="x-btn sm violet" id="xtAskNews" type="button" style="margin-top:4px">🎓 ${T("Ask Professor: what's moving gold today?","Professor: aaj gold kyun hil raha hai?")}</button></div></div>`;
+    <button class="x-btn sm violet" id="xtAskNews" type="button" style="margin-top:4px">🎓 ${T("Ask Professor: what's moving gold today?","Professor: aaj gold kyun hil raha hai?")}</button></div></div></div>`;
+  renderNewsCompact(document.getElementById('xtNewsLive'), 25);
+  if(!NEWS.items.length && !NEWS.loading) loadNews(30).then(() => renderNewsCompact(document.getElementById('xtNewsLive'), 25));
 }
 
 /* =====================================================================
@@ -2775,6 +2917,9 @@ function defaultOrdPx(){
   document.getElementById('xtOrdPx').value = px.toFixed(2);
 }
 function syncControls(){
+  document.querySelectorAll('#xtMode [data-mode]').forEach(b => b.classList.toggle('on', b.dataset.mode === XS.mode));
+  document.getElementById('xtSpeedGrp').hidden = XS.mode === 'live';
+  document.getElementById('terminalScreen').dataset.mode = XS.mode;
   document.querySelectorAll('#xtTF [data-tf]').forEach(b => b.classList.toggle('on', +b.dataset.tf === XS.tf));
   document.querySelectorAll('#xtType [data-type]').forEach(b => b.classList.toggle('on', b.dataset.type === XS.type));
   document.getElementById('xtMoreTypes').classList.toggle('on', ['bars','hollow','heikin'].includes(XS.type));
@@ -2810,7 +2955,7 @@ function initTerminalUI(){
   document.querySelectorAll('[data-speed]').forEach(b => b.addEventListener('click', () => { XS.speed = +b.dataset.speed; syncControls(); updateFeedBadge(); xtSaveLocal(); }));
   $('xtPause').addEventListener('click', () => { XS.paused = !XS.paused; syncControls(); });
   $('xtBro').addEventListener('click', () => { simLang = simLang==='hinglish' ? 'std' : 'hinglish'; syncControls(); renderChecklist(); renderPositions(); renderOrders(); renderHistory(); renderAnalysis(); renderNews(); renderTicket(); xtSaveLocal(); });
-  $('xtFeed').addEventListener('click', () => { XS.live.tried = false; updateFeedBadge(); pollLive(); });
+  $('xtFeed').addEventListener('click', () => { if(XS.mode==='sim') return; XS.live.tried = false; updateFeedBadge(); pollLive(); });
   $('xtSideBuy').addEventListener('click', () => setSide('buy'));
   $('xtSideSell').addEventListener('click', () => setSide('sell'));
   $('xtOrdType').addEventListener('click', e => { const b = e.target.closest('[data-ot]'); if(!b) return; XS.ordType = b.dataset.ot; syncControls(); defaultOrdPx(); renderTicket(); });
@@ -2826,6 +2971,8 @@ function initTerminalUI(){
   [['xtRisk','riskPct'],['xtSL','slDist'],['xtRR','rr'],['xtLev','lev']].forEach(([id,k]) => $(id).addEventListener('input', e => { XS[k] = parseFloat(e.target.value); setRangeFill(e.target); renderTicket(); renderChecklist(); }));
   [['xtRisk'],['xtSL'],['xtRR'],['xtLev']].forEach(([id]) => $(id).addEventListener('change', xtSaveLocal));
   $('xtPlace').addEventListener('click', placeOrder);
+  $('xtMode').addEventListener('click', e => { const b = e.target.closest('[data-mode]'); if(b) setMode(b.dataset.mode); });
+  $('xtGoSim').addEventListener('click', () => setMode('sim'));
   $('xtBTabs').addEventListener('click', e => { const b = e.target.closest('[data-bt]'); if(!b) return; selectBTab(b.dataset.bt); });
   const tsc = $('terminalScreen');
   tsc.addEventListener('click', e => {
@@ -2843,7 +2990,7 @@ function initTerminalUI(){
   $('xtSheetClose').addEventListener('click', closeSheet);
   $('xtAskProf').addEventListener('click', () => openAskWith('', null));
   $('xtSnap').addEventListener('click', () => { const cv = $('xtCanvas'); const a = document.createElement('a'); a.download = `B2P-XAUUSD-${TF_LABEL[XS.tf]}-${new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')}.png`; a.href = cv.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove(); });
-  $('xtReset').addEventListener('click', () => { if(!confirm(T('Reset the demo account to $10,000? Open positions, orders and local history are cleared.','Demo account $10,000 pe reset karein? Positions, orders aur history clear ho jayegi.'))) return; simBalance = 10000; XS.positions = []; XS.orders = []; tradeHistory = []; tradeCounter = 0; XS.lastLossAt = 0; renderPositions(); renderOrders(); renderHistory(); renderAnalysis(); updateScoreBadge(); requestDraw(); xtSaveLocal(); if(typeof saveUserSnapshot==='function') saveUserSnapshot(); });
+  $('xtReset').addEventListener('click', () => { if(!confirm(T(`Reset your ${XS.mode==='live'?'LIVE demo':'SIMULATOR'} account to $10,000? Its open positions, orders and history are cleared.`,`${XS.mode==='live'?'LIVE demo':'SIMULATOR'} account $10,000 pe reset karein?`))) return; simBalance = 10000; XS.positions = []; XS.orders = []; tradeHistory = []; tradeCounter = 0; XS.lastLossAt = 0; renderPositions(); renderOrders(); renderHistory(); renderAnalysis(); updateScoreBadge(); requestDraw(); xtSaveLocal(); if(typeof saveUserSnapshot==='function') saveUserSnapshot(); });
   $('terminalBack').addEventListener('click', () => { if(location.hash === '#/sim' && history.length > 1 && XS.cameFromApp) history.back(); else location.hash = '#/learn'; });
   document.addEventListener('keydown', e => {
     if(!XS.open) return;
@@ -2873,25 +3020,60 @@ function askAboutTrade(t){
 async function startEngine(){
   if(XS.started) return;
   xtLoadLocal();
-  let P0 = 4335.70;
-  try{ const p = await Promise.race([fetchLivePrice(), new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')), 3500))]); P0 = p; XS.live = { ok:true, price:p, at:Date.now(), tried:true, err:'' }; }
-  catch(e){ XS.live = { ok:false, price:null, at:0, tried:true, err:(e&&e.message)||'network' }; }
-  XS.simTime = Date.now();
-  buildHistory(P0);
-  // re-anchor any saved open positions to the new market so they stay sensible
-  XS.positions = XS.positions.filter(p => Math.abs(p.entry - P0)/P0 < 0.03);
-  XS.orders = XS.orders.filter(o => Math.abs(o.px - P0)/P0 < 0.03);
+  const hadPref = !!localStorage.getItem('b2p_sim_v3');
+  await pollLive();
+  if(!hadPref && !marketStatus().open) XS.mode = 'sim';   // first visit on a weekend → start in the simulator
+  loadAcc(XS.mode);
+  await prepareMarket(XS.mode);
   XS.started = true;
   xtTimer = setInterval(tick, 250);
-  setInterval(pollLive, 30000);
+  setInterval(() => { pollLive(); }, 15000);
+  setInterval(() => { if(XS.open) updateMarketBanner(); }, 30000);
   updateHeaderTicker(); updateFeedBadge();
+}
+const SIM_CACHE = {};
+async function prepareMarket(m){
+  XS.simTime = Date.now();
+  if(m === 'live'){
+    await loadLiveHistory(XS.live.ok ? XS.live.price : null);
+    if(!XS.price){ XS.price = XS.live.price || 4335.7; }
+  } else {
+    if(SIM_CACHE.series){ XS.series = SIM_CACHE.series; XS.price = SIM_CACHE.price; XS.simTime = SIM_CACHE.simTime; XS.dayOpen = SIM_CACHE.dayOpen; }
+    else { buildHistory(XS.live.ok ? XS.live.price : 4335.7); }
+  }
+  // drop saved positions that no longer make sense against this market
+  XS.positions = XS.positions.filter(p => Math.abs(p.entry - XS.price)/XS.price < 0.04);
+  XS.orders = XS.orders.filter(o => Math.abs(o.px - XS.price)/XS.price < 0.04);
+  ACC[m].pos = XS.positions; ACC[m].ord = XS.orders;
+}
+async function setMode(m){
+  if(m === XS.mode) return;
+  if(XS.mode === 'sim'){ SIM_CACHE.series = XS.series; SIM_CACHE.price = XS.price; SIM_CACHE.simTime = XS.simTime; SIM_CACHE.dayOpen = XS.dayOpen; }
+  syncAcc();
+  XS.series = {}; XS.mode = m; loadAcc(m);
+  document.getElementById('terminalScreen').classList.add('xt-loading');
+  await prepareMarket(m);
+  document.getElementById('terminalScreen').classList.remove('xt-loading');
+  XS.offset = -4; syncControls(); updateFeedBadge(); updateMarketBanner(); updateQuotes(); renderTicket(); renderChecklist(); renderPositions(); renderOrders(); renderHistory(); renderAnalysis(); updateScoreBadge(); requestDraw(); xtSaveLocal();
+  showToast(m === 'live' ? T('<b>Live demo account</b> — real gold price, virtual money. Trading follows real market hours.','<b>Live demo account</b> — asli gold price, nakli paisa. Market hours ke hisaab se.') : T('<b>Simulator account</b> — a realistic practice market that runs 24/7. Use speed 10× or 60× to practise more setups.','<b>Simulator</b> — 24/7 practice market. 10× ya 60× speed pe zyada setups dekh.'), null, 5000);
+}
+function updateMarketBanner(){
+  const el = document.getElementById('xtClosed'); if(!el) return;
+  const ms = marketStatus();
+  const show = XS.mode === 'live' && (!ms.open || !XS.live.ok);
+  el.hidden = !show;
+  if(show){
+    if(!ms.open){ const mins = Math.max(0, Math.round((ms.reopens - Date.now())/MIN)); el.querySelector('b').textContent = T('Gold market is closed','Gold market band hai'); el.querySelector('p').innerHTML = T(`${ms.weekend ? 'Weekend break.' : 'Daily break.'} Reopens <b>${ms.reopens.toLocaleString([], {weekday:'long', hour:'2-digit', minute:'2-digit'})}</b> (in ${Math.floor(mins/60)}h ${mins%60}m). Your live demo account is safe — practise in the Simulator meanwhile.`, `${ms.weekend ? 'Weekend chhutti.' : 'Daily break.'} Market khulega <b>${ms.reopens.toLocaleString([], {weekday:'long', hour:'2-digit', minute:'2-digit'})}</b> (${Math.floor(mins/60)}h ${mins%60}m mein). Tab tak Simulator mein practice kar.`); }
+    else { el.querySelector('b').textContent = T('Live price feed offline','Live feed offline'); el.querySelector('p').textContent = T('We could not reach the real gold price right now. Retrying every 15 seconds — or practise in the Simulator.','Abhi asli price nahi mil raha. Har 15 sec retry ho raha hai — tab tak Simulator use kar.'); }
+  }
+  const pl = document.getElementById('xtPlace'); if(pl) pl.disabled = !liveTradable();
 }
 async function openTerminalScreen(){
   const ts = document.getElementById('terminalScreen');
   ts.classList.add('open'); document.body.classList.add('terminal-open'); XS.open = true;
   if(!XS.started) await startEngine();
   if(window.innerWidth < 900 && XS.barW > 7 && !XS.userZoomed){ XS.barW = 6; }
-  syncControls(); resizeCanvas(); updateQuotes(); renderTicket(); renderChecklist(); renderPositions(); renderOrders(); renderHistory(); renderAnalysis(); renderNews();
+  syncControls(); updateMarketBanner(); updateFeedBadge(); resizeCanvas(); updateQuotes(); renderTicket(); renderChecklist(); renderPositions(); renderOrders(); renderHistory(); renderAnalysis(); renderNews();
   setTimeout(resizeCanvas, 60);
 }
 function closeTerminalScreenUI(){
@@ -2931,6 +3113,7 @@ function route(){
   if(XS.open) closeTerminalScreenUI();
   if(view === 'lesson' && parts[1]){ renderLesson(parts[1]); showView('lesson'); }
   else if(view === 'game'){ showView('game'); if(!document.getElementById('xGameArea').children.length) startGame('predict'); }
+  else if(view === 'news'){ showView('news'); openNewsView(); }
   else if(view === 'quiz'){ showView('quiz'); if(!document.getElementById('xQuizArea').children.length) renderQuizHome(); }
   else { const lv = LEVELS[parts[1]] ? parts[1] : lastLevel; renderLevel(lv); showView('learn'); }
 }
@@ -3081,7 +3264,6 @@ function initShell(){
   document.getElementById('xNavChapters').addEventListener('click', e => { e.stopPropagation(); dd.classList.toggle('open'); });
   document.addEventListener('click', e => { if(!e.target.closest('#xChapDD')) dd.classList.remove('open'); });
   document.getElementById('xLevelSeg').addEventListener('click', e => { const b = e.target.closest('[data-level]'); if(b) location.hash = '#/learn/' + b.dataset.level; });
-  document.getElementById('xTabAcct').addEventListener('click', () => document.getElementById('authBtn').click());
   const sdd = document.getElementById('settingsDropdown');
   document.getElementById('settingsBtn').addEventListener('click', e => { e.stopPropagation(); sdd.classList.toggle('open'); });
   document.addEventListener('click', e => { if(!sdd.contains(e.target) && e.target.id !== 'settingsBtn') sdd.classList.remove('open'); });
@@ -3091,6 +3273,7 @@ function initShell(){
   });
   updateScoreBadge();
   initTerminalUI();
+  initNews();
   startEngine();
 }
 
@@ -3312,6 +3495,76 @@ function quizResult(){
 }
 document.addEventListener('click', e => { const g = e.target.closest('#xGameTabs [data-game]'); if(g) startGame(g.dataset.game); });
 
+/* =====================================================================
+   GOLD NEWS DESK — live headlines via the Worker's /news route
+   level 3 = very important (red) · 2 = important (yellow) · 1 = normal (blue)
+   ===================================================================== */
+const NEWS = { items: [], days: 0, loading: false, updated: 0, filter: 0, q: '', shown: 0, err: '' };
+const LV = { 3:{ cls:'lv3', name:'Very important' }, 2:{ cls:'lv2', name:'Important' }, 1:{ cls:'lv1', name:'Normal' } };
+async function loadNews(days){
+  if(NEWS.loading) return;
+  NEWS.loading = true; NEWS.err = '';
+  try{
+    const d = await getJSON(`${WORKER}/news?days=${days}`, 12000);
+    const seen = new Set(NEWS.items.map(i => i.link));
+    (d.items || []).forEach(i => { if(!seen.has(i.link)) NEWS.items.push(i); });
+    NEWS.items.sort((a,b) => b.date - a.date);
+    NEWS.days = Math.max(NEWS.days, days); NEWS.updated = Date.now();
+  }catch(e){ NEWS.err = (e && e.message) || 'network'; }
+  NEWS.loading = false;
+}
+function relTime(t){ const m = Math.round((Date.now()-t)/60000); if(m < 1) return 'just now'; if(m < 60) return m + ' min ago'; const h = Math.round(m/60); if(h < 24) return h + 'h ago'; const d = Math.round(h/24); return d + (d===1?' day ago':' days ago'); }
+function dayLabel(t){ const d = new Date(t), n = new Date(); const y = new Date(); y.setDate(n.getDate()-1); if(d.toDateString()===n.toDateString()) return 'Today'; if(d.toDateString()===y.toDateString()) return 'Yesterday'; return d.toLocaleDateString([], {weekday:'long', day:'numeric', month:'long', year:'numeric'}); }
+function safeLink(u){ return /^https?:\/\//i.test(u||'') ? u : '#'; }
+function newsItemHtml(n, compact){
+  const lv = LV[n.level] || LV[1]; const dt = new Date(n.date);
+  return `<a class="x-news-item ${lv.cls}${compact?' compact':''}" href="${escHtml(safeLink(n.link))}" target="_blank" rel="noopener noreferrer"><span class="mk"></span><div class="nb"><div class="nt">${escHtml(n.title)}</div><div class="nm"><b>${escHtml(n.source||'News')}</b><span>·</span><time datetime="${dt.toISOString()}">${dt.toLocaleDateString([], {day:'numeric', month:'short'})}, ${dt.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</time><span>·</span><span>${relTime(n.date)}</span></div></div><span class="ntag">${lv.name}</span></a>`;
+}
+function filteredNews(){ const q = NEWS.q.toLowerCase(); return NEWS.items.filter(n => (!NEWS.filter || n.level === NEWS.filter) && (!q || (n.title + ' ' + n.source).toLowerCase().includes(q))); }
+function newsCounts(){ const c = {0:NEWS.items.length,1:0,2:0,3:0}; NEWS.items.forEach(n => c[n.level] = (c[n.level]||0)+1); return c; }
+function renderNewsPage(reset){
+  const list = document.getElementById('xNewsList'); if(!list) return;
+  const c = newsCounts();
+  document.querySelectorAll('#xNewsFilters [data-lv]').forEach(b => { b.classList.toggle('on', +b.dataset.lv === NEWS.filter); const n = b.querySelector('.n'); if(n) n.textContent = c[+b.dataset.lv] || 0; });
+  document.getElementById('xNewsUpd').textContent = NEWS.updated ? 'Updated ' + relTime(NEWS.updated) + ' · ' + NEWS.items.length + ' headlines · last ' + NEWS.days + ' days' : '';
+  if(NEWS.err && !NEWS.items.length){ list.innerHTML = `<div class="x-news-empty">📡 <b>The news feed isn't reachable yet</b> (${escHtml(NEWS.err)}).<br>It runs through your Cloudflare Worker's <code>/news</code> route — deploy the v2 worker file to switch it on. Meanwhile: <a href="https://news.google.com/search?q=gold%20price" target="_blank" rel="noopener">gold news on Google News ↗</a></div>`; document.getElementById('xNewsMore').hidden = true; return; }
+  if(!NEWS.items.length){ list.innerHTML = '<div class="x-news-empty">Loading the latest gold headlines…</div>'; return; }
+  const arr = filteredNews();
+  if(reset) NEWS.shown = 0;
+  NEWS.shown = Math.min(arr.length, Math.max(NEWS.shown, 30));
+  let html = '', lastDay = '';
+  arr.slice(0, NEWS.shown).forEach(n => { const dl = dayLabel(n.date); if(dl !== lastDay){ html += `<div class="x-news-day">${dl}</div>`; lastDay = dl; } html += newsItemHtml(n); });
+  list.innerHTML = html || '<div class="x-news-empty">No headlines match this filter.</div>';
+  const more = document.getElementById('xNewsMore');
+  more.hidden = NEWS.shown >= arr.length && NEWS.days >= 60;
+  more.textContent = NEWS.shown < arr.length ? `Show older news (${arr.length - NEWS.shown} more)` : 'Load news from the last 60 days';
+}
+async function showMoreNews(){
+  const arr = filteredNews();
+  if(NEWS.shown < arr.length){ NEWS.shown += 30; renderNewsPage(false); return; }
+  if(NEWS.days < 60){ const b = document.getElementById('xNewsMore'); b.textContent = 'Loading older news…'; await loadNews(60); renderNewsPage(false); NEWS.shown += 30; renderNewsPage(false); }
+}
+async function openNewsView(){
+  if(!NEWS.items.length || Date.now() - NEWS.updated > 5*MIN){ renderNewsPage(true); await loadNews(Math.max(NEWS.days, 30)); }
+  renderNewsPage(true);
+}
+function renderNewsCompact(el, n){
+  if(!el) return;
+  if(!NEWS.items.length){ el.innerHTML = NEWS.err ? `<div class="xt-help">Live gold news appears here once the v2 Worker is deployed. <a href="https://news.google.com/search?q=gold%20price" target="_blank" rel="noopener" style="color:var(--x-gold)">Google News ↗</a></div>` : '<div class="xt-help">Loading gold headlines…</div>'; return; }
+  el.innerHTML = NEWS.items.slice(0, n || 25).map(i => newsItemHtml(i, true)).join('') + `<button class="x-btn sm" data-go="#/news" type="button" style="margin-top:6px">All gold news →</button>`;
+}
+function initNews(){
+  const f = document.getElementById('xNewsFilters'); if(!f) return;
+  f.addEventListener('click', e => { const b = e.target.closest('[data-lv]'); if(!b) return; NEWS.filter = +b.dataset.lv; renderNewsPage(true); });
+  document.getElementById('xNewsSearch').addEventListener('input', e => { NEWS.q = e.target.value; renderNewsPage(true); });
+  document.getElementById('xNewsMore').addEventListener('click', showMoreNews);
+  document.getElementById('xNewsRefresh').addEventListener('click', async () => { NEWS.updated = 0; await loadNews(Math.max(30, NEWS.days)); renderNewsPage(false); });
+  // infinite scroll
+  const io = new IntersectionObserver(ents => { ents.forEach(en => { if(en.isIntersecting && document.querySelector('.x-view.on[data-view=news]') && NEWS.shown < filteredNews().length) { NEWS.shown += 30; renderNewsPage(false); } }); }, { rootMargin:'400px' });
+  io.observe(document.getElementById('xNewsMore'));
+  setInterval(async () => { if(document.querySelector('.x-view.on[data-view=news]') || XS.open){ await loadNews(Math.max(30, NEWS.days)); if(document.querySelector('.x-view.on[data-view=news]')) renderNewsPage(false); if(XS.open) renderNewsCompact(document.getElementById('xtNewsLive'), 25); } }, 5*MIN);
+}
+
 /* ASK PROFESSOR */
 let sampleFn = null;
 (async ()=>{ try{ if(window.claude && window.claude.use){ sampleFn = await window.claude.use('sample'); } }catch(e){ sampleFn = null; } })();
@@ -3445,7 +3698,7 @@ async function saveUserSnapshot(){
   if(!fbDb || !fbUser) return;
   try{
     await fbDb.collection('users').doc(fbUser.uid).set({
-      balance: simBalance, quizScore, answeredQuizIds: Array.from(answeredQuizzes),
+      balance: (syncAcc(), ACC.live.bal), simAccountBalance: ACC.sim.bal, quizScore, answeredQuizIds: Array.from(answeredQuizzes),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
   }catch(e){ console.warn('Cloud save (snapshot) failed:', e); }
@@ -3465,18 +3718,15 @@ async function loadUserData(){
     const userDoc = await fbDb.collection('users').doc(fbUser.uid).get();
     if(userDoc.exists){
       const d = userDoc.data();
-      if(typeof d.balance === 'number'){ simBalance = d.balance; document.getElementById('simBalance').textContent = '$'+simBalance.toFixed(2); }
+      syncAcc(); if(typeof d.balance === 'number') ACC.live.bal = d.balance; if(typeof d.simAccountBalance === 'number') ACC.sim.bal = d.simAccountBalance;
       if(typeof d.quizScore === 'number') quizScore = d.quizScore;
       if(Array.isArray(d.answeredQuizIds)) d.answeredQuizIds.forEach(id=>answeredQuizzes.add(id));
     }
     const tradesSnap = await fbDb.collection('users').doc(fbUser.uid).collection('trades').orderBy('ts','desc').limit(100).get();
-    tradeHistory = [];
-    tradesSnap.forEach(doc=>{
-      const t = doc.data();
-      tradeCounter = Math.max(tradeCounter, t.id || 0);
-      tradeHistory.push(t);
-    });
-    tradeHistory.reverse();
+    const cloud = { live:[], sim:[] };
+    tradesSnap.forEach(doc=>{ const t = doc.data(); (cloud[t.mode === 'sim' ? 'sim' : 'live']).push(t); });
+    ['live','sim'].forEach(m => { if(cloud[m].length){ ACC[m].hist = cloud[m].reverse(); ACC[m].cnt = Math.max(ACC[m].cnt, ...ACC[m].hist.map(t => t.id || 0)); } });
+    loadAcc(XS.mode); if(document.getElementById('simBalance')) document.getElementById('simBalance').textContent = money(simBalance);
     renderHistory();
     updateScoreBadge();
   }catch(e){ console.warn('Cloud load failed:', e); }
@@ -3796,7 +4046,7 @@ document.getElementById('adminSearch').addEventListener('input', renderAdminTabl
 
 /* ============ BOOT ============ */
 initShell();
-if(/^#\/(learn|lesson|game|quiz|sim)/.test(location.hash)){ enterApp('deeplink'); }
+if(/^#\/(learn|lesson|game|quiz|sim|news)/.test(location.hash)){ enterApp('deeplink'); }
 </script>
 </body>
 </html>
